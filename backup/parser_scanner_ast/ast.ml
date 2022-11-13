@@ -1,8 +1,9 @@
-
-
 type bop = Add | Sub | Equal | Neq | Less | And | Or
 
 type typ = Int | Bool | Float
+
+(* name const_ty ty? *)
+type const_ty = Const
 
 type expr =
   | Literal of int
@@ -11,6 +12,9 @@ type expr =
   | Id of string
   | Binop of expr * bop * expr
   | Assign of string * expr
+  | Assign2 of string * typ * expr
+  (* const assignment = Assign3 *)
+  | Assign3 of string * const_ty * typ * expr
   | DAssign of string * expr
   | Printf of expr
   | Array of string * expr
@@ -44,6 +48,14 @@ let string_of_op = function
   | And -> "&&"
   | Or -> "||"
 
+let string_of_typ = function
+    Int -> "int"
+  | Bool -> "bool"
+  | Float -> "float"
+
+let string_of_const = function
+    Const -> "const"
+
 let rec string_of_expr = function
     Literal(l) -> string_of_int l
   | FloatLit(l) -> string_of_float l
@@ -53,12 +65,13 @@ let rec string_of_expr = function
   | Binop(e1, o, e2) ->
     string_of_expr e1 ^ " " ^ string_of_op o ^ " " ^ string_of_expr e2
   | Assign(v, e) -> v ^ " = " ^ string_of_expr e
+  | Assign2(v, t, e) -> v ^ " = " ^ string_of_typ t ^ " " ^ string_of_expr e
+  | Assign3(v, c, t, e) -> v ^ " = " ^ string_of_const c ^ " " ^ string_of_typ t ^ " " ^ string_of_expr e
   | DAssign(v, e) -> v ^ " := " ^ string_of_expr e
-  | Printf(e) -> "printf(" ^ string_of_expr e ^ ")"
+  | Printf(e) -> "console << " ^ string_of_expr e
   | Array(s, e) -> s ^ "[" ^ string_of_expr e ^ "]"
   | TwoDArray(s, e1, e2) -> s ^ "[" ^ string_of_expr e1 ^ "]" ^ "[" ^ string_of_expr e2 ^ "]"
   | ThreeDArray(s, e1, e2, e3) -> s ^ "[" ^ string_of_expr e1 ^ "]" ^ "[" ^ string_of_expr e2 ^ "]" ^ "[" ^ string_of_expr e3 ^ "]"
-
 
 let rec string_of_stmt = function
     Block(stmts) ->
@@ -68,10 +81,7 @@ let rec string_of_stmt = function
                       string_of_stmt s1 ^ "else\n" ^ string_of_stmt s2
   | While(e, s) -> "while (" ^ string_of_expr e ^ ") " ^ string_of_stmt s
 
-let string_of_typ = function
-    Int -> "int"
-  | Bool -> "bool"
-  | Float -> "float"
+
 
 let string_of_vdecl (t, id) = string_of_typ t ^ " " ^ id ^ ";\n"
 let string_of_adecl (t, id, e) = string_of_typ t ^ " " ^ id ^ " = " ^ string_of_expr e ^ ";\n"

@@ -6,14 +6,14 @@ open Ast
 
 %token SEMI LPAREN RPAREN LBRACE RBRACE PLUS MINUS ASSIGN DASSIGN LBRAC RBRAC
 %token EQ NEQ LT AND OR
-%token IF ELSE WHILE INT BOOL FLOAT
+%token IF ELSE WHILE INT BOOL FLOAT CONST
 %token RETURN COMMA
 %token <int> LITERAL
 %token <float> FLIT
 %token <bool> BLIT
 %token <string> ID
 %token EOF
-%token PRINTF
+%token PRINTF CONSOLE
 %start program_rule
 %type <Ast.program> program_rule
 
@@ -42,6 +42,9 @@ typ_rule:
   | BOOL    { Bool }
   | FLOAT   { Float }
 
+const_rule:
+  CONST     { Const }
+
 stmt_list_rule:
     /* nothing */               { []     }
     | stmt_rule stmt_list_rule  { $1::$2 }
@@ -67,9 +70,12 @@ expr_rule:
   | expr_rule AND expr_rule       { Binop ($1, And, $3)   }
   | expr_rule OR expr_rule        { Binop ($1, Or, $3)    }
   | ID ASSIGN expr_rule           { Assign ($1, $3)       }
+  | ID ASSIGN typ_rule expr_rule  { Assign2 ($1,$3,$4)    }
+  | ID ASSIGN const_rule typ_rule expr_rule  { Assign3 ($1, $3, $4, $5)    }
   | ID DASSIGN expr_rule          { DAssign ($1, $3)      }
   | LPAREN expr_rule RPAREN       { $2                    }
-  | PRINTF LPAREN expr_rule RPAREN { Printf $3 }
+  /*| PRINTF LPAREN expr_rule RPAREN { Printf $3 }*/
+  | CONSOLE PRINTF expr_rule      { Printf $3 }
   | ID LBRAC expr_rule RBRAC { Array($1, $3) }
   | ID LBRAC expr_rule RBRAC LBRAC expr_rule RBRAC  { TwoDArray($1, $3, $6) }
     | ID LBRAC expr_rule RBRAC LBRAC expr_rule RBRAC LBRAC expr_rule RBRAC { ThreeDArray($1, $3, $6, $9) }

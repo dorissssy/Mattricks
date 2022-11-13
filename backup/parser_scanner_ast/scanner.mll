@@ -46,7 +46,9 @@ rule token = parse
 | "true"   { BLIT(true)  }
 | "False"  { BLIT(false) }
 | "false"  { BLIT(false) }
-| "printf" { PRINTF }
+| "<<" { PRINTF }
+| "console" { CONSOLE }
+| "const" { CONST }
 | float_format as lem { FLIT(float_of_string lem) }
 | digit+ as lem  { LITERAL(int_of_string lem) }
 | letter (digit | letter | '_')* as lem { ID(lem) }

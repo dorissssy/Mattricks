@@ -1,25 +1,22 @@
 /* The GCD algorithm in MicroC */
-int a;
-int b;
+a = int 5;
+b = float 12;
+c := 13;
+a + 12;
+console << a + 5;
+x = const int 5;
 
-int gcd(int a, int b) {
-  while (a != b) {
-    if (b < a) a = a - b;
-    else b = b - a;
-  }
-  return a;
+/*
+function fname (int x) gives int {
+    return x;
 }
+*/
 
-int main() {
-  int x;
-  int y;
-  a = 18;
-  b = 9;
-  x = 2;
-  y = 14;
-  print(gcd(x,y));
-  print(gcd(3,15));
-  print(gcd(99,121));
-  print(gcd(a,b));
-  return 0;
+/*
+int abc(int x, int y){
+    return x + y;
 }
+*/
+
+/* mat := int(3, 3); */
+/* mat3 := int(1, 3)[[3,2,1]]; */

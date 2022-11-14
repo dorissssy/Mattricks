@@ -1,6 +1,11 @@
 type bop = Add | Sub | Equal | Neq | Less | And | Or
 
-type typ = Int | Bool | Float
+type typ = 
+    Int
+  | Bool
+  | Float
+
+type mat_typ = Mtype of typ * int * int
 
 (* name const_ty ty? *)
 type const_ty = Const
@@ -11,6 +16,7 @@ type expr =
   | FloatLit of float
   | Id of string
   | Binop of expr * bop * expr
+  | AssignMat of string * mat_typ
   | Assign of string * expr
   | Assign2 of string * typ * expr
   (* const assignment = Assign3 *)
@@ -66,6 +72,9 @@ let string_of_typ = function
   | Bool -> "bool"
   | Float -> "float"
 
+let string_of_mat_typ = function
+  Mtype(t, x, y) -> string_of_typ t ^ "(" ^ string_of_int x ^ "," ^ string_of_int y ^ ")"
+
 let string_of_const = function
     Const -> "const"
 
@@ -77,6 +86,7 @@ let rec string_of_expr = function
   | Id(s) -> s
   | Binop(e1, o, e2) ->
     string_of_expr e1 ^ " " ^ string_of_op o ^ " " ^ string_of_expr e2
+  | AssignMat(v, e) -> v ^ " = " ^ string_of_mat_typ e
   | Assign(v, e) -> v ^ " = " ^ string_of_expr e
   | Assign2(v, t, e) -> v ^ " = " ^ string_of_typ t ^ " " ^ string_of_expr e
   | Assign3(v, c, t, e) -> v ^ " = " ^ string_of_const c ^ " " ^ string_of_typ t ^ " " ^ string_of_expr e

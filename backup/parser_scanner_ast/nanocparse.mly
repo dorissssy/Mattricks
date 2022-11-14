@@ -71,6 +71,9 @@ typ_rule:
   | BOOL    { Bool }
   | FLOAT   { Float }
 
+mat_typ_rule:
+  typ_rule LPAREN LITERAL COMMA LITERAL RPAREN { Mtype ($1, $3, $5) }
+
 
 stmt_list_rule:
     /* nothing */               { []     }
@@ -98,6 +101,7 @@ expr_rule:
   | expr_rule LT expr_rule        { Binop ($1, Less, $3)  }
   | expr_rule AND expr_rule       { Binop ($1, And, $3)   }
   | expr_rule OR expr_rule        { Binop ($1, Or, $3)    }
+  | ID ASSIGN mat_typ_rule        { AssignMat ($1, $3)    }
   | ID ASSIGN expr_rule           { Assign ($1, $3)       }
   | ID ASSIGN typ_rule expr_rule  { Assign2 ($1,$3,$4)    }
   | ID ASSIGN const_rule typ_rule expr_rule  { Assign3 ($1, $3, $4, $5)    }

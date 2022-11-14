@@ -21,14 +21,18 @@ type token =
   | INT
   | BOOL
   | FLOAT
+  | CONST
   | RETURN
   | COMMA
+  | FUNCTION
+  | GIVES
   | LITERAL of (int)
   | FLIT of (float)
   | BLIT of (bool)
   | ID of (string)
   | EOF
   | PRINTF
+  | CONSOLE
 
 val program_rule :
   (Lexing.lexbuf  -> token) -> Lexing.lexbuf -> Ast.program

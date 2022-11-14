@@ -20,6 +20,7 @@ type expr =
   | Array of string * expr
   | TwoDArray of string * expr * expr
   | ThreeDArray of string * expr * expr * expr
+  | Return of expr
 
 
 type stmt =
@@ -31,11 +32,23 @@ type stmt =
 type bind = typ * string
 type declaration = typ * string * expr
 
-type program = {
+(* type program = {
   locals: bind list;
 
   body: stmt list;
+} *)
+
+(* func_def: ret_typ fname formals locals body *)
+type func_def = {
+  rtyp: typ;
+  fname: string;
+  formals: bind list; (* function argument list *)
+  locals: bind list;
+  body: stmt list;
 }
+type program = bind list * func_def list
+
+
 
 
 (* Pretty-printing functions *)
@@ -72,6 +85,7 @@ let rec string_of_expr = function
   | Array(s, e) -> s ^ "[" ^ string_of_expr e ^ "]"
   | TwoDArray(s, e1, e2) -> s ^ "[" ^ string_of_expr e1 ^ "]" ^ "[" ^ string_of_expr e2 ^ "]"
   | ThreeDArray(s, e1, e2, e3) -> s ^ "[" ^ string_of_expr e1 ^ "]" ^ "[" ^ string_of_expr e2 ^ "]" ^ "[" ^ string_of_expr e3 ^ "]"
+  | Return(ret) -> "return " ^ string_of_expr ret
 
 let rec string_of_stmt = function
     Block(stmts) ->
@@ -84,18 +98,31 @@ let rec string_of_stmt = function
 
 
 let string_of_vdecl (t, id) = string_of_typ t ^ " " ^ id ^ ";\n"
-let string_of_adecl (t, id, e) = string_of_typ t ^ " " ^ id ^ " = " ^ string_of_expr e ^ ";\n"
-let string_of_dadecl (id, e) = id ^ " := " ^ string_of_expr e ^ ";\n"
+(* let string_of_adecl (t, id, e) = string_of_typ t ^ " " ^ id ^ " = " ^ string_of_expr e ^ ";\n"
+let string_of_dadecl (id, e) = id ^ " := " ^ string_of_expr e ^ ";\n" *)
 
-let string_of_program fdecl =
+(* let string_of_program fdecl =
   "\n\nParsed program: \n\n" ^
   String.concat "" (List.map string_of_vdecl fdecl.locals) ^
 
   String.concat "" (List.map string_of_stmt fdecl.body) ^
-  "\n"
+  "\n" *)
+(* 
 
 let string_of_program_output fdecl =
-  String.concat "" (List.map string_of_stmt fdecl.body)
+  String.concat "" (List.map string_of_stmt fdecl.body) *)
+
+  let string_of_fdecl fdecl =
+    string_of_typ fdecl.rtyp ^ " " ^
+    fdecl.fname ^ "(" ^ String.concat ", " (List.map snd fdecl.formals) ^
+    ")\n{\n" ^
+    String.concat "" (List.map string_of_vdecl fdecl.locals) ^
+    String.concat "" (List.map string_of_stmt fdecl.body) ^
+    "}\n"
+let string_of_program (vars, funcs) =
+    "\n\nParsed program: \n\n" ^
+    String.concat "" (List.map string_of_vdecl vars) ^ "\n" ^
+    String.concat "\n" (List.map string_of_fdecl funcs)
 
 (* Below is used for the output*)
 

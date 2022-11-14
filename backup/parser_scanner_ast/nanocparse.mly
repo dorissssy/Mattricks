@@ -7,7 +7,7 @@ open Ast
 %token SEMI LPAREN RPAREN LBRACE RBRACE PLUS MINUS ASSIGN DASSIGN LBRAC RBRAC
 %token EQ NEQ LT AND OR
 %token IF ELSE WHILE INT BOOL FLOAT CONST
-%token RETURN COMMA
+%token RETURN COMMA FUNCTION GIVES
 %token <int> LITERAL
 %token <float> FLIT
 %token <bool> BLIT
@@ -27,23 +27,50 @@ open Ast
 %%
 
 program_rule:
-  vdecl_list_rule stmt_list_rule EOF { {locals=$1; body=$2} }
+  /*vdecl_list_rule stmt_list_rule EOF { {locals=$1; body=$2} } */
+  decls_rule EOF { $1 }
+
+/* (globals, func_defs) */
+decls_rule:
+   { ([], []) } /* nothing */ 
+ | vdecl_rule SEMI decls_rule { (($1 :: fst $3), snd $3) }
+ | fdecl_rule decls_rule { (fst $2, ($1 :: snd $2)) }
+
 
 vdecl_list_rule:
   /*nothing*/                   { []       }
-  | vdecl_rule vdecl_list_rule  { $1 :: $2 }
+  | vdecl_rule SEMI vdecl_list_rule  { $1 :: $3 }
 
 vdecl_rule:
-  typ_rule ID SEMI { ($1, $2) }
+  typ_rule ID  { ($1, $2) }
 
+/* function declaration rule */
+fdecl_rule:
+  FUNCTION ID LPAREN formals_opt RPAREN GIVES typ_rule LBRACE vdecl_list_rule stmt_list_rule RBRACE 
+  {
+    {
+      rtyp=$7;
+      fname=$2;
+      formals=$4;
+      locals=$9;
+      body=$10
+    }
+  }
+
+/* formals_opt */
+formals_opt:
+    { [] } /*nothing*/ 
+  | formals_list { $1 }
+
+formals_list:
+    vdecl_rule { [$1] }
+  | vdecl_rule COMMA formals_list { $1::$3 }
 
 typ_rule:
-  INT       { Int  }
+    INT     { Int  }
   | BOOL    { Bool }
   | FLOAT   { Float }
 
-const_rule:
-  CONST     { Const }
 
 stmt_list_rule:
     /* nothing */               { []     }
@@ -55,6 +82,8 @@ stmt_rule:
   | IF LPAREN expr_rule RPAREN stmt_rule ELSE stmt_rule   { If ($3, $5, $7) }
   | WHILE LPAREN expr_rule RPAREN stmt_rule               { While ($3,$5)   }
 
+const_rule:
+  CONST     { Const }
 
 
 expr_rule:
@@ -74,10 +103,10 @@ expr_rule:
   | ID ASSIGN const_rule typ_rule expr_rule  { Assign3 ($1, $3, $4, $5)    }
   | ID DASSIGN expr_rule          { DAssign ($1, $3)      }
   | LPAREN expr_rule RPAREN       { $2                    }
-  /*| PRINTF LPAREN expr_rule RPAREN { Printf $3 }*/
   | CONSOLE PRINTF expr_rule      { Printf $3 }
   | ID LBRAC expr_rule RBRAC { Array($1, $3) }
   | ID LBRAC expr_rule RBRAC LBRAC expr_rule RBRAC  { TwoDArray($1, $3, $6) }
-    | ID LBRAC expr_rule RBRAC LBRAC expr_rule RBRAC LBRAC expr_rule RBRAC { ThreeDArray($1, $3, $6, $9) }
-    | ID LBRAC expr_rule COMMA expr_rule RBRAC { TwoDArray($1, $3, $5) }
-    | ID LBRAC expr_rule COMMA expr_rule COMMA expr_rule RBRAC { ThreeDArray($1, $3, $5, $7) }
+  | ID LBRAC expr_rule RBRAC LBRAC expr_rule RBRAC LBRAC expr_rule RBRAC { ThreeDArray($1, $3, $6, $9) }
+  | ID LBRAC expr_rule COMMA expr_rule RBRAC { TwoDArray($1, $3, $5) }
+  | ID LBRAC expr_rule COMMA expr_rule COMMA expr_rule RBRAC { ThreeDArray($1, $3, $5, $7) }
+  | RETURN expr_rule              { Return $2 }

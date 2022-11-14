@@ -7,14 +7,16 @@
 /usr/bin/ocamlc.opt -c -o ast.cmo ast.ml # cached
 # Target: nanocparse.mly, tags: { extension:mly, file:nanocparse.mly, infer, ocaml, ocamlyacc, parser, quiet }
 /usr/bin/ocamlyacc nanocparse.mly
++ /usr/bin/ocamlyacc nanocparse.mly
+14 shift/reduce conflicts.
 # Target: nanocparse.mli.depends, tags: { extension:mli, file:nanocparse.mli, ocaml, ocamldep, quiet }
-/usr/bin/ocamldep.opt -modules nanocparse.mli > nanocparse.mli.depends
+/usr/bin/ocamldep.opt -modules nanocparse.mli > nanocparse.mli.depends # cached
+# Target: nanocparse.cmi, tags: { byte, compile, extension:mli, file:nanocparse.mli, interf, ocaml, quiet }
+/usr/bin/ocamlc.opt -c -o nanocparse.cmi nanocparse.mli # cached
 # Target: scanner.mll, tags: { extension:mll, file:scanner.mll, lexer, ocaml, ocamllex, quiet }
 /usr/bin/ocamllex.opt -q scanner.mll # cached
 # Target: scanner.ml.depends, tags: { extension:ml, file:scanner.ml, ocaml, ocamldep, quiet }
 /usr/bin/ocamldep.opt -modules scanner.ml > scanner.ml.depends # cached
-# Target: nanocparse.cmi, tags: { byte, compile, extension:mli, file:nanocparse.mli, interf, ocaml, quiet }
-/usr/bin/ocamlc.opt -c -o nanocparse.cmi nanocparse.mli
 # Target: scanner.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:scanner.cmo, file:scanner.ml, implem, ocaml, quiet }
 /usr/bin/ocamlc.opt -c -o scanner.cmo scanner.ml # cached
 # Target: test.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:test.cmo, file:test.ml, implem, ocaml, quiet }

@@ -10,7 +10,7 @@ function main (int x) gives  int {
     b = int 12;
     c = int(3);
 
-    return c[a];
+    return c[1];
 }
 
 

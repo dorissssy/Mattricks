@@ -43,6 +43,8 @@ vdecl_list_rule:
 
 vdecl_rule:
   typ_rule ID  { ($1, $2) }
+  | ID ASSIGN typ_rule { ($3, $1) }
+  | ID ASSIGN typ_rule expr_rule { ($3, $1) }
 
 /* function declaration rule */
 fdecl_rule:
@@ -70,9 +72,11 @@ typ_rule:
     INT     { Int  }
   | BOOL    { Bool }
   | FLOAT   { Float }
+  | typ_rule LPAREN LITERAL COMMA LITERAL RPAREN { Mtype ($1, $3, $5) }
+  | typ_rule LPAREN LITERAL RPAREN { Vtype ($1, $3) }
+  | typ_rule LPAREN LITERAL COMMA LITERAL COMMA LITERAL RPAREN { Ttype ($1, $3, $5, $7) }
 
-mat_typ_rule:
-  typ_rule LPAREN LITERAL COMMA LITERAL RPAREN { Mtype ($1, $3, $5) }
+
 
 
 stmt_list_rule:
@@ -84,6 +88,7 @@ stmt_rule:
   | LBRACE stmt_list_rule RBRACE                          { Block $2        }
   | IF LPAREN expr_rule RPAREN stmt_rule ELSE stmt_rule   { If ($3, $5, $7) }
   | WHILE LPAREN expr_rule RPAREN stmt_rule               { While ($3,$5)   }
+  | RETURN expr_rule SEMI                        { Return $2      }
 
 const_rule:
   CONST     { Const }
@@ -101,16 +106,25 @@ expr_rule:
   | expr_rule LT expr_rule        { Binop ($1, Less, $3)  }
   | expr_rule AND expr_rule       { Binop ($1, And, $3)   }
   | expr_rule OR expr_rule        { Binop ($1, Or, $3)    }
-  | ID ASSIGN mat_typ_rule        { AssignMat ($1, $3)    }
+  | ID ASSIGN typ_rule        { AssignMat ($1, $3)    }
   | ID ASSIGN expr_rule           { Assign ($1, $3)       }
-  | ID ASSIGN typ_rule expr_rule  { Assign2 ($1,$3,$4)    }
   | ID ASSIGN const_rule typ_rule expr_rule  { Assign3 ($1, $3, $4, $5)    }
   | ID DASSIGN expr_rule          { DAssign ($1, $3)      }
   | LPAREN expr_rule RPAREN       { $2                    }
+  | ID ASSIGN typ_rule expr_rule  SEMI        { BindAssign ($3, $1, $4) }
   | CONSOLE PRINTF expr_rule      { Printf $3 }
-  | ID LBRAC expr_rule RBRAC { Array($1, $3) }
-  | ID LBRAC expr_rule RBRAC LBRAC expr_rule RBRAC  { TwoDArray($1, $3, $6) }
-  | ID LBRAC expr_rule RBRAC LBRAC expr_rule RBRAC LBRAC expr_rule RBRAC { ThreeDArray($1, $3, $6, $9) }
-  | ID LBRAC expr_rule COMMA expr_rule RBRAC { TwoDArray($1, $3, $5) }
-  | ID LBRAC expr_rule COMMA expr_rule COMMA expr_rule RBRAC { ThreeDArray($1, $3, $5, $7) }
-  | RETURN expr_rule              { Return $2 }
+  | ID LBRAC expr_rule RBRAC { ArrayAccess($1, $3) }
+  | ID LBRAC expr_rule RBRAC LBRAC expr_rule RBRAC  { TwoDArrayAccess($1, $3, $6) }
+  | ID LBRAC expr_rule RBRAC LBRAC expr_rule RBRAC LBRAC expr_rule RBRAC { ThreeDArrayAccess($1, $3, $6, $9) }
+  | ID LBRAC expr_rule COMMA expr_rule RBRAC { TwoDArrayAccess($1, $3, $5) }
+  | ID LBRAC expr_rule COMMA expr_rule COMMA expr_rule RBRAC { ThreeDArrayAccess($1, $3, $5, $7) }
+  | ID LPAREN args_opt RPAREN { Call ($1, $3)  }
+
+/* args_opt*/
+args_opt:
+  /*nothing*/ { [] }
+  | args { $1 }
+
+args:
+  expr_rule  { [$1] }
+  | expr_rule COMMA args { $1::$3 }

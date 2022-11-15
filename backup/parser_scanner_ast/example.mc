@@ -3,16 +3,14 @@
 
 
 
-function fname (int x) gives int {
+function main (int x) gives  int {
+
+    int y;
     a = int 5;
-    b = float 12;
-    c := 13;
-    a + 12;
-    console << a + 5;
-    x = const int 5;
-    mat = int(3, 3);
-    
-    return x;
+    b = int 12;
+    c = int(3);
+
+    return c[a];
 }
 
 

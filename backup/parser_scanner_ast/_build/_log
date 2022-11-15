@@ -1,34 +1,116 @@
 ### Starting build.
-# Target: test.ml.depends, tags: { extension:ml, file:test.ml, ocaml, ocamldep, quiet }
-/usr/bin/ocamldep.opt -modules test.ml > test.ml.depends # cached
-# Target: ast.ml.depends, tags: { extension:ml, file:ast.ml, ocaml, ocamldep, quiet }
-/usr/bin/ocamldep.opt -modules ast.ml > ast.ml.depends
+# Target: test2.ml.depends, tags: { extension:ml, file:test2.ml, ocaml, ocamldep, quiet }
+/usr/bin/ocamldep.opt -modules test2.ml > test2.ml.depends # cached
 # Target: nanocparse.mly, tags: { extension:mly, file:nanocparse.mly, infer, ocaml, ocamlyacc, parser, quiet }
 /usr/bin/ocamlyacc nanocparse.mly # cached
 # Target: nanocparse.mli.depends, tags: { extension:mli, file:nanocparse.mli, ocaml, ocamldep, quiet }
 /usr/bin/ocamldep.opt -modules nanocparse.mli > nanocparse.mli.depends # cached
+# Target: ast.ml.depends, tags: { extension:ml, file:ast.ml, ocaml, ocamldep, quiet }
+/usr/bin/ocamldep.opt -modules ast.ml > ast.ml.depends # cached
 # Target: ast.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:ast.cmo, file:ast.ml, implem, ocaml, quiet }
-/usr/bin/ocamlc.opt -c -o ast.cmo ast.ml
+/usr/bin/ocamlc.opt -c -o ast.cmo ast.ml # cached
+# Target: nanocparse.cmi, tags: { byte, compile, extension:mli, file:nanocparse.mli, interf, ocaml, quiet }
+/usr/bin/ocamlc.opt -c -o nanocparse.cmi nanocparse.mli # cached
+# Target: sast.ml.depends, tags: { extension:ml, file:sast.ml, ocaml, ocamldep, quiet }
+/usr/bin/ocamldep.opt -modules sast.ml > sast.ml.depends # cached
+# Target: sast.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:sast.cmo, file:sast.ml, implem, ocaml, quiet }
+/usr/bin/ocamlc.opt -c -o sast.cmo sast.ml # cached
 # Target: scanner.mll, tags: { extension:mll, file:scanner.mll, lexer, ocaml, ocamllex, quiet }
 /usr/bin/ocamllex.opt -q scanner.mll # cached
 # Target: scanner.ml.depends, tags: { extension:ml, file:scanner.ml, ocaml, ocamldep, quiet }
 /usr/bin/ocamldep.opt -modules scanner.ml > scanner.ml.depends # cached
-# Target: nanocparse.cmi, tags: { byte, compile, extension:mli, file:nanocparse.mli, interf, ocaml, quiet }
-/usr/bin/ocamlc.opt -c -o nanocparse.cmi nanocparse.mli
 # Target: scanner.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:scanner.cmo, file:scanner.ml, implem, ocaml, quiet }
-/usr/bin/ocamlc.opt -c -o scanner.cmo scanner.ml
-# Target: test.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:test.cmo, file:test.ml, implem, ocaml, quiet }
-/usr/bin/ocamlc.opt -c -o test.cmo test.ml
+/usr/bin/ocamlc.opt -c -o scanner.cmo scanner.ml # cached
+# Target: semant.ml.depends, tags: { extension:ml, file:semant.ml, ocaml, ocamldep, quiet }
+/usr/bin/ocamldep.opt -modules semant.ml > semant.ml.depends
+# Target: semant.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:semant.cmo, file:semant.ml, implem, ocaml, quiet }
+/usr/bin/ocamlc.opt -c -o semant.cmo semant.ml
++ /usr/bin/ocamlc.opt -c -o semant.cmo semant.ml
+File "semant.ml", line 99, characters 43-45:
+99 |             Vtype(tp, dim) -> if dim > idx or idx < 0 then tp else raise (Failure ("Array access to " ^ arr_id ^ "[" ^ string_of_int idx ^ "] out of bound")))
+                                                ^^
+Alert deprecated: Stdlib.or
+Use (||) instead.
+File "semant.ml", line 98, characters 24-204:
+98 | ........................(match arr_type with
+99 |             Vtype(tp, dim) -> if dim > idx or idx < 0 then tp else raise (Failure ("Array access to " ^ arr_id ^ "[" ^ string_of_int idx ^ "] out of bound")))
+Warning 8: this pattern-matching is not exhaustive.
+Here is an example of a case that is not matched:
+(Int|Bool|Float|Mtype (_, _, _)|Ttype (_, _, _, _))
+File "semant.ml", line 103, characters 25-2817:
+103 | .........................function
+104 |         Literal l -> (Int, SLiteral l)
+105 |       | BoolLit l -> (Bool, SBoolLit l)
+106 |       | FloatLit l -> (Float, SFloatLit l)
+107 |       | Id var -> (type_of_identifier var, SId var)
+...
+158 |                in (check_assign ft et err, e')
+159 |           in
+160 |           let args' = List.map2 check_call fd.formals args
+161 |           in (fd.rtyp, SCall(fname, args'))
+Warning 8: this pattern-matching is not exhaustive.
+Here is an example of a case that is not matched:
+(AssignMat (_, _)|Assign2 (_, _, _)|Assign3 (_, _, _, _)|DAssign (_, _)|
+Printf _|TwoDArrayAccess (_, _, _)|ThreeDArrayAccess (_, _, _, _))
+File "semant.ml", line 134, characters 8-34:
+134 |       | BindAssign(_, id, e) as ex ->
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+Warning 26: unused variable ex.
+File "semant.ml", line 144, characters 20-23:
+144 |                 let err = "illegal array access " ^ string_of_typ lt ^ " = " ^
+                          ^^^
+Warning 26: unused variable err.
+# Target: test2.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:test2.cmo, file:test2.ml, implem, ocaml, quiet }
+/usr/bin/ocamlc.opt -c -o test2.cmo test2.ml
 # Target: nanocparse.ml.depends, tags: { extension:ml, file:nanocparse.ml, ocaml, ocamldep, quiet }
 /usr/bin/ocamldep.opt -modules nanocparse.ml > nanocparse.ml.depends # cached
 # Target: ast.cmx, tags: { compile, extension:cmx, extension:ml, file:ast.cmx, file:ast.ml, implem, native, ocaml, quiet }
-/usr/bin/ocamlopt.opt -c -o ast.cmx ast.ml
+/usr/bin/ocamlopt.opt -c -o ast.cmx ast.ml # cached
 # Target: nanocparse.cmx, tags: { compile, extension:cmx, extension:ml, file:nanocparse.cmx, file:nanocparse.ml, implem, native, ocaml, quiet }
-/usr/bin/ocamlopt.opt -c -o nanocparse.cmx nanocparse.ml
+/usr/bin/ocamlopt.opt -c -o nanocparse.cmx nanocparse.ml # cached
+# Target: sast.cmx, tags: { compile, extension:cmx, extension:ml, file:sast.cmx, file:sast.ml, implem, native, ocaml, quiet }
+/usr/bin/ocamlopt.opt -c -o sast.cmx sast.ml # cached
 # Target: scanner.cmx, tags: { compile, extension:cmx, extension:ml, file:scanner.cmx, file:scanner.ml, implem, native, ocaml, quiet }
-/usr/bin/ocamlopt.opt -c -o scanner.cmx scanner.ml
-# Target: test.cmx, tags: { compile, extension:cmx, extension:ml, file:test.cmx, file:test.ml, implem, native, ocaml, quiet }
-/usr/bin/ocamlopt.opt -c -o test.cmx test.ml
-# Target: test.native, tags: { dont_link_with, extension:native, file:test.native, link, native, ocaml, program, quiet }
-/usr/bin/ocamlopt.opt ast.cmx nanocparse.cmx scanner.cmx test.cmx -o test.native
+/usr/bin/ocamlopt.opt -c -o scanner.cmx scanner.ml # cached
+# Target: semant.cmx, tags: { compile, extension:cmx, extension:ml, file:semant.cmx, file:semant.ml, implem, native, ocaml, quiet }
+/usr/bin/ocamlopt.opt -c -o semant.cmx semant.ml
++ /usr/bin/ocamlopt.opt -c -o semant.cmx semant.ml
+File "semant.ml", line 99, characters 43-45:
+99 |             Vtype(tp, dim) -> if dim > idx or idx < 0 then tp else raise (Failure ("Array access to " ^ arr_id ^ "[" ^ string_of_int idx ^ "] out of bound")))
+                                                ^^
+Alert deprecated: Stdlib.or
+Use (||) instead.
+File "semant.ml", line 98, characters 24-204:
+98 | ........................(match arr_type with
+99 |             Vtype(tp, dim) -> if dim > idx or idx < 0 then tp else raise (Failure ("Array access to " ^ arr_id ^ "[" ^ string_of_int idx ^ "] out of bound")))
+Warning 8: this pattern-matching is not exhaustive.
+Here is an example of a case that is not matched:
+(Int|Bool|Float|Mtype (_, _, _)|Ttype (_, _, _, _))
+File "semant.ml", line 103, characters 25-2817:
+103 | .........................function
+104 |         Literal l -> (Int, SLiteral l)
+105 |       | BoolLit l -> (Bool, SBoolLit l)
+106 |       | FloatLit l -> (Float, SFloatLit l)
+107 |       | Id var -> (type_of_identifier var, SId var)
+...
+158 |                in (check_assign ft et err, e')
+159 |           in
+160 |           let args' = List.map2 check_call fd.formals args
+161 |           in (fd.rtyp, SCall(fname, args'))
+Warning 8: this pattern-matching is not exhaustive.
+Here is an example of a case that is not matched:
+(AssignMat (_, _)|Assign2 (_, _, _)|Assign3 (_, _, _, _)|DAssign (_, _)|
+Printf _|TwoDArrayAccess (_, _, _)|ThreeDArrayAccess (_, _, _, _))
+File "semant.ml", line 134, characters 8-34:
+134 |       | BindAssign(_, id, e) as ex ->
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^
+Warning 26: unused variable ex.
+File "semant.ml", line 144, characters 20-23:
+144 |                 let err = "illegal array access " ^ string_of_typ lt ^ " = " ^
+                          ^^^
+Warning 26: unused variable err.
+# Target: test2.cmx, tags: { compile, extension:cmx, extension:ml, file:test2.cmx, file:test2.ml, implem, native, ocaml, quiet }
+/usr/bin/ocamlopt.opt -c -o test2.cmx test2.ml # cached
+# Target: test2.native, tags: { dont_link_with, extension:native, file:test2.native, link, native, ocaml, program, quiet }
+/usr/bin/ocamlopt.opt ast.cmx nanocparse.cmx sast.cmx scanner.cmx semant.cmx test2.cmx -o test2.native # cached
 # Compilation successful.

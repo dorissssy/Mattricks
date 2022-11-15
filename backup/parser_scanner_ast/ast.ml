@@ -4,8 +4,10 @@ type typ =
     Int
   | Bool
   | Float
+  | Mtype of typ * int * int
+  | Vtype of typ * int
+  | Ttype of typ * int * int * int
 
-type mat_typ = Mtype of typ * int * int
 
 (* name const_ty ty? *)
 type const_ty = Const
@@ -16,24 +18,26 @@ type expr =
   | FloatLit of float
   | Id of string
   | Binop of expr * bop * expr
-  | AssignMat of string * mat_typ
+  | AssignMat of string * typ
   | Assign of string * expr
   | Assign2 of string * typ * expr
   (* const assignment = Assign3 *)
   | Assign3 of string * const_ty * typ * expr
   | DAssign of string * expr
   | Printf of expr
-  | Array of string * expr
-  | TwoDArray of string * expr * expr
-  | ThreeDArray of string * expr * expr * expr
-  | Return of expr
-
+  | ArrayAccess of string * expr
+  | TwoDArrayAccess of string * expr * expr
+  | ThreeDArrayAccess of string * expr * expr * expr
+  | Call of string * expr list
+  | BindAssign of typ * string * expr
 
 type stmt =
   | Block of stmt list
   | Expr of expr
   | If of expr * stmt * stmt
   | While of expr * stmt
+  | Return of expr
+
 
 type bind = typ * string
 type declaration = typ * string * expr
@@ -67,13 +71,14 @@ let string_of_op = function
   | And -> "&&"
   | Or -> "||"
 
-let string_of_typ = function
+let rec string_of_typ = function
     Int -> "int"
   | Bool -> "bool"
   | Float -> "float"
+  | Mtype(t, x, y) -> string_of_typ t ^ "(" ^ string_of_int x ^ "," ^ string_of_int y ^ ")"
+  | Vtype(t, x) -> string_of_typ t ^ "(" ^ string_of_int x ^ ")"
+  | Ttype(t, x, y, z) -> string_of_typ t ^ "(" ^ string_of_int x ^ "," ^ string_of_int y ^ "," ^ string_of_int z ^ ")"
 
-let string_of_mat_typ = function
-  Mtype(t, x, y) -> string_of_typ t ^ "(" ^ string_of_int x ^ "," ^ string_of_int y ^ ")"
 
 let string_of_const = function
     Const -> "const"
@@ -86,17 +91,18 @@ let rec string_of_expr = function
   | Id(s) -> s
   | Binop(e1, o, e2) ->
     string_of_expr e1 ^ " " ^ string_of_op o ^ " " ^ string_of_expr e2
-  | AssignMat(v, e) -> v ^ " = " ^ string_of_mat_typ e
+  | AssignMat(v, e) -> v ^ " = " ^ string_of_typ e
   | Assign(v, e) -> v ^ " = " ^ string_of_expr e
   | Assign2(v, t, e) -> v ^ " = " ^ string_of_typ t ^ " " ^ string_of_expr e
   | Assign3(v, c, t, e) -> v ^ " = " ^ string_of_const c ^ " " ^ string_of_typ t ^ " " ^ string_of_expr e
   | DAssign(v, e) -> v ^ " := " ^ string_of_expr e
   | Printf(e) -> "console << " ^ string_of_expr e
-  | Array(s, e) -> s ^ "[" ^ string_of_expr e ^ "]"
-  | TwoDArray(s, e1, e2) -> s ^ "[" ^ string_of_expr e1 ^ "]" ^ "[" ^ string_of_expr e2 ^ "]"
-  | ThreeDArray(s, e1, e2, e3) -> s ^ "[" ^ string_of_expr e1 ^ "]" ^ "[" ^ string_of_expr e2 ^ "]" ^ "[" ^ string_of_expr e3 ^ "]"
-  | Return(ret) -> "return " ^ string_of_expr ret
-
+  | ArrayAccess(s, e) -> s ^ "[" ^ string_of_expr e ^ "]"
+  | TwoDArrayAccess(s, e1, e2) -> s ^ "[" ^ string_of_expr e1 ^ "]" ^ "[" ^ string_of_expr e2 ^ "]"
+  | ThreeDArrayAccess(s, e1, e2, e3) -> s ^ "[" ^ string_of_expr e1 ^ "]" ^ "[" ^ string_of_expr e2 ^ "]" ^ "[" ^ string_of_expr e3 ^ "]"
+  | BindAssign(v, t, e) -> string_of_typ v ^ " " ^ t ^ " = " ^ string_of_expr e ^ ";\n"
+  | Call(f, el) ->
+    f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
 let rec string_of_stmt = function
     Block(stmts) ->
     "{\n" ^ String.concat "" (List.map string_of_stmt stmts) ^ "}\n"
@@ -104,7 +110,7 @@ let rec string_of_stmt = function
   | If(e, s1, s2) ->  "if (" ^ string_of_expr e ^ ")\n" ^
                       string_of_stmt s1 ^ "else\n" ^ string_of_stmt s2
   | While(e, s) -> "while (" ^ string_of_expr e ^ ") " ^ string_of_stmt s
-
+  | Return(ret) -> "return " ^ string_of_expr ret
 
 
 let string_of_vdecl (t, id) = string_of_typ t ^ " " ^ id ^ ";\n"

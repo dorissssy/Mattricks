@@ -1,0 +1,34 @@
+### Starting build.
+# Target: test.ml.depends, tags: { extension:ml, file:test.ml, ocaml, ocamldep, quiet }
+/usr/bin/ocamldep.opt -modules test.ml > test.ml.depends # cached
+# Target: ast.ml.depends, tags: { extension:ml, file:ast.ml, ocaml, ocamldep, quiet }
+/usr/bin/ocamldep.opt -modules ast.ml > ast.ml.depends
+# Target: nanocparse.mly, tags: { extension:mly, file:nanocparse.mly, infer, ocaml, ocamlyacc, parser, quiet }
+/usr/bin/ocamlyacc nanocparse.mly # cached
+# Target: nanocparse.mli.depends, tags: { extension:mli, file:nanocparse.mli, ocaml, ocamldep, quiet }
+/usr/bin/ocamldep.opt -modules nanocparse.mli > nanocparse.mli.depends # cached
+# Target: ast.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:ast.cmo, file:ast.ml, implem, ocaml, quiet }
+/usr/bin/ocamlc.opt -c -o ast.cmo ast.ml
+# Target: scanner.mll, tags: { extension:mll, file:scanner.mll, lexer, ocaml, ocamllex, quiet }
+/usr/bin/ocamllex.opt -q scanner.mll # cached
+# Target: scanner.ml.depends, tags: { extension:ml, file:scanner.ml, ocaml, ocamldep, quiet }
+/usr/bin/ocamldep.opt -modules scanner.ml > scanner.ml.depends # cached
+# Target: nanocparse.cmi, tags: { byte, compile, extension:mli, file:nanocparse.mli, interf, ocaml, quiet }
+/usr/bin/ocamlc.opt -c -o nanocparse.cmi nanocparse.mli
+# Target: scanner.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:scanner.cmo, file:scanner.ml, implem, ocaml, quiet }
+/usr/bin/ocamlc.opt -c -o scanner.cmo scanner.ml
+# Target: test.cmo, tags: { byte, compile, extension:cmo, extension:ml, file:test.cmo, file:test.ml, implem, ocaml, quiet }
+/usr/bin/ocamlc.opt -c -o test.cmo test.ml
+# Target: nanocparse.ml.depends, tags: { extension:ml, file:nanocparse.ml, ocaml, ocamldep, quiet }
+/usr/bin/ocamldep.opt -modules nanocparse.ml > nanocparse.ml.depends # cached
+# Target: ast.cmx, tags: { compile, extension:cmx, extension:ml, file:ast.cmx, file:ast.ml, implem, native, ocaml, quiet }
+/usr/bin/ocamlopt.opt -c -o ast.cmx ast.ml
+# Target: nanocparse.cmx, tags: { compile, extension:cmx, extension:ml, file:nanocparse.cmx, file:nanocparse.ml, implem, native, ocaml, quiet }
+/usr/bin/ocamlopt.opt -c -o nanocparse.cmx nanocparse.ml
+# Target: scanner.cmx, tags: { compile, extension:cmx, extension:ml, file:scanner.cmx, file:scanner.ml, implem, native, ocaml, quiet }
+/usr/bin/ocamlopt.opt -c -o scanner.cmx scanner.ml
+# Target: test.cmx, tags: { compile, extension:cmx, extension:ml, file:test.cmx, file:test.ml, implem, native, ocaml, quiet }
+/usr/bin/ocamlopt.opt -c -o test.cmx test.ml
+# Target: test.native, tags: { dont_link_with, extension:native, file:test.native, link, native, ocaml, program, quiet }
+/usr/bin/ocamlopt.opt ast.cmx nanocparse.cmx scanner.cmx test.cmx -o test.native
+# Compilation successful.

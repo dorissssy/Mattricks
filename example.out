@@ -2,11 +2,16 @@
 
 Parsed program: 
 
+
+int fname(x)
+{
 a = int 5;
 b = float 12;
 c := 13;
 a + 12;
 console << a + 5;
 x = const int 5;
-
+mat = int(3,3);
+return x;
+}
 

@@ -2,3 +2,4 @@ _build/
 tests/parse/temp/
 tests/semant/temp/
 tests/ir/temp/
+*.native

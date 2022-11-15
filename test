@@ -58,7 +58,7 @@ if [ ${flag_parse} -eq 1 ]; then
   if [ -f './test_parse.native' ]; then
     echo -e ${GREEN}'ocamlbuild test_parse.native successfully'${NC}
   else
-    echo -e ${RED}'ocamlbuild failed, please check error messages\n'
+    echo -e ${RED}'ocamlbuild failed, please check error messages\n'${NC}
     exit 1
   fi
 
@@ -115,7 +115,7 @@ if [ ${flag_semant} -eq 1 ]; then
   if [ -f './test_semant.native' ]; then
     echo -e ${GREEN}'ocamlbuild test_semant.native successfully'${NC}
   else
-    echo -e ${RED}'ocamlbuild failed, please check error messages\n'
+    echo -e ${RED}'ocamlbuild failed, please check error messages\n'${NC}
     exit 1
   fi
 

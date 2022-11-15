@@ -16,7 +16,7 @@ type expr =
   | FloatLit of float
   | Id of string
   | Binop of expr * bop * expr
-  | AssignMat of string * mat_typ
+  | AssignMatTyp of string * mat_typ
   | Assign of string * expr
   | Assign2 of string * typ * expr
   (* const assignment = Assign3 *)
@@ -28,6 +28,13 @@ type expr =
   | ThreeDArray of string * expr * expr * expr
   | Return of expr
 
+type mat_val =
+  | MatValue of expr
+  | MatArray of expr list
+  | Mat of mat_val list
+  | AssignMat of string * mat_typ * mat_val
+
+(* type mat =  *)
 
 type stmt =
   | Block of stmt list
@@ -86,7 +93,7 @@ let rec string_of_expr = function
   | Id(s) -> s
   | Binop(e1, o, e2) ->
     string_of_expr e1 ^ " " ^ string_of_op o ^ " " ^ string_of_expr e2
-  | AssignMat(v, e) -> v ^ " = " ^ string_of_mat_typ e
+  | AssignMatTyp(v, e) -> v ^ " = " ^ string_of_mat_typ e
   | Assign(v, e) -> v ^ " = " ^ string_of_expr e
   | Assign2(v, t, e) -> v ^ " = " ^ string_of_typ t ^ " " ^ string_of_expr e
   | Assign3(v, c, t, e) -> v ^ " = " ^ string_of_const c ^ " " ^ string_of_typ t ^ " " ^ string_of_expr e
@@ -105,7 +112,19 @@ let rec string_of_stmt = function
                       string_of_stmt s1 ^ "else\n" ^ string_of_stmt s2
   | While(e, s) -> "while (" ^ string_of_expr e ^ ") " ^ string_of_stmt s
 
+  
 
+let rec string_of_mat = function
+  
+  
+  | Mat(m) -> 
+    "[\n" ^ String.concat "" (List.map string_of_mat m) ^ "]\n"
+  
+  | MatArray(l) -> 
+    "[\n" ^ String.concat "" (List.map string_of_expr l) ^ "]\n"
+  |  MatValue(e) -> string_of_expr e ^ ", "
+    (* let h::t=l in string_of_mat h ^ ", " ^ string_of_mat t *)
+  | AssignMat(v, e, m) -> v ^ " = " ^ string_of_mat_typ e ^ string_of_mat m
 
 let string_of_vdecl (t, id) = string_of_typ t ^ " " ^ id ^ ";\n"
 (* let string_of_adecl (t, id, e) = string_of_typ t ^ " " ^ id ^ " = " ^ string_of_expr e ^ ";\n"

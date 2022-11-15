@@ -11,6 +11,7 @@ function fname (int x) gives int {
     console << a + 5;
     x = const int 5;
     mat = int(3, 3);
+    mat3 = int(2, 3)[ [3,2,1], [1,2,3] ];
     
     return x;
 }
@@ -18,6 +19,8 @@ function fname (int x) gives int {
 
 /* TODO:
     
+    mat3 = int(1, 3)[ ];
+    mat3 = int(1, 3) [3,2,1];
     mat3 = int(1, 3)[ [3,2,1] ];
 
 */

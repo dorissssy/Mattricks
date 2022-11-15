@@ -74,6 +74,20 @@ typ_rule:
 mat_typ_rule:
   typ_rule LPAREN LITERAL COMMA LITERAL RPAREN { Mtype ($1, $3, $5) }
 
+mat_array_list_rule:
+    /* nothing */               { []     }
+    | mat_array_rule COMMA mat_array_list_rule  { $1::$3 }
+
+expr_list_rule:
+    /* nothing */               { []     }
+    | expr_rule expr_list_rule  { $1::$2 }
+    
+
+mat_array_rule:
+  expr_rule                                            { MatValue $1 }
+  | LBRACE expr_list_rule RBRACE                       { MatArray $2 }
+  | mat_array_list_rule                  { Mat $1 }
+  // | LPAREN mat_array_list_rule RPAREN                     { MatArray $2 }
 
 stmt_list_rule:
     /* nothing */               { []     }
@@ -101,7 +115,7 @@ expr_rule:
   | expr_rule LT expr_rule        { Binop ($1, Less, $3)  }
   | expr_rule AND expr_rule       { Binop ($1, And, $3)   }
   | expr_rule OR expr_rule        { Binop ($1, Or, $3)    }
-  | ID ASSIGN mat_typ_rule        { AssignMat ($1, $3)    }
+  | ID ASSIGN mat_typ_rule        { AssignMatTyp ($1, $3) }
   | ID ASSIGN expr_rule           { Assign ($1, $3)       }
   | ID ASSIGN typ_rule expr_rule  { Assign2 ($1,$3,$4)    }
   | ID ASSIGN const_rule typ_rule expr_rule  { Assign3 ($1, $3, $4, $5)    }
@@ -114,3 +128,6 @@ expr_rule:
   | ID LBRAC expr_rule COMMA expr_rule RBRAC { TwoDArray($1, $3, $5) }
   | ID LBRAC expr_rule COMMA expr_rule COMMA expr_rule RBRAC { ThreeDArray($1, $3, $5, $7) }
   | RETURN expr_rule              { Return $2 }
+
+mat_rule:
+  | ID ASSIGN mat_typ_rule LBRACE mat_array_rule RBRACE { AssignMat ($1, $3, $5) }

@@ -92,9 +92,11 @@ mat_typ_rule:
   
 mat_rule:
   // | LBRAC RBRAC {Mat []} 
-    {Mat []}
+    { Mat [] }
   | LITERAL  { MatValue (MatLiteral $1) }
-  | LBRAC mat_rule RBRAC {Mat [$2]}
+  // | LITERAL COMMA mat_rule  { MatValue (MatLiteral $1) :: [$3] }
+  | LBRAC mat_rule RBRAC { Mat [$2] }
+  | LBRAC mat_rule RBRAC COMMA mat_rule { Mat ($2::[$5]) }
   // | mat_rule COMMA  mat_rule { (Mat $1) :: (Mat $3) }
   
   

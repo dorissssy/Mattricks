@@ -24,6 +24,7 @@ rule token = parse
 | '}'         { RBRACE }
 | ';'         { SEMI }
 | ','         { COMMA }
+| ':'        { COLON }
 | '+'         { PLUS }
 | '-'         { MINUS }
 | '='         { ASSIGN }

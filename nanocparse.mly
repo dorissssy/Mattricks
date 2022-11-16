@@ -7,7 +7,7 @@ open Ast
 %token SEMI LPAREN RPAREN LBRACE RBRACE PLUS MINUS ASSIGN DASSIGN LBRAC RBRAC
 %token EQ NEQ LT AND OR
 %token IF ELSE WHILE INT BOOL FLOAT CONST
-%token RETURN COMMA FUNCTION GIVES
+%token RETURN COMMA FUNCTION GIVES COLON
 %token <int> LITERAL
 %token <float> FLIT
 %token <bool> BLIT
@@ -43,8 +43,6 @@ vdecl_list_rule:
 
 vdecl_rule:
   typ_rule ID  { ($1, $2) }
-  | ID ASSIGN typ_rule { ($3, $1) }
-  | ID ASSIGN typ_rule expr_rule { ($3, $1) }
 
 /* function declaration rule */
 fdecl_rule:
@@ -89,6 +87,7 @@ stmt_rule:
   | IF LPAREN expr_rule RPAREN stmt_rule ELSE stmt_rule   { If ($3, $5, $7) }
   | WHILE LPAREN expr_rule RPAREN stmt_rule               { While ($3,$5)   }
   | RETURN expr_rule SEMI                        { Return $2      }
+  | CONSOLE PRINTF expr_rule SEMI      { Printf $3 }
 
 const_rule:
   CONST     { Const }
@@ -106,13 +105,10 @@ expr_rule:
   | expr_rule LT expr_rule        { Binop ($1, Less, $3)  }
   | expr_rule AND expr_rule       { Binop ($1, And, $3)   }
   | expr_rule OR expr_rule        { Binop ($1, Or, $3)    }
-  | ID ASSIGN typ_rule        { AssignMat ($1, $3)    }
   | ID ASSIGN expr_rule           { Assign ($1, $3)       }
-  | ID ASSIGN const_rule typ_rule expr_rule  { Assign3 ($1, $3, $4, $5)    }
-  | ID DASSIGN expr_rule          { DAssign ($1, $3)      }
+  /*| ID ASSIGN const_rule typ_rule expr_rule  { Assign3 ($1, $3, $4, $5)    }*/
   | LPAREN expr_rule RPAREN       { $2                    }
-  | ID ASSIGN typ_rule expr_rule  SEMI        { BindAssign ($3, $1, $4) }
-  | CONSOLE PRINTF expr_rule      { Printf $3 }
+  /*| ID COLON typ_rule expr_rule          { BindAssign ($3, $1, $4) }*/
   | ID LBRAC expr_rule RBRAC { ArrayAccess($1, $3) }
   | ID LBRAC expr_rule RBRAC LBRAC expr_rule RBRAC  { TwoDArrayAccess($1, $3, $6) }
   | ID LBRAC expr_rule RBRAC LBRAC expr_rule RBRAC LBRAC expr_rule RBRAC { ThreeDArrayAccess($1, $3, $6, $9) }

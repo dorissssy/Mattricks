@@ -14,7 +14,6 @@ and sx =
   | SAssign2 of string* typ * sexpr
   | SAssign3 of string * const_ty * typ * sexpr
   | SDAssign of string * sexpr
-  | SPrintf of sexpr
   | SArrayAccess of string * sexpr
   | STwoDArrayAccess of string * sexpr * sexpr
   | SThreeDArrayAccess of string * sexpr * sexpr * sexpr
@@ -29,6 +28,7 @@ type sstmt =
   | SWhile of sexpr * sstmt
   (* return *)
   | SReturn of sexpr
+  | SPrintf of sexpr
 
 
 (* func_def: ret_typ fname formals locals body *)
@@ -60,7 +60,6 @@ let rec string_of_sexpr (t, e) =
         | SAssign2(v, t, e) -> v ^ " = " ^ string_of_typ t ^ " " ^ string_of_sexpr e
         | SAssign3(v, t, t2, e) -> v ^ " = " ^ string_of_const t ^ " " ^ string_of_typ t2 ^ " " ^ string_of_sexpr e
         | SDAssign(v, e) -> v ^ " := " ^ string_of_sexpr e
-        | SPrintf(e) -> "printf(" ^ string_of_sexpr e ^ ")"
         | SArrayAccess(v, e) -> v ^ "[" ^ string_of_sexpr e ^ "]"
         | STwoDArrayAccess(v, e, e2) -> v ^ "[" ^ string_of_sexpr e ^ "]" ^ "[" ^ string_of_sexpr e2 ^ "]"
         | SThreeDArrayAccess(v, e, e2, e3) -> v ^ "[" ^ string_of_sexpr e ^ "]" ^ "[" ^ string_of_sexpr e2 ^ "]" ^ "[" ^ string_of_sexpr e3 ^ "]"
@@ -76,12 +75,12 @@ let rec string_of_sstmt = function
   | SIf(e, s1, s2) ->  "if (" ^ string_of_sexpr e ^ ")\n" ^
                        string_of_sstmt s1 ^ "else\n" ^ string_of_sstmt s2
   | SWhile(e, s) -> "while (" ^ string_of_sexpr e ^ ") " ^ string_of_sstmt s
-  | SReturn(e) -> "return " ^ string_of_sexpr e
+  | SReturn(e) -> "return " ^ string_of_sexpr e ^ ";\n"
+  | SPrintf(e) -> "Console << (" ^ string_of_sexpr e ^ ")" ^ ";\n"
 
-let string_of_sfdecl fdecl =
-  string_of_typ fdecl.srtyp ^ " " ^
+let string_of_sfdecl fdecl = "function " ^
   fdecl.sfname ^ "(" ^ String.concat ", " (List.map snd fdecl.sformals) ^
-  ")\n{\n" ^
+  ") gives "^ string_of_typ fdecl.srtyp ^"\n{\n" ^
   String.concat "" (List.map string_of_vdecl fdecl.slocals) ^
   String.concat "" (List.map string_of_sstmt fdecl.sbody) ^
   "}\n"

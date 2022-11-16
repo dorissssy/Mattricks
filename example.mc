@@ -2,15 +2,15 @@
 
 
 
-
+float p;
 function main (int x) gives  int {
 
-    int y;
-    a = int 5;
-    b = int 12;
-    c = int(3);
 
-    return c[1];
+    int g;
+    float f;
+    f = 1.0;
+    g = 1;
+    return 0;
 }
 
 

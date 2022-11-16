@@ -24,7 +24,6 @@ type expr =
   (* const assignment = Assign3 *)
   | Assign3 of string * const_ty * typ * expr
   | DAssign of string * expr
-  | Printf of expr
   | ArrayAccess of string * expr
   | TwoDArrayAccess of string * expr * expr
   | ThreeDArrayAccess of string * expr * expr * expr
@@ -37,6 +36,7 @@ type stmt =
   | If of expr * stmt * stmt
   | While of expr * stmt
   | Return of expr
+  | Printf of expr
 
 
 type bind = typ * string
@@ -96,7 +96,6 @@ let rec string_of_expr = function
   | Assign2(v, t, e) -> v ^ " = " ^ string_of_typ t ^ " " ^ string_of_expr e
   | Assign3(v, c, t, e) -> v ^ " = " ^ string_of_const c ^ " " ^ string_of_typ t ^ " " ^ string_of_expr e
   | DAssign(v, e) -> v ^ " := " ^ string_of_expr e
-  | Printf(e) -> "console << " ^ string_of_expr e
   | ArrayAccess(s, e) -> s ^ "[" ^ string_of_expr e ^ "]"
   | TwoDArrayAccess(s, e1, e2) -> s ^ "[" ^ string_of_expr e1 ^ "]" ^ "[" ^ string_of_expr e2 ^ "]"
   | ThreeDArrayAccess(s, e1, e2, e3) -> s ^ "[" ^ string_of_expr e1 ^ "]" ^ "[" ^ string_of_expr e2 ^ "]" ^ "[" ^ string_of_expr e3 ^ "]"
@@ -111,6 +110,7 @@ let rec string_of_stmt = function
                       string_of_stmt s1 ^ "else\n" ^ string_of_stmt s2
   | While(e, s) -> "while (" ^ string_of_expr e ^ ") " ^ string_of_stmt s
   | Return(ret) -> "return " ^ string_of_expr ret
+  | Printf(e) -> "console << " ^ string_of_expr e ^ ";\n"
 
 
 let string_of_vdecl (t, id) = string_of_typ t ^ " " ^ id ^ ";\n"

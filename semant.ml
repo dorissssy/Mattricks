@@ -4,7 +4,6 @@ open Ast
 open Sast
 
 module StringMap = Map.Make(String)
-
 (* Semantic checking of the AST. Returns an SAST if successful,
    throws an exception if something is wrong.
 
@@ -96,8 +95,112 @@ let bool_fd =
         let arr_type = type_of_identifier arr_id in
        match d with
        | SLiteral idx ->(match arr_type with
-            Vtype(tp, dim) -> if dim > idx or idx < 0 then tp else raise (Failure ("Array access to " ^ arr_id ^ "[" ^ string_of_int idx ^ "] out of bound")))
+            Vtype(tp, dim) -> if dim > idx or idx < 0 then tp else raise (Failure ("Array access to " ^ arr_id ^ "[" ^ string_of_int idx ^ "] out of bound"))
+            | _ -> raise (Failure ("Array access to " ^ arr_id ^ "[" ^ string_of_int idx ^ "] is not an array")))
+       | SId id -> (let id_type = type_of_identifier id
+       in
+        match id_type with
+        | Int -> (match arr_type with
+            Vtype(tp, dim) -> tp
+           | _ -> raise (Failure ("Array access to " ^ arr_id ^ "[" ^ id ^ "] is not an array")))
+        | _ -> raise (Failure ("Array access to " ^ arr_id ^ "[" ^ id ^ "] is not an integer")))
        | _ -> raise (Failure ("Array subscript must be an integer"))
+    in
+    let check_two_dim_array_access arr_id d1 d2 =
+        let arr_type = type_of_identifier arr_id in
+       match d1 with
+       | SLiteral idx1 -> (match d2 with
+         | SLiteral idx2 -> (match arr_type with
+                Mtype(tp, dim1, dim2) -> if dim1 > idx1 or idx1 < 0 then tp else raise (Failure ("Array access to " ^ arr_id ^ "[" ^ string_of_int idx1 ^ "][" ^ string_of_int idx2 ^ "] out of bound"))
+                | _ -> raise (Failure ("Array access to " ^ arr_id ^ "[" ^ string_of_int idx1 ^ "][" ^ string_of_int idx2 ^ "] is not an array")))
+         | SId id -> (let id_type = type_of_identifier id
+         in
+          match id_type with
+          | Int -> (match arr_type with
+              Mtype(tp, dim1, dim2) -> tp
+             | _ -> raise (Failure ("Array access to " ^ arr_id ^ "[" ^ string_of_int idx1 ^ "][" ^ id ^ "] is not an array")))
+          | _ -> raise (Failure ("Array access to " ^ arr_id ^ "[" ^ string_of_int idx1 ^ "][" ^ id ^ "] is not an integer"))))
+      | SId idx1 -> (let id_type = type_of_identifier idx1
+            in
+            match id_type with
+            | Int -> (match d2 with
+                SLiteral idx2 -> (match arr_type with
+                    Mtype(tp, dim1, dim2) -> tp
+                   | _ -> raise (Failure ("Array access to " ^ arr_id ^ "[" ^ idx1 ^ "][" ^ string_of_int idx2 ^ "] is not an array")))
+                | SId idx2 -> (let id_type = type_of_identifier idx2
+                in
+                match id_type with
+                | Int -> (match arr_type with
+                    Mtype(tp, dim1, dim2) -> tp
+                   | _ -> raise (Failure ("Array access to " ^ arr_id ^ "[" ^ idx1 ^ "][" ^ idx2 ^ "] is not an array")))
+                | _ -> raise (Failure ("Array access to " ^ arr_id ^ "[" ^ idx1 ^ "][" ^ idx2 ^ "] is not an integer")))
+                | _ -> raise (Failure ("Array subscript must be an integer")))
+            | _ -> raise (Failure ("Array subscript must be an integer")))
+    in
+    let check_three_dim_array_access v dim1 dim2 dim3 =
+        let arr_type = type_of_identifier v in
+       match dim1 with
+       | SLiteral idx1 -> (match dim2 with
+         | SLiteral idx2 -> (match dim3 with
+            | SLiteral idx3 -> (match arr_type with
+                Ttype(tp, dim1, dim2, dim3) -> if dim1 > idx1 or idx1 < 0 then tp else raise (Failure ("Array access to " ^ v ^ "[" ^ string_of_int idx1 ^ "][" ^ string_of_int idx2 ^ "][" ^ string_of_int idx3 ^ "] out of bound"))
+                | _ -> raise (Failure ("Array access to " ^ v ^ "[" ^ string_of_int idx1 ^ "][" ^ string_of_int idx2 ^ "][" ^ string_of_int idx3 ^ "] is not an array")))
+            | SId id -> (let id_type = type_of_identifier id
+            in
+            match id_type with
+            | Int -> (match arr_type with
+                Ttype(tp, dim1, dim2, dim3) -> tp
+               | _ -> raise (Failure ("Array access to " ^ v ^ "[" ^ string_of_int idx1 ^ "][" ^ string_of_int idx2 ^ "][" ^ id ^ "] is not an array")))
+            | _ -> raise (Failure ("Array access to " ^ v ^ "[" ^ string_of_int idx1 ^ "][" ^ string_of_int idx2 ^ "][" ^ id ^ "] is not an integer"))))
+         | SId idx2 -> (let id_type = type_of_identifier idx2
+            in
+            match id_type with
+            | Int -> (match dim3 with
+                SLiteral idx3 -> (match arr_type with
+                    Ttype(tp, dim1, dim2, dim3) -> tp
+                   | _ -> raise (Failure ("Array access to " ^ v ^ "[" ^ string_of_int idx1 ^ "][" ^ idx2 ^ "][" ^ string_of_int idx3 ^ "] is not an array")))
+                | SId idx3 -> (let id_type = type_of_identifier idx3
+                in
+                match id_type with
+                | Int -> (match arr_type with
+                    Ttype(tp, dim1, dim2, dim3) -> tp
+                   | _ -> raise (Failure ("Array access to " ^ v ^ "[" ^ string_of_int idx1 ^ "][" ^ idx2 ^ "][" ^ idx3 ^ "] is not an array")))
+                | _ -> raise (Failure ("Array access to " ^ v ^ "[" ^ string_of_int idx1 ^ "][" ^ idx2 ^ "][" ^ idx3 ^ "] is not an integer")))
+                | _ -> raise (Failure ("Array subscript must be an integer")))
+            | _ -> raise (Failure ("Array subscript must be an integer"))))
+        | SId idx1 -> (let id_type = type_of_identifier idx1
+            in
+            match id_type with
+            | Int -> (match dim2 with
+                SLiteral idx2 -> (match dim3 with
+                    SLiteral idx3 -> (match arr_type with
+                        Ttype(tp, dim1, dim2, dim3) -> tp
+                       | _ -> raise (Failure ("Array access to " ^ v ^ "[" ^ idx1 ^ "][" ^ string_of_int idx2 ^ "][" ^ string_of_int idx3 ^ "] is not an array")))
+                    | SId idx3 -> (let id_type = type_of_identifier idx3
+                    in
+                    match id_type with
+                    | Int -> (match arr_type with
+                        Ttype(tp, dim1, dim2, dim3) -> tp
+                       | _ -> raise (Failure ("Array access to " ^ v ^ "[" ^ idx1 ^ "][" ^ string_of_int idx2 ^ "][" ^ idx3 ^ "] is not an array")))
+                    | _ -> raise (Failure ("Array access to " ^ v ^ "[" ^ idx1 ^ "][" ^ string_of_int idx2 ^ "][" ^ idx3 ^ "] is not an integer")))
+                    | _ -> raise (Failure ("Array subscript must be an integer")))
+                | SId idx2 -> (let id_type = type_of_identifier idx2
+                in
+                match id_type with
+                | Int -> (match dim3 with
+                    SLiteral idx3 -> (match arr_type with
+                        Ttype(tp, dim1, dim2, dim3) -> tp
+                       | _ -> raise (Failure ("Array access to " ^ v ^ "[" ^ idx1 ^ "][" ^ idx2 ^ "][" ^ string_of_int idx3 ^ "] is not an array")))
+                    | SId idx3 -> (let id_type = type_of_identifier idx3
+                    in
+                    match id_type with
+                    | Int -> (match arr_type with
+                        Ttype(tp, dim1, dim2, dim3) -> tp
+                       | _ -> raise (Failure ("Array access to " ^ v ^ "[" ^ idx1 ^ "][" ^ idx2 ^ "][" ^ idx3 ^ "] is not an array")))
+                    | _ -> raise (Failure ("Array access to " ^ v ^ "[" ^ idx1 ^ "][" ^ idx2 ^ "][" ^ idx3 ^ "] is not an integer")))
+                    | _ -> raise (Failure ("Array subscript must be an integer")))
+                | _ -> raise (Failure ("Array subscript must be an integer"))))
+            | _ -> raise (Failure ("Array subscript must be an integer")))
     in
     (* Return a semantically-checked expression, i.e., with a type *)
     let rec check_expr = function
@@ -145,6 +248,23 @@ let bool_fd =
                 string_of_typ rt ^ " in " ^ string_of_expr ex
                 in
                 (check_one_dim_array_access id e', SArrayAccess(id, (rt, e')))
+      | TwoDArrayAccess(v, fst, scd) as ex ->
+                let lt = type_of_identifier v
+                and (rt1, e1') = check_expr fst
+                and (rt2, e2') = check_expr scd in
+                let err = "illegal array access " ^ string_of_typ lt ^ " = " ^
+                string_of_typ rt1 ^ " in " ^ string_of_expr ex
+                in
+                (check_two_dim_array_access v e1' e2', STwoDArrayAccess(v, (rt1, e1'), (rt2, e2')))
+     | ThreeDArrayAccess(v, fst, scd, thd) as ex ->
+                let lt = type_of_identifier v
+                and (rt1, e1') = check_expr fst
+                and (rt2, e2') = check_expr scd
+                and (rt3, e3') = check_expr thd in
+                let err = "illegal array access " ^ string_of_typ lt ^ " = " ^
+                string_of_typ rt1 ^ " in " ^ string_of_expr ex
+                in
+                (check_three_dim_array_access v e1' e2' e3', SThreeDArrayAccess(v, (rt1, e1'), (rt2, e2'), (rt3, e3')))
       | Call(fname, args) as call ->
         let fd = find_func fname in
         let param_length = List.length fd.formals in
@@ -182,6 +302,7 @@ let bool_fd =
         SIf(check_bool_expr e, check_stmt st1, check_stmt st2)
       | While(e, st) ->
         SWhile(check_bool_expr e, check_stmt st)
+      | Printf(e) -> SPrintf(check_expr e)
       | Return e ->
         let (t, e') = check_expr e in
         if t = func.rtyp then SReturn (t, e')

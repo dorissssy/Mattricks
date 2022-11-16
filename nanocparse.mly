@@ -71,13 +71,12 @@ typ_rule:
   | BOOL    { Bool }
   | FLOAT   { Float }
 
-mat_typ_rule:
-  typ_rule LPAREN LITERAL COMMA LITERAL RPAREN { Mtype ($1, $3, $5) }
+
 
 
 stmt_list_rule:
-    /* nothing */               { []     }
-    | stmt_rule stmt_list_rule  { $1::$2 }
+    /* nothing */             { []     }
+  | stmt_rule stmt_list_rule  { $1::$2 }
 
 stmt_rule:
   expr_rule SEMI                                          { Expr $1         }
@@ -87,6 +86,18 @@ stmt_rule:
 
 const_rule:
   CONST     { Const }
+
+mat_typ_rule:
+  typ_rule LPAREN LITERAL COMMA LITERAL RPAREN { Mtype ($1, $3, $5) }
+  
+mat_rule:
+  // | LBRAC RBRAC {Mat []} 
+    {Mat []}
+  | LITERAL  { MatValue (MatLiteral $1) }
+  | LBRAC mat_rule RBRAC {Mat [$2]}
+  // | mat_rule COMMA  mat_rule { (Mat $1) :: (Mat $3) }
+  
+  
 
 
 expr_rule:
@@ -101,7 +112,8 @@ expr_rule:
   | expr_rule LT expr_rule        { Binop ($1, Less, $3)  }
   | expr_rule AND expr_rule       { Binop ($1, And, $3)   }
   | expr_rule OR expr_rule        { Binop ($1, Or, $3)    }
-  | ID ASSIGN mat_typ_rule        { AssignMat ($1, $3)    }
+  | ID ASSIGN mat_typ_rule mat_rule { AssignMat ($1, $3, $4) }
+  // | ID ASSIGN mat_typ_rule LBRAC mat_rule RBRAC { AssignMat ($1, $3, $5)    }
   | ID ASSIGN expr_rule           { Assign ($1, $3)       }
   | ID ASSIGN typ_rule expr_rule  { Assign2 ($1,$3,$4)    }
   | ID ASSIGN const_rule typ_rule expr_rule  { Assign3 ($1, $3, $4, $5)    }

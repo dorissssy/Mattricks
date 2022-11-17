@@ -6,23 +6,141 @@
 function fname (int x) gives int {
 
     mat1 = int(0,0)[];
-    mat2a = int(1,1)[[1],];
- 
-    mat2b = int(2,1)[[1], [1]];
-    
+
+    mat2b = int(3,1)[ [1], [1], [1] ];
+
+    mat3 = int(1, 3)[ [1,2,3] ];
+    mat4 = int(2, 3)[ [1,2,3], [1,2,3]];
+    mat5 = int(3, 3)[ [1,2,3], [4,5,6], [7,8,9] ];
+    mat5 = int(3, 4)[ [1,2,3,4,5,6,6,7,8], [4,5,6], [7,8,9] ];
 
     return x;
 }
 
 
-/* TODO:
+/* 
+
+    [          1         ]       , [1]
+
+LBRAC mat_array_rule RBRAC COMMA LBRAC mat_array_rule RBRAC
+(Mat [MatValue (MatLiteral $1)]) :: [  Mat [MatValue (MatLiteral $1)] ] 
 
 
-   mat3 = int(1,3)[ [1,2,3] ];
+    Mat [MatValue (MatLiteral $1)] = [1]
+    [ [1] ]
+    
+    
+
+| x y z |
+| a b c |
+| i j k |
+ [ [1,2] ]
+[
+
+    [
+
+        [
+        1, 2, 3
+        ], 
+        [
+        1, 2, 3
+        ]
+    ]
+];
 
 
-    mat4 = int(1, 3)[ [1,2,3] ];
+[ 
+    [1],
+    [1] 
+]
+LBRAC mat_rule RBRAC: =>> Mat [$2] 
+[1], [1] 
+mat_rule COMMA mat_rule 
 
+Mat [mat_rule COMMA mat_rule ] 
+
+Mat [
+    Mat [MatValue (MatLiteral $2)]  COMMA
+    Mat [MatValue (MatLiteral $2)] 
+] 
+
+
+Mat [Mat ( mat_rule::[mat_rule] ) ] 
+
+
+
+[
+
+    [
+
+        [
+
+            [
+                1
+            ], 
+            [
+                1
+            ]
+        ], 
+        [
+            1
+        ]
+    ]
+];
+
+
+
+
+[
+
+   
+
+        [
+        1
+        ], 
+        [
+        1
+        ]
+    
+];
+
+[
+
+    [
+    1, 
+        [
+        2, 
+            [
+            3, 
+            ]
+        ]
+    ]
+];
+
+[
+
+    [
+
+        [
+            1, 2
+        ], 
+        3
+    ]
+];
+
+
+    mat3 = int(1,3)[ [1,2,3] ];
+
+
+    mat4 = int(1,3)[ [1,2,3] ];
+[
+
+    [
+        1,
+        2,
+        3
+    ]
+];
     mat3 = int(1, 3)[ ];
     mat3 = int(1, 3) [3,2,1];
     mat3 = int(3, 1)[[1], [1], [1]];

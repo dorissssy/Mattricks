@@ -89,16 +89,33 @@ const_rule:
 
 mat_typ_rule:
   typ_rule LPAREN LITERAL COMMA LITERAL RPAREN { Mtype ($1, $3, $5) }
-  
+
+mat_array_rule:
+    { [] }
+  | LITERAL  { [MatValue (MatLiteral $1)] }
+  | LITERAL COMMA mat_array_rule { (MatValue (MatLiteral $1))::$3 }
+
+// mat_2darray_rule:
+//   | mat_array_rule { $1 }
+//   | mat_array_rule COMMA mat_array_rule { $1::$3 }
+mat_2d_rule:
+  | LBRAC mat_array_rule RBRAC { [Mat $2] }
+  | LBRAC mat_array_rule RBRAC COMMA mat_2d_rule { (Mat $2):: $5 }
+
 mat_rule:
   // | LBRAC RBRAC {Mat []} 
     { None }
   | LITERAL  { MatValue (MatLiteral $1) }
   // | LITERAL COMMA mat_rule  { MatValue (MatLiteral $1) :: [$3] }
-  | LBRAC mat_rule RBRAC { Mat [$2] }
-  // | LITERAL COMMA LITERAL { Mat($1::[$3]) }
-  | LITERAL COMMA mat_rule { Mat ( (MatValue (MatLiteral $1))::[$3]) }
-  | mat_rule COMMA mat_rule { Mat ($1::[$3]) }
+  // | LBRAC LITERAL RBRAC { Mat [MatValue (MatLiteral $2)] } 
+  | LBRAC mat_array_rule RBRAC { Mat $2 }
+  // | LBRAC mat_2darray_rule RBRAC { Mat $2 }
+  // | LBRAC mat_rule RBRAC { Mat [$2] }
+  // // | LITERAL COMMA LITERAL { Mat($1::[$3]) }
+  // // | LITERAL SEMI mat_rule { Mat ( ((MatValue (MatLiteral $1))::[$3]) ) }
+  // | mat_rule COMMA mat_rule { Mat ( $1::[$3] ) }
+  | mat_2d_rule { Mat $1 }
+  
   // | mat_rule COMMA  mat_rule { (Mat $1) :: (Mat $3) }
   
   

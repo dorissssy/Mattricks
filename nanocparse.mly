@@ -116,7 +116,7 @@ expr_rule:
   | expr_rule LT expr_rule        { Binop ($1, Less, $3)  }
   | expr_rule AND expr_rule       { Binop ($1, And, $3)   }
   | expr_rule OR expr_rule        { Binop ($1, Or, $3)    }
-  | ID ASSIGN mat_typ_rule mat_rule { AssignMat ($1, $3, $4) }
+  | ID ASSIGN mat_typ_rule LBRAC mat_rule RBRAC { AssignMat ($1, $3, $5) }
   // | ID ASSIGN mat_typ_rule LBRAC mat_rule RBRAC { AssignMat ($1, $3, $5)    }
   | ID ASSIGN expr_rule           { Assign ($1, $3)       }
   | ID ASSIGN typ_rule expr_rule  { Assign2 ($1,$3,$4)    }

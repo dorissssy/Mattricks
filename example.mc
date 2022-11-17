@@ -6,7 +6,7 @@
 function fname (int x) gives int {
 
     mat1 = int(0,0)[];
-    mat2a = int(1,1)[[1]];
+    mat2a = int(1,1)[[1],];
  
     mat2b = int(2,1)[[1], [1]];
     

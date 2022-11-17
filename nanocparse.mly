@@ -17,12 +17,12 @@ open Ast
 %start program_rule
 %type <Ast.program> program_rule
 
-%right ASSIGN DASSIGN
+%right ASSIGN DASSIGN 
 %left OR
-%left AND
+%left AND 
 %left EQ NEQ
 %left LT
-%left PLUS MINUS
+%left PLUS MINUS COMMA
 
 %%
 
@@ -92,11 +92,13 @@ mat_typ_rule:
   
 mat_rule:
   // | LBRAC RBRAC {Mat []} 
-    { Mat [] }
+    { None }
   | LITERAL  { MatValue (MatLiteral $1) }
   // | LITERAL COMMA mat_rule  { MatValue (MatLiteral $1) :: [$3] }
   | LBRAC mat_rule RBRAC { Mat [$2] }
-  | LBRAC mat_rule RBRAC COMMA mat_rule { Mat ($2::[$5]) }
+  // | LITERAL COMMA LITERAL { Mat($1::[$3]) }
+  | LITERAL COMMA mat_rule { Mat ( (MatValue (MatLiteral $1))::[$3]) }
+  | mat_rule COMMA mat_rule { Mat ($1::[$3]) }
   // | mat_rule COMMA  mat_rule { (Mat $1) :: (Mat $3) }
   
   

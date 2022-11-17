@@ -11,6 +11,7 @@ type mat_expr =
   | MatLiteral of int
 
 type mat =
+    None
   | MatValue of mat_expr
   | Mat of mat list
 
@@ -92,6 +93,7 @@ let rec string_of_mat = function
   |  Mat(m) -> 
     "\n[\n" ^ String.concat ", " (List.map string_of_mat m) ^ "\n]"
   |  MatValue(e) -> string_of_mat_expr e
+  | None -> ""
 
 let rec string_of_expr = function
     Literal(l) -> string_of_int l

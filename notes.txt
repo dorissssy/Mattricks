@@ -9,3 +9,27 @@ LBRAC mat_rule RBRAC
 LBRAC mat_rule(LBRAC mat_rule RBRAC) RBRAC COMMA mat_rule(LBRAC mat_rule RBRAC)
 
 Mat [MatValue (MatLiteral 1)] :: [ Mat [MatValue (MatLiteral 1)] ]
+
+
+[ [1,2,3] ];
+LBRAC mat_rule RBRAC
+
+[1,2,3]
+LBRAC mat_rule RBRAC => Mat [$2]
+
+1,2,3
+LITERAL COMMA mat_rule 
+
+
+[
+
+        [
+
+                [
+                1
+                ], 
+                [
+                1
+                ]
+        ]
+];

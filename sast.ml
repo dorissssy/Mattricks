@@ -63,8 +63,7 @@ let rec string_of_sexpr (t, e) =
         | SArrayAccess(v, e) -> v ^ "[" ^ string_of_sexpr e ^ "]"
         | STwoDArrayAccess(v, e, e2) -> v ^ "[" ^ string_of_sexpr e ^ "]" ^ "[" ^ string_of_sexpr e2 ^ "]"
         | SThreeDArrayAccess(v, e, e2, e3) -> v ^ "[" ^ string_of_sexpr e ^ "]" ^ "[" ^ string_of_sexpr e2 ^ "]" ^ "[" ^ string_of_sexpr e3 ^ "]"
-        | SBindAssign(t, v, e) -> string_of_typ t ^ " " ^ v ^ " = " ^ string_of_sexpr e ^ ";\n"
-      | SCall(f, el) ->
+        | SCall(f, el) ->
           f ^ "(" ^ String.concat ", " (List.map string_of_sexpr el) ^ ")"
     ) ^ ")"
 
@@ -77,6 +76,7 @@ let rec string_of_sstmt = function
   | SWhile(e, s) -> "while (" ^ string_of_sexpr e ^ ") " ^ string_of_sstmt s
   | SReturn(e) -> "return " ^ string_of_sexpr e ^ ";\n"
   | SPrintf(e) -> "Console << (" ^ string_of_sexpr e ^ ")" ^ ";\n"
+  | SBindAssign(t, v, e) -> string_of_typ t ^ " " ^ v ^ " = " ^ string_of_sexpr e ^ ";\n"
 
 let string_of_sfdecl fdecl = "function " ^
   fdecl.sfname ^ "(" ^ String.concat ", " (List.map snd fdecl.sformals) ^

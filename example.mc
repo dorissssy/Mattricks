@@ -3,9 +3,11 @@
 
 
 function main (int x) gives  int {
-    a = int 3;
-    a = 2;
-    return 1;
+    a = int 5;
+    b = int 10;
+    c = int a + b;
+    a = 3;
+    return a;
 }
 
 

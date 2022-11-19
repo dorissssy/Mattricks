@@ -88,6 +88,7 @@ stmt_rule:
   | WHILE LPAREN expr_rule RPAREN stmt_rule               { While ($3,$5)   }
   | RETURN expr_rule SEMI                        { Return $2      }
   | CONSOLE PRINTF expr_rule SEMI      { Printf $3 }
+  | ID ASSIGN typ_rule expr_rule SEMI          { BindAssign ($3, $1, $4) }
 
 const_rule:
   CONST     { Const }
@@ -97,6 +98,7 @@ expr_rule:
   | BLIT                          { BoolLit $1            }
   | FLIT                          { FloatLit $1           }
   | LITERAL                       { Literal $1            }
+  | ID ASSIGN expr_rule           { Assign ($1, $3)       }
   | ID                            { Id $1                 }
   | expr_rule PLUS expr_rule      { Binop ($1, Add, $3)   }
   | expr_rule MINUS expr_rule     { Binop ($1, Sub, $3)   }
@@ -105,7 +107,6 @@ expr_rule:
   | expr_rule LT expr_rule        { Binop ($1, Less, $3)  }
   | expr_rule AND expr_rule       { Binop ($1, And, $3)   }
   | expr_rule OR expr_rule        { Binop ($1, Or, $3)    }
-  | ID ASSIGN expr_rule           { Assign ($1, $3)       }
   /*| ID ASSIGN const_rule typ_rule expr_rule  { Assign3 ($1, $3, $4, $5)    }*/
   | LPAREN expr_rule RPAREN       { $2                    }
   /*| ID COLON typ_rule expr_rule          { BindAssign ($3, $1, $4) }*/

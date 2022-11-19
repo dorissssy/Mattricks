@@ -19,7 +19,6 @@ and sx =
   | SThreeDArrayAccess of string * sexpr * sexpr * sexpr
   (* call *)
   | SCall of string * sexpr list
-  | SBindAssign of typ * string * sexpr
 
 type sstmt =
     SBlock of sstmt list
@@ -29,6 +28,7 @@ type sstmt =
   (* return *)
   | SReturn of sexpr
   | SPrintf of sexpr
+  | SBindAssign of typ * string * sexpr
 
 
 (* func_def: ret_typ fname formals locals body *)

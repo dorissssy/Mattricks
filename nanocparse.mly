@@ -107,9 +107,7 @@ expr_rule:
   | expr_rule LT expr_rule        { Binop ($1, Less, $3)  }
   | expr_rule AND expr_rule       { Binop ($1, And, $3)   }
   | expr_rule OR expr_rule        { Binop ($1, Or, $3)    }
-  /*| ID ASSIGN const_rule typ_rule expr_rule  { Assign3 ($1, $3, $4, $5)    }*/
   | LPAREN expr_rule RPAREN       { $2                    }
-  /*| ID COLON typ_rule expr_rule          { BindAssign ($3, $1, $4) }*/
   | ID LBRAC expr_rule RBRAC { ArrayAccess($1, $3) }
   | ID LBRAC expr_rule RBRAC LBRAC expr_rule RBRAC  { TwoDArrayAccess($1, $3, $6) }
   | ID LBRAC expr_rule RBRAC LBRAC expr_rule RBRAC LBRAC expr_rule RBRAC { ThreeDArrayAccess($1, $3, $6, $9) }

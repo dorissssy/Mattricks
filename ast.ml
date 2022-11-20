@@ -108,9 +108,9 @@ let rec string_of_stmt = function
   | If(e, s1, s2) ->  "if (" ^ string_of_expr e ^ ")\n" ^
                       string_of_stmt s1 ^ "else\n" ^ string_of_stmt s2
   | While(e, s) -> "while (" ^ string_of_expr e ^ ") " ^ string_of_stmt s
-  | Return(ret) -> "return " ^ string_of_expr ret
+  | Return(ret) -> "return " ^ string_of_expr ret ^ ";\n"
   | Printf(e) -> "console << " ^ string_of_expr e ^ ";\n"
-  | BindAssign(v, t, e) -> string_of_typ v ^ " " ^ t ^ " = " ^ string_of_expr e ^ ";\n"
+  | BindAssign(v, t, e) ->   t ^ " = " ^ string_of_typ v ^ " " ^ string_of_expr e ^ ";\n"
 
 
 let string_of_vdecl (t, id) = string_of_typ t ^ " " ^ id ^ ";\n"

@@ -1,6 +1,6 @@
 (* Ocamllex scanner for NanoC *)
 
-{ open Nanocparse }
+{ open Parse }
 
 let digit = ['0'-'9']
 let letter = ['a'-'z' 'A'-'Z']

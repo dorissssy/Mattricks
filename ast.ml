@@ -7,6 +7,14 @@ type typ =
 
 type mat_typ = Mtype of typ * int * int
 
+type mat_expr =
+  | MatLiteral of int
+
+type mat =
+    None
+  | MatValue of mat_expr
+  | Mat of mat list
+
 (* name const_ty ty? *)
 type const_ty = Const
 
@@ -16,7 +24,7 @@ type expr =
   | FloatLit of float
   | Id of string
   | Binop of expr * bop * expr
-  | AssignMat of string * mat_typ
+  | AssignMat of string * mat_typ * mat
   | Assign of string * expr
   | Assign2 of string * typ * expr
   (* const assignment = Assign3 *)
@@ -78,6 +86,15 @@ let string_of_mat_typ = function
 let string_of_const = function
     Const -> "const"
 
+let string_of_mat_expr = function
+  | MatLiteral(l) -> string_of_int l
+
+let rec string_of_mat = function
+  |  Mat(m) -> 
+    "\n[\n" ^ String.concat ", " (List.map string_of_mat m) ^ "\n]"
+  |  MatValue(e) -> string_of_mat_expr e
+  | None -> ""
+
 let rec string_of_expr = function
     Literal(l) -> string_of_int l
   | FloatLit(l) -> string_of_float l
@@ -86,7 +103,7 @@ let rec string_of_expr = function
   | Id(s) -> s
   | Binop(e1, o, e2) ->
     string_of_expr e1 ^ " " ^ string_of_op o ^ " " ^ string_of_expr e2
-  | AssignMat(v, e) -> v ^ " = " ^ string_of_mat_typ e
+  | AssignMat(v, e, m) -> v ^ " = " ^ string_of_mat_typ e ^ string_of_mat m
   | Assign(v, e) -> v ^ " = " ^ string_of_expr e
   | Assign2(v, t, e) -> v ^ " = " ^ string_of_typ t ^ " " ^ string_of_expr e
   | Assign3(v, c, t, e) -> v ^ " = " ^ string_of_const c ^ " " ^ string_of_typ t ^ " " ^ string_of_expr e

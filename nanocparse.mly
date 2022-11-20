@@ -17,12 +17,12 @@ open Ast
 %start program_rule
 %type <Ast.program> program_rule
 
-%right ASSIGN DASSIGN
+%right ASSIGN DASSIGN 
 %left OR
-%left AND
+%left AND 
 %left EQ NEQ
 %left LT
-%left PLUS MINUS
+%left PLUS MINUS COMMA
 
 %%
 
@@ -71,13 +71,12 @@ typ_rule:
   | BOOL    { Bool }
   | FLOAT   { Float }
 
-mat_typ_rule:
-  typ_rule LPAREN LITERAL COMMA LITERAL RPAREN { Mtype ($1, $3, $5) }
+
 
 
 stmt_list_rule:
-    /* nothing */               { []     }
-    | stmt_rule stmt_list_rule  { $1::$2 }
+    /* nothing */             { []     }
+  | stmt_rule stmt_list_rule  { $1::$2 }
 
 stmt_rule:
   expr_rule SEMI                                          { Expr $1         }
@@ -87,6 +86,39 @@ stmt_rule:
 
 const_rule:
   CONST     { Const }
+
+mat_typ_rule:
+  typ_rule LPAREN LITERAL COMMA LITERAL RPAREN { Mtype ($1, $3, $5) }
+
+mat_array_rule:
+    { [] }
+  | LITERAL  { [MatValue (MatLiteral $1)] }
+  | LITERAL COMMA mat_array_rule { (MatValue (MatLiteral $1))::$3 }
+
+// mat_2darray_rule:
+//   | mat_array_rule { $1 }
+//   | mat_array_rule COMMA mat_array_rule { $1::$3 }
+mat_2d_rule:
+  | LBRAC mat_array_rule RBRAC { [Mat $2] }
+  | LBRAC mat_array_rule RBRAC COMMA mat_2d_rule { (Mat $2):: $5 }
+
+mat_rule:
+  // | LBRAC RBRAC {Mat []} 
+    { None }
+  | LITERAL  { MatValue (MatLiteral $1) }
+  // | LITERAL COMMA mat_rule  { MatValue (MatLiteral $1) :: [$3] }
+  // | LBRAC LITERAL RBRAC { Mat [MatValue (MatLiteral $2)] } 
+  | LBRAC mat_array_rule RBRAC { Mat $2 }
+  // | LBRAC mat_2darray_rule RBRAC { Mat $2 }
+  // | LBRAC mat_rule RBRAC { Mat [$2] }
+  // // | LITERAL COMMA LITERAL { Mat($1::[$3]) }
+  // // | LITERAL SEMI mat_rule { Mat ( ((MatValue (MatLiteral $1))::[$3]) ) }
+  // | mat_rule COMMA mat_rule { Mat ( $1::[$3] ) }
+  | mat_2d_rule { Mat $1 }
+  
+  // | mat_rule COMMA  mat_rule { (Mat $1) :: (Mat $3) }
+  
+  
 
 
 expr_rule:
@@ -101,7 +133,8 @@ expr_rule:
   | expr_rule LT expr_rule        { Binop ($1, Less, $3)  }
   | expr_rule AND expr_rule       { Binop ($1, And, $3)   }
   | expr_rule OR expr_rule        { Binop ($1, Or, $3)    }
-  | ID ASSIGN mat_typ_rule        { AssignMat ($1, $3)    }
+  | ID ASSIGN mat_typ_rule LBRAC mat_rule RBRAC { AssignMat ($1, $3, $5) }
+  // | ID ASSIGN mat_typ_rule LBRAC mat_rule RBRAC { AssignMat ($1, $3, $5)    }
   | ID ASSIGN expr_rule           { Assign ($1, $3)       }
   | ID ASSIGN typ_rule expr_rule  { Assign2 ($1,$3,$4)    }
   | ID ASSIGN const_rule typ_rule expr_rule  { Assign3 ($1, $3, $4, $5)    }

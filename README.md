@@ -41,13 +41,20 @@ Mattricks is an imperative programming language heavily focused on mathematical 
 > If seen this error: `-bash: ./test.sh: /bin/bash^M: bad interpreter: No such file or directory` or all test cases failed, please change the line ending of script/test.mc files from 'CRLF' to 'LF' to make script run    
 
 ## Features provided
-- 
-- 
-- 
-
+- Declaration of variables.（int, float, bool, 1-2-3D matrices）
+- Assignment of variables using '='
+- Code blocks.
+- If statement
+- While loop statement
+- Accessing data in the matrices via subscript access.(Using array_id[idx] as an expression)
+- Bind assignment.
+- Static scoping.
 ## Features should be done but haven't done
-- 
-- 
+- Type inference(similar to C++'s auto keyword and Go's := operator)
+- Assignment of matrices' element via subscript operator. (a[x] = y)
+- More logical operators.
+- Multiply and division.
 
 ## Hello World Front-End Contribution
 **Weisheng Wang**(ww2609): I participated in group meetings to plan short term goals and distribute workloads; I did pair programming with Yuhao Dong on adding more rules in ast, parser and scanner files; I reused microc's example code to allow function definition; I also designed the Mat type and realized its rules(with Yuhao Dong's help on debugging 2d matrix rules).  
+**Yuanhan Tian**(yt2825): I reused some of the microc's example code and implemented part of the ast , the semantics checker and sast. I discussed the plans with the group members in the Zoom meetings. I collaborated with Danny Hou to implement part of the scanner.

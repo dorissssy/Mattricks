@@ -10,6 +10,9 @@ function main() gives bool
 bool b1 = (bool : true);
 bool b2 = (bool : false);
 bool b3 = (bool : false);
+bool _b4 = (bool : true);
+bool b_5 = (bool : true);
+bool b6_ = (bool : true);
 return (bool : b);
 }
 

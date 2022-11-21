@@ -1,4 +1,3 @@
-function main() gives float {
-  i = int 1;
-  return i;
+function main() gives int {
+  1i = int 1;
 }

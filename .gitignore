@@ -1,5 +1,5 @@
 _build/
-tests/parse/temp/
-tests/semant/temp/
-tests/ir/temp/
+test_cases/parse/temp/
+test_cases/semant/temp/
+test_cases/ir/temp/
 *.native

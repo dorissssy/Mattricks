@@ -12,21 +12,27 @@ NC='\033[0m'
 let flag_clean=0
 let flag_parse=0
 let flag_semant=0
-while getopts 'cpsa' flag; do
+let flag_file=0
+while getopts 'cpsaf:' flag; do
   case "${flag}" in
     c) let flag_clean=1;;
     p) let flag_parse=1;;
     s) let flag_semant=1;;
     a) let flag_parse=1;
        let flag_semant=1;;
-    *) echo -e ${RED}"ILLEGAL OPTION: only -c -p -s -a are allowed"${NC}; 
+    f) let flag_file=1;
+       test_file=${OPTARG};
+       test_file=${test_file##*test_cases/};
+       test_file=${test_file%.*};
+       echo $test_file;;
+    *) echo -e ${RED}"ILLEGAL OPTION: only -c -p -s -a -f: are allowed"${NC}; 
        exit 1;;
   esac
 done
 if [ ${flag_clean} -ne 0 ]; then
   echo "Clean flag enabled: clean temp folder after testing"
 fi
-if [ ${flag_parse} -eq 0 ] && [ ${flag_semant} -eq 0 ]; then
+if [ ${flag_file} -eq 0 ] && [ ${flag_parse} -eq 0 ] && [ ${flag_semant} -eq 0 ]; then
   let flag_parse=1
   let flag_semant=1
   echo "DEFAULT All flag enabled: test all cases"
@@ -159,6 +165,62 @@ if [ ${flag_semant} -eq 1 ]; then
   echo -e ${BLUE}'######### DONE SEMANT TEST #########\n'${NC}
 fi
 ############### DONE TEST SEMANT #################
+
+############### TEST SINGLE CASE #################
+if [ ${flag_file} -eq 1 ]; then
+  # build test_*.native executable
+  echo '-- Build .native executable --'
+  if [[ $test_file == *"parse"* ]]; then
+    ocamlbuild test_parse.native
+    base_path='./test_cases/parse'
+    executable_file='./test_parse.native'
+  elif [[ $test_file == *"semant"* ]]; then
+    ocamlbuild test_semant.native
+    base_path='./test_cases/semant'
+    executable_file='./test_semant.native'
+  fi
+
+  # check if the executable exists
+  if [ -f $executable_file ]; then
+    echo -e ${GREEN}'ocamlbuild '$executable_file' successfully'${NC}
+  else
+    echo -e ${RED}'ocamlbuild failed, please check error messages\n'${NC}
+    exit 1
+  fi
+
+  # execute test file
+  $executable_file < ${base_path%/*}/$test_file.mc > ${base_path%/*}/$test_file.ans 2>&1
+
+  # move test answer file and expected out file into the temp folder
+  rm -r $base_path/temp
+  mkdir $base_path/temp
+  cp ${base_path%/*}/$test_file.ans $base_path/temp
+  cp ${base_path%/*}/$test_file.out $base_path/temp
+  rm ${base_path%/*}/$test_file.ans
+  echo '-----------------------------'
+
+  # compare result and out file
+  diff $base_path/temp/${test_file##*/}.ans $base_path/temp/${test_file##*/}.out
+  
+  if [ $? -eq 0 ]
+  then
+    echo -e ${GREEN}${test_file##*/}' passed'${NC}
+    let parse_passed_number++
+  else
+    echo -e ${RED}${test_file##*/}' failed'${NC}
+    let parse_failed_number++
+  fi
+
+  # remove test_parse.native executable file
+  rm $executable_file
+  # clean temp folder
+  if [ ${flag_clean} -ne 0 ]; then
+    rm -r $base_path/temp
+  fi
+
+  echo -e ${BLUE}'######### DONE SINGLE TEST #########\n'${NC}
+fi
+############### DONE TEST SINGLE CASE #################
 
 # print final result
 let passed_number=$((parse_passed_number + semant_passed_number))

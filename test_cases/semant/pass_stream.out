@@ -1,0 +1,12 @@
+
+
+Sementically checked program: 
+
+
+function main() gives int
+{
+int i = (int : 123);
+Console << ((int : i));
+return (int : i);
+}
+

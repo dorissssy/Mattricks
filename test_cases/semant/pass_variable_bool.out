@@ -1,0 +1,15 @@
+
+
+Sementically checked program: 
+
+bool b;
+
+function main() gives bool
+{
+(bool : b = (bool : true));
+bool b1 = (bool : true);
+bool b2 = (bool : false);
+bool b3 = (bool : false);
+return (bool : b);
+}
+

@@ -177,7 +177,7 @@ let bool_fd =
                      string_of_typ func.rtyp ^ " in " ^ string_of_expr e))
      | BindAssign(tp, id, e) ->
         let (t, e', map1) = check_expr map e in
-        let err = "illegal assignment " ^ string_of_typ t ^ " = " ^
+        let _ = "illegal assignment " ^ string_of_typ t ^ " = " ^
                   string_of_typ tp ^ " in " ^ string_of_expr e
         in
         if StringMap.mem id map1 then

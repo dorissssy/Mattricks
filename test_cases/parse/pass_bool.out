@@ -6,7 +6,7 @@ Parsed program:
 bool f()
 {
 a = bool true;
-b := true;
+b = bool true;
 c = bool 0;
 return a;
 }

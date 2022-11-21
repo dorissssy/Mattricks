@@ -1,0 +1,14 @@
+
+
+Parsed program: 
+
+
+float f()
+{
+i1 = float 100000.;
+i2 = float 100000.;
+i3 = float -0.0012;
+i4 = float 1200.;
+return i3;
+}
+

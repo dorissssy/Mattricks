@@ -6,7 +6,6 @@ Parsed program:
 float f()
 {
 a = float 0.4;
-b := 0.4;
 return a;
 }
 

@@ -1,4 +1,4 @@
 function f (int x) gives int {
-    a = int 5;
-    return a;
+    i2 = int -3;
+    return i2;
 }

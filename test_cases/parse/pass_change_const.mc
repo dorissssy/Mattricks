@@ -1,4 +1,5 @@
 function f (int x) gives int {
-    console << 1;
+    a = const int 100;
+    a = a - 1;
     return x;
 }

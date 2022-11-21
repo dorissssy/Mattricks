@@ -1,0 +1,19 @@
+
+
+Sementically checked program: 
+
+float f;
+
+function main() gives float
+{
+(float : f = (float : 1.));
+float f1 = (float : -0.1);
+float f2 = (float : 100000.);
+float f3 = (float : -100000.);
+float f4 = (float : 1500.);
+float f5 = (float : 0.02);
+float f6 = (float : 0.2);
+float f7 = (float : 1.);
+return (float : f);
+}
+

@@ -1,0 +1,12 @@
+
+
+Sementically checked program: 
+
+
+function main() gives mat
+{
+mat mat1 = (int(1,3));
+mat mat2 = (float(3,3));
+return (mat : mat1);
+}
+

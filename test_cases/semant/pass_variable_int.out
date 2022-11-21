@@ -1,0 +1,13 @@
+
+
+Sementically checked program: 
+
+
+function main() gives float
+{
+int i = (int : 1);
+bool b = (bool : true);
+float f = (float : 0.1);
+return (float : f);
+}
+

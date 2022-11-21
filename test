@@ -28,7 +28,7 @@ if [ ${flag_clean} -ne 0 ]; then
 fi
 if [ ${flag_parse} -eq 0 ] && [ ${flag_semant} -eq 0 ]; then
   let flag_parse=1
-  # [DISABLED FOR NOW] let flag_semant=1
+  let flag_semant=1
   echo "DEFAULT All flag enabled: test all cases"
 else
   if [ ${flag_parse} -ne 0 ]; then
@@ -63,22 +63,22 @@ if [ ${flag_parse} -eq 1 ]; then
   fi
 
   # test each test file in test folder
-  for file in ./tests/parse/*.mc
+  for file in ./test_cases/parse/*.mc
   do
     ./test_parse.native < $file > ${file%.mc}.ans 2>&1
   done
 
   # move all test answer files and expected out files into a temporary folder
-  rm -r ./tests/parse/temp*
-  mkdir ./tests/parse/temp
-  cp ./tests/parse/*.ans ./tests/parse/temp
-  cp ./tests/parse/*.out ./tests/parse/temp
-  rm ./tests/parse/*.ans
-  echo 'Completed running all tests'
+  rm -r ./test_cases/parse/temp*
+  mkdir ./test_cases/parse/temp
+  cp ./test_cases/parse/*.ans ./test_cases/parse/temp
+  cp ./test_cases/parse/*.out ./test_cases/parse/temp
+  rm ./test_cases/parse/*.ans
+  echo 'Completed running all /test_cases/parse'
   echo '-----------------------------'
 
   # compare result and out file one by one
-  for file in ./tests/parse/temp/*.out
+  for file in ./test_cases/parse/temp/*.out
   do
     # check stdout
     diff $file ${file%.out}.ans
@@ -96,10 +96,10 @@ if [ ${flag_parse} -eq 1 ]; then
   rm test_parse.native
   # clean temp folder
   if [ ${flag_clean} -ne 0 ]; then
-    rm -r ./tests/parse/temp
+    rm -r ./test_cases/parse/temp
   fi
 
-  echo -e ${BLUE}'######### DONE PARSE TEST #########'${NC}
+  echo -e ${BLUE}'######### DONE PARSE TEST #########\n'${NC}
 fi
 ############### DONE TEST PARSE #################
 
@@ -120,22 +120,22 @@ if [ ${flag_semant} -eq 1 ]; then
   fi
 
   # test each test file in test folder
-  for file in ./tests/semant/*.mc
+  for file in ./test_cases/semant/*.mc
   do
     ./test_semant.native < $file > ${file%.mc}.ans 2>&1
   done
 
   # move all test answer files and expected out files into a temporary folder
-  rm -r ./tests/semant/temp*
-  mkdir ./tests/semant/temp
-  cp ./tests/semant/*.ans ./tests/semant/temp
-  cp ./tests/semant/*.out ./tests/semant/temp
-  rm ./tests/semant/*.ans
-  echo 'Completed running all tests'
+  rm -r ./test_cases/semant/temp*
+  mkdir ./test_cases/semant/temp
+  cp ./test_cases/semant/*.ans ./test_cases/semant/temp
+  cp ./test_cases/semant/*.out ./test_cases/semant/temp
+  rm ./test_cases/semant/*.ans
+  echo 'Completed running all /test_cases/semant'
   echo '-----------------------------'
 
   # compare result and out file one by one
-  for file in ./tests/semant/temp/*.out
+  for file in ./test_cases/semant/temp/*.out
   do
     # check stdout
     diff $file ${file%.out}.ans
@@ -153,10 +153,10 @@ if [ ${flag_semant} -eq 1 ]; then
   rm test_semant.native
   # clean temp folder
   if [ ${flag_clean} -ne 0 ]; then
-    rm -r ./tests/semant/temp
+    rm -r ./test_cases/semant/temp
   fi
 
-  echo -e ${BLUE}'######### DONE SEMANT TEST #########'${NC}
+  echo -e ${BLUE}'######### DONE SEMANT TEST #########\n'${NC}
 fi
 ############### DONE TEST SEMANT #################
 

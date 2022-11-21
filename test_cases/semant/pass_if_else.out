@@ -1,0 +1,19 @@
+
+
+Sementically checked program: 
+
+
+function main() gives bool
+{
+bool a = (bool : true);
+bool b = (bool : false);
+if ((bool : (bool : a) == (bool : b)))
+{
+return (bool : true);
+}
+else
+{
+return (bool : false);
+}
+}
+

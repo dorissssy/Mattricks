@@ -14,18 +14,19 @@ Mattricks is an imperative programming language heavily focused on mathematical 
 | ***Language Guru***    | Danny Hou     |
 |                        | Jack Wang     |
 | ***Tester***           | Yuhao Dong    |
-| ***Tester***           | Hang Yuan     |
+|                        | Hang Yuan     |
 
 &nbsp;&nbsp;&nbsp;&nbsp;*Names are ordered by last name alphabetically*
 
-## Guidance
-### Environment Setup
-1. git pull repo
+
+## File structure
+
+## Run and Test
 
 > **For running:**  
-> 1. `ocamlbuild test_<phase>.native`, e.g. `ocamlbuild test_parse.native`   
-> 2. `./test_<phase>.native < example.mc > example.out 2>$1`
-> e.g. `./test_parse.native < example.mc > example.out 2>$1`
+> 1. `ocamlbuild test_<phase>.native`, e.g. `ocamlbuild test_parse.native`
+> 2. `./test_<phase>.native < example.mc > example.out`
+> e.g. `./test_parse.native < example.mc > example.out`
 > or
 > `./test_parse.native < example.mc`
 
@@ -36,8 +37,17 @@ Mattricks is an imperative programming language heavily focused on mathematical 
 >   `-p`: parse, only run syntax phase tests in /tests/parse  
 >   `-s`: semant, only run semantics phase tests in /tests/semant  
 >   `-a`: all, by default run all the tests in /tests/*  
+>   `-f`: run single test case, following by file path, e.g. `*parse/pass_bool*` (you can put any char in place of *)  
+> If seen this error: `-bash: ./test.sh: /bin/bash^M: bad interpreter: No such file or directory` or all test cases failed, please change the line ending of script/test.mc files from 'CRLF' to 'LF' to make script run    
 
+## Features provided
+- 
+- 
+- 
 
-------------------------------
-## Hello World Program Contribution
-Weisheng Wang: I participated in group meetings to plan short term goals and distribute workloads; I did pair programming with Yuhao Dong on adding more rules in ast, parser and scanner files; I reused microc's example code to allow function definition; I also designed the Mat type and realized its rules(with Yuhao Dong's help on debugging 2d matrix rules).
+## Features should be done but haven't done
+- 
+- 
+
+## Hello World Front-End Contribution
+**Weisheng Wang**(ww2609): I participated in group meetings to plan short term goals and distribute workloads; I did pair programming with Yuhao Dong on adding more rules in ast, parser and scanner files; I reused microc's example code to allow function definition; I also designed the Mat type and realized its rules(with Yuhao Dong's help on debugging 2d matrix rules).  

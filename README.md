@@ -36,3 +36,8 @@ Mattricks is an imperative programming language heavily focused on mathematical 
 >   `-p`: parse, only run syntax phase tests in /tests/parse  
 >   `-s`: semant, only run semantics phase tests in /tests/semant  
 >   `-a`: all, by default run all the tests in /tests/*  
+
+
+------------------------------
+## Hello World Program Contribution
+Weisheng Wang: I participated in group meetings to plan short term goals and distribute workloads; I did pair programming with Yuhao Dong on adding more rules in ast, parser and scanner files; I reused microc's example code to allow function definition; I also designed the Mat type and realized its rules(with Yuhao Dong's help on debugging 2d matrix rules).

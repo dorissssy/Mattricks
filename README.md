@@ -32,6 +32,7 @@ Mattricks
 │   test
 │   test_parse.ml
 │   test_semant.ml
+│   Mattricks - Language Reference Manual
 │
 └─── test_cases
     │   parse

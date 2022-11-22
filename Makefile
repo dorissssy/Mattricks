@@ -27,3 +27,8 @@ test_semant : parse.mly ast.ml scanner.mll sast.ml semant.ml test_semant.ml
 
 test_semant.out : test_semant example.mc
 	./test_semant.native < example.mc > example.out
+
+##############################
+
+clean:
+	rm -rf *.out *.native /test_cases/parse/temp /test_cases/semant/temp _build/

@@ -13,7 +13,7 @@ open Ast
 %token <bool> BLIT
 %token <string> ID
 %token EOF
-%token PRINTF CONSOLE
+%token PRINTF CONSOLE CONSOLEF
 %start program_rule
 %type <Ast.program> program_rule
 
@@ -84,7 +84,6 @@ stmt_rule:
   | IF LPAREN expr_rule RPAREN stmt_rule ELSE stmt_rule   { If ($3, $5, $7) }
   | WHILE LPAREN expr_rule RPAREN stmt_rule               { While ($3,$5)   }
   | RETURN expr_rule SEMI                        { Return $2      }
-  | CONSOLE PRINTF expr_rule SEMI      { Printf $3 }
   | ID ASSIGN typ_rule expr_rule SEMI          { BindAssign ($3, $1, $4) }
 
 const_rule:
@@ -145,3 +144,5 @@ expr_rule:
   | ID LBRAC expr_rule RBRAC LBRAC expr_rule RBRAC LBRAC expr_rule RBRAC { ThreeDArrayAccess($1, $3, $6, $9) }
   | ID LBRAC expr_rule COMMA expr_rule RBRAC { TwoDArrayAccess($1, $3, $5) }
   | ID LBRAC expr_rule COMMA expr_rule COMMA expr_rule RBRAC { ThreeDArrayAccess($1, $3, $5, $7) }
+  | CONSOLE PRINTF expr_rule       { Printf $3 }
+  | CONSOLEF PRINTF expr_rule       { FPrintf $3 }

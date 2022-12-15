@@ -19,6 +19,8 @@ and sx =
   | SThreeDArrayAccess of string * sexpr * sexpr * sexpr
   (* call *)
   | SCall of string * sexpr list
+  | SPrintf of sexpr
+  | SFPrintf of sexpr
 
 type sstmt =
     SBlock of sstmt list
@@ -27,7 +29,6 @@ type sstmt =
   | SWhile of sexpr * sstmt
   (* return *)
   | SReturn of sexpr
-  | SPrintf of sexpr
   | SBindAssign of typ * string * sexpr
 
 
@@ -51,7 +52,7 @@ let rec string_of_sexpr (t, e) =
         SLiteral(l) -> string_of_int l
       | SBoolLit(true) -> "true"
       | SBoolLit(false) -> "false"
-      | SFloatLit(l) -> string_of_float l
+      | SFloatLit(l) -> string_of_float l ^ "0"
       | SId(s) -> s
       | SBinop(e1, o, e2) ->
         string_of_sexpr e1 ^ " " ^ string_of_op o ^ " " ^ string_of_sexpr e2
@@ -63,9 +64,12 @@ let rec string_of_sexpr (t, e) =
         | SArrayAccess(v, e) -> v ^ "[" ^ string_of_sexpr e ^ "]"
         | STwoDArrayAccess(v, e, e2) -> v ^ "[" ^ string_of_sexpr e ^ "]" ^ "[" ^ string_of_sexpr e2 ^ "]"
         | SThreeDArrayAccess(v, e, e2, e3) -> v ^ "[" ^ string_of_sexpr e ^ "]" ^ "[" ^ string_of_sexpr e2 ^ "]" ^ "[" ^ string_of_sexpr e3 ^ "]"
+        | SPrintf(e) -> "console << (" ^ string_of_sexpr e ^ ")" ^ ";"
+        | SFPrintf(e) -> "console << (" ^ string_of_sexpr e ^ ")" ^ ";"
         | SCall(f, el) ->
           f ^ "(" ^ String.concat ", " (List.map string_of_sexpr el) ^ ")"
     ) ^ ")"
+
 
 let rec string_of_sstmt = function
     SBlock(stmts) ->
@@ -75,7 +79,6 @@ let rec string_of_sstmt = function
                        string_of_sstmt s1 ^ "else\n" ^ string_of_sstmt s2
   | SWhile(e, s) -> "while (" ^ string_of_sexpr e ^ ") " ^ string_of_sstmt s
   | SReturn(e) -> "return " ^ string_of_sexpr e ^ ";\n"
-  | SPrintf(e) -> "Console << (" ^ string_of_sexpr e ^ ")" ^ ";\n"
   | SBindAssign(t, v, e) -> string_of_typ t ^ " " ^ v ^ " = " ^ string_of_sexpr e ^ ";\n"
 
 let string_of_sfdecl fdecl = "function " ^

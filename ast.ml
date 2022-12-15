@@ -36,7 +36,8 @@ type expr =
   | TwoDArrayAccess of string * expr * expr
   | ThreeDArrayAccess of string * expr * expr * expr
   | Call of string * expr list
-
+  | Printf of expr
+  | FPrintf of expr
 
 type stmt =
   | Block of stmt list
@@ -44,7 +45,6 @@ type stmt =
   | If of expr * stmt * stmt
   | While of expr * stmt
   | Return of expr
-  | Printf of expr
   | BindAssign of typ * string * expr
 
 type bind = typ * string
@@ -120,7 +120,8 @@ let rec string_of_expr = function
   | ThreeDArrayAccess(s, e1, e2, e3) -> s ^ "[" ^ string_of_expr e1 ^ "]" ^ "[" ^ string_of_expr e2 ^ "]" ^ "[" ^ string_of_expr e3 ^ "]"
   | Call(f, el) ->
       f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
-
+  | Printf(e) -> "printf(" ^ string_of_expr e ^ ")"
+  | FPrintf(e) -> "fprintf(" ^ string_of_expr e ^ ")"
 let rec string_of_stmt = function
     Block(stmts) ->
     "{\n" ^ String.concat "" (List.map string_of_stmt stmts) ^ "}\n"
@@ -129,7 +130,6 @@ let rec string_of_stmt = function
                       string_of_stmt s1 ^ "else\n" ^ string_of_stmt s2
   | While(e, s) -> "while (" ^ string_of_expr e ^ ") " ^ string_of_stmt s
   | Return(ret) -> "return " ^ string_of_expr ret ^ ";\n"
-  | Printf(e) -> "console << " ^ string_of_expr e ^ ";\n"
   | BindAssign(v, t, e) ->   t ^ " = " ^ string_of_typ v ^ " " ^ string_of_expr e ^ ";\n"
 
 

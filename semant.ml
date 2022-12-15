@@ -125,6 +125,12 @@ let bool_fd =
           in
           (t, SBinop((t1, e1'), op, (t2, e2')), map2)
         else raise (Failure err)
+      | Printf(e) ->
+        let (t, e', map') = check_expr map e in
+        (t, SPrintf((t, e')), map')
+      | FPrintf(e) ->
+              let (t, e', map') = check_expr map e in
+              (t, SFPrintf((t, e')), map')
       | Call(fname, args) as call ->
         let fd = find_func fname in
         let param_length = List.length fd.formals in
@@ -166,9 +172,6 @@ let bool_fd =
       		let selse, map2 = check_stmt map1 st2 in
       		(SIf(check_bool_expr map2 e, sthen, selse), map2)
       | While(e, stList) -> SWhile(check_bool_expr map e, fst (check_stmt map stList)), map
-      | Printf(e) ->
-        let (typ, sexpr, new_map) = check_expr map e in
-        (SPrintf(typ, sexpr), new_map)
       | Return e ->
         let (t, e', map1) = check_expr map e in
         if t = func.rtyp then (SReturn (t, e'), map1)

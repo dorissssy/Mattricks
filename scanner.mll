@@ -4,16 +4,14 @@
 
 let digit = ['0'-'9']
 let letter = ['a'-'z' 'A'-'Z']
-let float_re = ['+' '-']?['0'- '9']+ ['.'] ['0' - '9']+
-let float_e_re = ['+'  '-']? ['.']['0' - '9']+
-let format_re = ['+'  '-' '.']?[ '0' - '9']+ ['.']
-let s1 = ['+'  '-']?['0' - '9']+ ['e' 'E'] ['+'  '-']? ['0' - '9']+
-let s2 = ['+'  '-']?'0' ['.']['0' - '9']+ ['e' 'E'] ['+'  '-']? ['0' - '9']+
-let s3 = float_re ['e' 'E'] ['+'  '-']? ['0' - '9']+
-let s4 = float_e_re ['e' 'E'] ['+'  '-']? ['0' - '9']+
-let s5 = format_re ['e' 'E'] ['+'  '-']? ['0' - '9']+
-let s6 = ['+'  '-']?['0' - '9']+ ['.']
-let float_format = float_re | float_e_re | s1 | s2 | s3 | s4 | s5 | s6
+let num = ['0'-'9']
+let e = ['e' 'E']
+let sign = ['-' '+']
+let dot = ['.']
+let decimal = num+ dot num* | num* dot num+
+let int_or_decimal = num+ | decimal
+let with_e = int_or_decimal e sign num+ | int_or_decimal e num+
+let return_value = decimal | with_e
 
 rule token = parse
   [' ' '\t' '\r' '\n'] { token lexbuf } (* Whitespace *)
@@ -48,10 +46,11 @@ rule token = parse
 | "false"     { BLIT(false) }
 | "<<"        { PRINTF }
 | "console"   { CONSOLE }
+| "consolef"  { CONSOLEF }
 | "const"     { CONST }
 | "function"  { FUNCTION }
 | "gives"     { GIVES }
-| float_format as lem { FLIT(float_of_string lem) }
+| return_value as lem { FLIT(float_of_string lem) }
 | digit+ as lem  { LITERAL(int_of_string lem) }
 | ('_' | letter) (digit | letter | '_')* as lem { ID(lem) }
 | eof { EOF }

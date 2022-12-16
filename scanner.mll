@@ -24,11 +24,16 @@ rule token = parse
 | ','         { COMMA }
 | '+'         { PLUS }
 | '-'         { MINUS }
+| '*'         { TIMES }
+| '\\'         { DIVIDE }
 | '='         { ASSIGN }
 | ":="        { DASSIGN }
 | "=="        { EQ }
 | "!="        { NEQ }
-| '<'         { LT }
+| '<'         { LT } (* Less than *)
+| '>'         { MT } (* More than *)
+| "<="        { LTE } (* Less than or equal to *)
+| ">="        { MTE } (* More than or equal to *)
 | "&&"        { AND }
 | "||"        { OR }
 | "if"        { IF }
@@ -50,8 +55,8 @@ rule token = parse
 | "const"     { CONST }
 | "function"  { FUNCTION }
 | "gives"     { GIVES }
-| return_value as lem { FLIT(float_of_string lem) }
-| digit+ as lem  { LITERAL(int_of_string lem) }
+| '-'?return_value as lem { FLIT(float_of_string lem) }
+| '-'?digit+ as lem  { LITERAL(int_of_string lem) }
 | ('_' | letter) (digit | letter | '_')* as lem { ID(lem) }
 | eof { EOF }
 | _ as char { raise (Failure("illegal character " ^ Char.escaped char)) }

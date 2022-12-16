@@ -6,6 +6,7 @@ Parsed program:
 int f(x)
 {
 a = int 5;
+b = int -5;
 return a;
 }
 

@@ -1,0 +1,13 @@
+
+
+Parsed program: 
+
+
+int f()
+{
+a = int 1;
+b = int 2;
+c = a * b;
+return a;
+}
+

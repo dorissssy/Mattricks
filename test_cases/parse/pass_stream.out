@@ -5,7 +5,7 @@ Parsed program:
 
 int f(x)
 {
-console << 1;
+printf(1);
 return x;
 }
 

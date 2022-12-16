@@ -1,0 +1,11 @@
+
+
+Parsed program: 
+
+
+int f(x)
+{
+_a = int 5;
+return _a;
+}
+

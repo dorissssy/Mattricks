@@ -1,4 +1,4 @@
-type bop = Add | Sub | Equal | Neq | Less | And | Or
+type bop = Add | Sub | Times | Divide | Equal | Neq | Less | More | LessEqual | MoreEqual | And | Or
 
 type typ = 
     Int
@@ -73,9 +73,14 @@ type program = bind list * func_def list
 let string_of_op = function
     Add -> "+"
   | Sub -> "-"
+  | Times -> "*"
+  | Divide -> "/"
   | Equal -> "=="
   | Neq -> "!="
   | Less -> "<"
+  | More -> ">"
+  | LessEqual -> "<="
+  | MoreEqual -> ">="
   | And -> "&&"
   | Or -> "||"
 

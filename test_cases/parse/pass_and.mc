@@ -1,6 +1,6 @@
 function f () gives int {
-    a = int 0;
-    b = int 1;
+    a = bool true;
+    b = bool false;
     if (a and b) {
         return a;
     } else {

@@ -4,8 +4,9 @@
 open Ast
 %}
 
-%token SEMI LPAREN RPAREN LBRACE RBRACE PLUS MINUS ASSIGN DASSIGN LBRAC RBRAC
-%token EQ NEQ LT AND OR
+%token SEMI LPAREN RPAREN LBRACE RBRACE ASSIGN DASSIGN LBRAC RBRAC
+%token PLUS MINUS TIMES DIVIDE
+%token EQ NEQ LT MT LTE MTE AND OR
 %token IF ELSE WHILE INT BOOL FLOAT CONST
 %token RETURN COMMA FUNCTION GIVES
 %token <int> LITERAL
@@ -21,8 +22,9 @@ open Ast
 %left OR
 %left AND 
 %left EQ NEQ
-%left LT
+%left LT MT LTE MTE
 %left PLUS MINUS COMMA
+%nonassoc UMINUS
 
 %%
 
@@ -70,9 +72,6 @@ typ_rule:
     INT     { Int  }
   | BOOL    { Bool }
   | FLOAT   { Float }
-
-
-
 
 stmt_list_rule:
     /* nothing */             { []     }
@@ -128,13 +127,19 @@ expr_rule:
   | FLIT                          { FloatLit $1           }
   | LITERAL                       { Literal $1            }
   | ID                            { Id $1                 }
+  | expr_rule TIMES expr_rule     { Binop ($1, Times, $3 )}
+  | expr_rule DIVIDE expr_rule    { Binop ($1, Divide, $3 )}
   | expr_rule PLUS expr_rule      { Binop ($1, Add, $3)   }
   | expr_rule MINUS expr_rule     { Binop ($1, Sub, $3)   }
   | expr_rule EQ expr_rule        { Binop ($1, Equal, $3) }
   | expr_rule NEQ expr_rule       { Binop ($1, Neq, $3)   }
   | expr_rule LT expr_rule        { Binop ($1, Less, $3)  }
+  | expr_rule MT expr_rule        { Binop ($1, More, $3)  }
+  | expr_rule LTE expr_rule       { Binop ($1, MoreEqual, $3)  }
+  | expr_rule MTE expr_rule       { Binop ($1, MoreEqual, $3)  }
   | expr_rule AND expr_rule       { Binop ($1, And, $3)   }
   | expr_rule OR expr_rule        { Binop ($1, Or, $3)    }
+  | MINUS expr_rule %prec UMINUS  { $2 }
   | ID ASSIGN mat_typ_rule LBRAC mat_rule RBRAC { AssignMat ($1, $3, $5) }
   | ID ASSIGN expr_rule           { Assign ($1, $3)       }
   | ID ASSIGN const_rule typ_rule expr_rule  { Assign3 ($1, $3, $4, $5)    }

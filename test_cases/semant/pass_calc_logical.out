@@ -1,0 +1,118 @@
+
+
+Sementically checked program: 
+
+bool c;
+
+function main() gives bool
+{
+int a = (int : 1);
+int b = (int : 1);
+(bool : c = (bool : (int : a) == (int : b)));
+return (bool : c);
+}
+
+function main2() gives bool
+{
+bool a = (bool : true);
+bool b = (bool : true);
+(bool : c = (bool : (bool : a) == (bool : b)));
+return (bool : c);
+}
+
+function main3() gives bool
+{
+float a = (float : 1.230);
+float b = (float : 1.230);
+(bool : c = (bool : (float : a) == (float : b)));
+return (bool : c);
+}
+
+function main4() gives bool
+{
+int a = (int : 1);
+int b = (int : 2);
+(bool : c = (bool : (int : a) != (int : b)));
+return (bool : c);
+}
+
+function main5() gives bool
+{
+bool a = (bool : true);
+bool b = (bool : true);
+(bool : c = (bool : (bool : a) != (bool : b)));
+return (bool : c);
+}
+
+function main6() gives bool
+{
+float a = (float : 0.10);
+float b = (float : 2.0);
+(bool : c = (bool : (float : a) != (float : b)));
+return (bool : c);
+}
+
+function main7() gives bool
+{
+int a = (int : 1);
+int b = (int : 2);
+(bool : c = (bool : (int : a) > (int : b)));
+return (bool : c);
+}
+
+function main8() gives bool
+{
+float a = (float : 0.10);
+float b = (float : 2.0);
+(bool : c = (bool : (float : a) > (float : b)));
+return (bool : c);
+}
+
+function main9() gives bool
+{
+int a = (int : 1);
+int b = (int : 2);
+(bool : c = (bool : (int : a) < (int : b)));
+return (bool : c);
+}
+
+function main10() gives bool
+{
+float a = (float : 0.10);
+float b = (float : 2.0);
+(bool : c = (bool : (float : a) < (float : b)));
+return (bool : c);
+}
+
+function main11() gives bool
+{
+int a = (int : 1);
+int b = (int : 2);
+(bool : c = (bool : (int : a) >= (int : b)));
+return (bool : c);
+}
+
+function main12() gives bool
+{
+float a = (float : 0.10);
+float b = (float : 2.0);
+(bool : c = (bool : (float : a) >= (float : b)));
+return (bool : c);
+}
+
+function main13() gives bool
+{
+int a = (int : 1);
+int b = (int : 2);
+(bool : c = (bool : (int : a) >= (int : b)));
+return (bool : c);
+}
+
+function main14() gives bool
+{
+float a = (float : 0.10);
+float b = (float : 2.0);
+(bool : c = (bool : (float : a) >= (float : b)));
+return (bool : c);
+}
+

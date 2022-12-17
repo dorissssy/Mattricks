@@ -1,0 +1,26 @@
+
+
+Sementically checked program: 
+
+
+function main() gives bool
+{
+bool a = (bool : true);
+bool b = (bool : true);
+return (bool : (bool : a) || (bool : b));
+}
+
+function main2() gives bool
+{
+bool a = (bool : true);
+bool b = (bool : false);
+return (bool : (bool : a) || (bool : b));
+}
+
+function main3() gives bool
+{
+bool a = (bool : false);
+bool b = (bool : false);
+return (bool : (bool : a) || (bool : b));
+}
+

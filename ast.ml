@@ -1,4 +1,4 @@
-type bop = Add | Sub | Times | Divide | Equal | Neq | Less | More | LessEqual | MoreEqual | And | Or
+type bop = Add | Sub | Times | Divide | Equal | Neq | Less | More | LessEqual | MoreEqual | And | Or | Modulus
 
 type typ = 
     Int
@@ -75,6 +75,7 @@ let string_of_op = function
   | Sub -> "-"
   | Times -> "*"
   | Divide -> "/"
+  | Modulus -> "mod"
   | Equal -> "=="
   | Neq -> "!="
   | Less -> "<"
@@ -113,8 +114,7 @@ let rec string_of_expr = function
   | BoolLit(true) -> "true"
   | BoolLit(false) -> "false"
   | Id(s) -> s
-  | Binop(e1, o, e2) ->
-    string_of_expr e1 ^ " " ^ string_of_op o ^ " " ^ string_of_expr e2
+  | Binop(e1, o, e2) -> string_of_expr e1 ^ " " ^ string_of_op o ^ " " ^ string_of_expr e2
   | AssignMat(v, e, m) -> v ^ " = " ^ string_of_mat_typ e ^ string_of_mat m
   | Assign(v, e) -> v ^ " = " ^ string_of_expr e
   | Assign2(v, t, e) -> v ^ " = " ^ string_of_typ t ^ " " ^ string_of_expr e

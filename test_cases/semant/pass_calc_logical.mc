@@ -1,3 +1,5 @@
+bool c;
+
 /* Equal */
 function main() gives bool {
   a = int 1;
@@ -73,14 +75,14 @@ function main10() gives bool {
 }
 
 /* Greater than or equal to */
-function main9() gives bool {
+function main11() gives bool {
   a = int 1;
   b = int 2;
   c = a >= b;
   return c;
 }
 
-function main10() gives bool {
+function main12() gives bool {
   a = float .1;
   b = float 2.;
   c = a >= b;
@@ -88,14 +90,14 @@ function main10() gives bool {
 }
 
 /* Less than or equal to */
-function main9() gives bool {
+function main13() gives bool {
   a = int 1;
   b = int 2;
   c = a <= b;
   return c;
 }
 
-function main10() gives bool {
+function main14() gives bool {
   a = float .1;
   b = float 2.;
   c = a <= b;
@@ -103,7 +105,9 @@ function main10() gives bool {
 }
 
 /* Negation */
-function main11() gives bool {
+/*
+function main15() gives bool {
   b = bool true;
   return !b;
 }
+*/

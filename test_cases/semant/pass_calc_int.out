@@ -1,0 +1,107 @@
+
+
+Sementically checked program: 
+
+int c;
+
+function main() gives int
+{
+int a = (int : 123);
+int b = (int : 456);
+(int : c = (int : (int : a) + (int : b)));
+return (int : c);
+}
+
+function main_2() gives int
+{
+int a = (int : -123);
+int b = (int : -456);
+(int : c = (int : (int : a) + (int : b)));
+return (int : c);
+}
+
+function main2() gives int
+{
+int a = (int : 123);
+int b = (int : 456);
+return (int : (int : b) - (int : a));
+}
+
+function main2_2() gives int
+{
+int a = (int : 123);
+int b = (int : -456);
+return (int : (int : b) - (int : a));
+}
+
+function main2_3() gives int
+{
+int a = (int : -123);
+int b = (int : -456);
+return (int : (int : b) - (int : a));
+}
+
+function main3() gives int
+{
+int a = (int : 123);
+int b = (int : 456);
+(int : c = (int : (int : a) * (int : b)));
+return (int : c);
+}
+
+function main3_2() gives int
+{
+int a = (int : -123);
+int b = (int : 456);
+(int : c = (int : (int : a) * (int : b)));
+return (int : c);
+}
+
+function main3_3() gives int
+{
+int a = (int : -123);
+int b = (int : -456);
+(int : c = (int : (int : a) * (int : b)));
+return (int : c);
+}
+
+function main4() gives int
+{
+int a = (int : 123);
+int b = (int : 456);
+(int : c = (int : (int : b) / (int : a)));
+return (int : c);
+}
+
+function main4_1() gives int
+{
+int a = (int : 123);
+int b = (int : 456);
+(int : c = (int : (int : a) / (int : b)));
+return (int : c);
+}
+
+function main4_2() gives int
+{
+int a = (int : 123);
+int b = (int : -456);
+(int : c = (int : (int : b) / (int : a)));
+return (int : c);
+}
+
+function main4_3() gives int
+{
+int a = (int : -123);
+int b = (int : -456);
+(int : c = (int : (int : b) / (int : a)));
+return (int : c);
+}
+
+function main5() gives int
+{
+int a = (int : 2);
+int b = (int : 5);
+(int : c = (int : (int : b) mod (int : 2)));
+return (int : c);
+}
+

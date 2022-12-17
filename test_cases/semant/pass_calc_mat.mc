@@ -1,3 +1,5 @@
+mat mat3;
+
 /* Addition */
 function main() gives mat {
   mat1 = int(2,2)[[1,2],[3,4]];

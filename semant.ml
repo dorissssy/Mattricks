@@ -117,9 +117,11 @@ let bool_fd =
         if t1 = t2 then
           (* Determine expression type based on operator and operand types *)
           let t = match op with
-              Add | Sub when t1 = Int -> Int
+              Add | Sub | Times | Divide | Modulus when t1 = Int -> Int
+            | Add | Sub | Times | Divide | Modulus when t1 = Float -> Float
             | Equal | Neq -> Bool
-            | Less when t1 = Int -> Bool
+            | Less | More | LessEqual | MoreEqual when t1 = Int -> Bool
+            | Less | More | LessEqual | MoreEqual when t1 = Float -> Bool
             | And | Or when t1 = Bool -> Bool
             | _ -> raise (Failure err)
           in

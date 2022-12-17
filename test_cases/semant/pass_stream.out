@@ -6,7 +6,12 @@ Sementically checked program:
 function main() gives int
 {
 int i = (int : 123);
-Console << ((int : i));
+(int : console << ((int : i)););
+float f = (float : 0.20);
+(float : console << ((float : f)););
+bool b = (bool : true);
+(bool : console << ((bool : b)););
+(int : console << ((int : 1)););
 return (int : i);
 }
 

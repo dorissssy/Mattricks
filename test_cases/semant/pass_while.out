@@ -12,12 +12,10 @@ while ((bool : (int : i) < (int : 5))) {
 return (int : i);
 }
 
-
-
 function main2() gives int
 {
 int i = (int : 0);
-while ((bool : (int : i) <= (int : 5))) {
+while ((bool : (int : i) >= (int : 5))) {
 (int : i = (int : (int : i) + (int : 1)));
 }
 return (int : i);

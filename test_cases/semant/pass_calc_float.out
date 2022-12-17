@@ -1,0 +1,107 @@
+
+
+Sementically checked program: 
+
+float c;
+
+function main() gives float
+{
+float a = (float : 123.450);
+float b = (float : 678.90);
+(float : c = (float : (float : a) + (float : b)));
+return (float : c);
+}
+
+function main_2() gives float
+{
+float a = (float : -123.0);
+float b = (float : -456.0);
+(float : c = (float : (float : a) + (float : b)));
+return (float : c);
+}
+
+function main2() gives float
+{
+float a = (float : 123.0);
+float b = (float : 456.0);
+return (float : (float : b) - (float : a));
+}
+
+function main2_2() gives float
+{
+float a = (float : 123.0);
+float b = (float : -456.0);
+return (float : (float : b) - (float : a));
+}
+
+function main2_3() gives float
+{
+float a = (float : -123.0);
+float b = (float : -456.0);
+return (float : (float : b) - (float : a));
+}
+
+function main3() gives float
+{
+float a = (float : 123.0);
+float b = (float : 456.0);
+(float : c = (float : (float : a) * (float : b)));
+return (float : c);
+}
+
+function main3_2() gives float
+{
+float a = (float : -123.0);
+float b = (float : 456.0);
+(float : c = (float : (float : a) * (float : b)));
+return (float : c);
+}
+
+function main3_3() gives float
+{
+float a = (float : -123.0);
+float b = (float : -456.0);
+(float : c = (float : (float : a) * (float : b)));
+return (float : c);
+}
+
+function main4() gives float
+{
+float a = (float : 123.0);
+float b = (float : 456.0);
+(float : c = (float : (float : b) / (float : a)));
+return (float : c);
+}
+
+function main4_1() gives float
+{
+float a = (float : 123.0);
+float b = (float : 456.0);
+(float : c = (float : (float : a) / (float : b)));
+return (float : c);
+}
+
+function main4_2() gives float
+{
+float a = (float : 123.0);
+float b = (float : -456.0);
+(float : c = (float : (float : b) / (float : a)));
+return (float : c);
+}
+
+function main4_3() gives float
+{
+float a = (float : -123.0);
+float b = (float : -456.0);
+(float : c = (float : (float : b) / (float : a)));
+return (float : c);
+}
+
+function main5() gives float
+{
+float a = (float : 2.0);
+float b = (float : 5.0);
+(float : c = (float : (float : b) mod (float : 2.0)));
+return (float : c);
+}
+

@@ -2,12 +2,13 @@
 
 Sementically checked program: 
 
+int i;
 
-function main() gives float
+function main() gives int
 {
-int i = (int : 1);
-bool b = (bool : true);
-float f = (float : 0.1);
-return (float : f);
+(int : i = (int : 1));
+int i1 = (int : 1);
+int i2 = (int : -1);
+return (int : i);
 }
 

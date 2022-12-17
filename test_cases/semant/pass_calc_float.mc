@@ -1,3 +1,5 @@
+float c;
+
 /* Addition */
 function main() gives float {
   a = float 123.45;
@@ -87,6 +89,6 @@ function main4_3() gives float {
 function main5() gives float {
   a = float 2.;
   b = float 5.;
-  c = b % 2;
+  c = b % 2.0;
   return c;
 }

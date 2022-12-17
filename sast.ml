@@ -11,7 +11,7 @@ and sx =
   | SBinop of sexpr * bop * sexpr
   | SAssign of string * sexpr
   | SAssignMat of string * typ
-  | SAssign2 of string* typ * sexpr
+  | SAssign2 of string * typ * sexpr
   | SAssign3 of string * const_ty * typ * sexpr
   | SDAssign of string * sexpr
   | SArrayAccess of string * sexpr

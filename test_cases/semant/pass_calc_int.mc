@@ -1,3 +1,5 @@
+int c;
+
 /* Addition */
 function main() gives int {
   a = int 123;

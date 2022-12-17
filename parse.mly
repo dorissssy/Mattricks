@@ -7,7 +7,7 @@ open Ast
 %token SEMI LPAREN RPAREN LBRACE RBRACE ASSIGN DASSIGN LBRAC RBRAC
 %token PLUS MINUS TIMES DIVIDE MODULUS 
 %token EQ NEQ LT MT LTE MTE AND OR
-%token IF ELSE WHILE INT BOOL FLOAT CONST
+%token IF ELSE WHILE INT BOOL FLOAT CONST MAT
 %token RETURN COMMA FUNCTION GIVES
 %token <int> LITERAL
 %token <float> FLIT
@@ -72,6 +72,7 @@ typ_rule:
     INT     { Int  }
   | BOOL    { Bool }
   | FLOAT   { Float }
+  | MAT     { Matrix } 
 
 stmt_list_rule:
     /* nothing */             { []     }

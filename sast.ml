@@ -2,6 +2,16 @@
 
 open Ast
 
+type smat_typ = SMtype of typ * int * int
+
+type smat_expr =
+  | SMatLiteral of int
+
+type smat =
+    None
+  | SMatValue of smat_expr
+  | SMat of smat list
+
 type sexpr = typ * sx
 and sx =
     SLiteral of int
@@ -10,7 +20,7 @@ and sx =
   | SId of string
   | SBinop of sexpr * bop * sexpr
   | SAssign of string * sexpr
-  | SAssignMat of string * typ
+  | SAssignMat of string * smat_typ * smat
   | SAssign2 of string * typ * sexpr
   | SAssign3 of string * const_ty * typ * sexpr
   | SDAssign of string * sexpr
@@ -45,8 +55,21 @@ type sfunc_def = {
 type sprogram = bind list * sfunc_def list
 
 
-
 (* Pretty-printing functions *)
+
+let string_of_smat_expr = function
+  | SMatLiteral(l) -> string_of_int l
+
+let rec string_of_smat = function
+  | SMat(m) -> 
+    "\n[\n" ^ String.concat ", " (List.map string_of_smat m) ^ "\n]"
+  | SMatValue(e) -> string_of_smat_expr e
+  | None -> ""
+
+
+let string_of_smat_typ = function
+  SMtype(t, x, y) -> string_of_typ t ^ "(" ^ string_of_int x ^ "," ^ string_of_int y ^ ")"
+
 let rec string_of_sexpr (t, e) =
   "(" ^ string_of_typ t ^ " : " ^ (match e with
         SLiteral(l) -> string_of_int l
@@ -57,17 +80,18 @@ let rec string_of_sexpr (t, e) =
       | SBinop(e1, o, e2) ->
         string_of_sexpr e1 ^ " " ^ string_of_op o ^ " " ^ string_of_sexpr e2
       | SAssign(v, e) -> v ^ " = " ^ string_of_sexpr e
-        | SAssignMat(v, t) -> v ^ " = " ^ string_of_typ t
-        | SAssign2(v, t, e) -> v ^ " = " ^ string_of_typ t ^ " " ^ string_of_sexpr e
-        | SAssign3(v, t, t2, e) -> v ^ " = " ^ string_of_const t ^ " " ^ string_of_typ t2 ^ " " ^ string_of_sexpr e
-        | SDAssign(v, e) -> v ^ " := " ^ string_of_sexpr e
-        | SArrayAccess(v, e) -> v ^ "[" ^ string_of_sexpr e ^ "]"
-        | STwoDArrayAccess(v, e, e2) -> v ^ "[" ^ string_of_sexpr e ^ "]" ^ "[" ^ string_of_sexpr e2 ^ "]"
-        | SThreeDArrayAccess(v, e, e2, e3) -> v ^ "[" ^ string_of_sexpr e ^ "]" ^ "[" ^ string_of_sexpr e2 ^ "]" ^ "[" ^ string_of_sexpr e3 ^ "]"
-        | SPrintf(e) -> "console << (" ^ string_of_sexpr e ^ ")" ^ ";"
-        | SFPrintf(e) -> "console << (" ^ string_of_sexpr e ^ ")" ^ ";"
-        | SCall(f, el) ->
-          f ^ "(" ^ String.concat ", " (List.map string_of_sexpr el) ^ ")"
+      | SAssignMat(v, t, m) -> v ^ " = " ^ string_of_smat_typ t ^ string_of_smat m
+
+      | SAssign2(v, t, e) -> v ^ " = " ^ string_of_typ t ^ " " ^ string_of_sexpr e
+      | SAssign3(v, t, t2, e) -> v ^ " = " ^ string_of_const t ^ " " ^ string_of_typ t2 ^ " " ^ string_of_sexpr e
+      | SDAssign(v, e) -> v ^ " := " ^ string_of_sexpr e
+      | SArrayAccess(v, e) -> v ^ "[" ^ string_of_sexpr e ^ "]"
+      | STwoDArrayAccess(v, e, e2) -> v ^ "[" ^ string_of_sexpr e ^ "]" ^ "[" ^ string_of_sexpr e2 ^ "]"
+      | SThreeDArrayAccess(v, e, e2, e3) -> v ^ "[" ^ string_of_sexpr e ^ "]" ^ "[" ^ string_of_sexpr e2 ^ "]" ^ "[" ^ string_of_sexpr e3 ^ "]"
+      | SPrintf(e) -> "console << (" ^ string_of_sexpr e ^ ")" ^ ";"
+      | SFPrintf(e) -> "console << (" ^ string_of_sexpr e ^ ")" ^ ";"
+      | SCall(f, el) ->
+        f ^ "(" ^ String.concat ", " (List.map string_of_sexpr el) ^ ")"
     ) ^ ")"
 
 

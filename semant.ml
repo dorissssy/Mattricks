@@ -32,7 +32,7 @@ let check (globals, functions) =
       formals = [(Int, "x")];
       locals = []; body = [] } StringMap.empty
   in
-let bool_fd =
+  let bool_fd =
     StringMap.add "print" {
       rtyp = Bool;
       fname = "print";
@@ -86,11 +86,36 @@ let bool_fd =
         StringMap.empty (globals @ func.formals @ func.locals )
     in
 
+    (* TODO: count number of values in the Matrix*)
+    let check_count_matrix_values matrix = 3
+    in
+
+    (* Check if if r,c match *)
+    let check_matrix mat_type matrix =
+      let t,r,c = 
+        match mat_type with
+        | Mtype(t,r,c) -> 
+          let l = match matrix with 
+            | Mat m -> List.length m
+          in (* Check row matches *)
+          if l != r then 
+            raise(Failure "Matrix Illegal Assignment: ROW MISMATCH!")
+          else
+            let cnt = check_count_matrix_values matrix in
+            if cnt != c then
+              raise(Failure "Matrix Illegal Assignment: COL MISMATCH!")
+            else
+              (t,r,c) 
+      in (* TODO: smatrix *)
+      SMat([SMatValue(SMatLiteral 1); SMatValue(SMatLiteral 1)])
+    in
+
     (* Return a variable from our local symbol table *)
     let type_of_identifier s map =
       try StringMap.find s map
       with Not_found -> raise (Failure ("undeclared identifier " ^ s))
     in
+
     (* Return a semantically-checked expression, i.e., with a type *)
     let rec check_expr map expr = match expr with
         Literal l -> (Int, SLiteral l, map)
@@ -104,6 +129,16 @@ let bool_fd =
                   string_of_typ rt ^ " in " ^ string_of_expr ex
         in
         (check_assign lt rt err, SAssign(var, (rt, e')), map')
+(**)
+      | AssignMat(var, mat_ty, matrix) -> (* "(Matrix, SAssignMat(a,b,c), map)" *)
+        let t,r,c = match mat_ty with Mtype(t,r,c)->(t,r,c) 
+        in
+        (Matrix, SAssignMat(var, SMtype(t,r,c), check_matrix mat_ty matrix), map)
+        (* TODO: check # rows, #cols, value type *)
+        
+(**)
+
+
       | Binop(e1, op, e2) as e ->
         let (t1, e1', map1) = check_expr map e1
         in

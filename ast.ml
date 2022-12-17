@@ -4,9 +4,11 @@ type typ =
     Int
   | Bool
   | Float
+  | Matrix
   | Mtype of typ * int * int
   | Vtype of typ * int
   | Ttype of typ * int * int * int
+
 type mat_typ = Mtype of typ * int * int
 
 type mat_expr =
@@ -89,6 +91,7 @@ let rec string_of_typ = function
     Int -> "int"
   | Bool -> "bool"
   | Float -> "float"
+  | Matrix -> "matrix"
   | Mtype(t, x, y) -> string_of_typ t ^ "(" ^ string_of_int x ^ "," ^ string_of_int y ^ ")"
   | Vtype(t, x) -> string_of_typ t ^ "(" ^ string_of_int x ^ ")"
   | Ttype(t, x, y, z) -> string_of_typ t ^ "(" ^ string_of_int x ^ "," ^ string_of_int y ^ "," ^ string_of_int z ^ ")"

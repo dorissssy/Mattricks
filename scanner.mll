@@ -46,6 +46,7 @@ rule token = parse
 | "int"       { INT }
 | "bool"      { BOOL }
 | "float"     { FLOAT }
+| "MAT"       { MAT }
 | "True"      { BLIT(true)  }
 | "true"      { BLIT(true)  }
 | "False"     { BLIT(false) }

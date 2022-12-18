@@ -101,7 +101,24 @@ let check (globals, functions) =
       in cnt
     in
 
-    (* Check if if r,c match *)
+    let generate_smat_expr _expr =
+      let x = match _expr with 
+              | MatLiteral(e) -> SMatLiteral(e)
+      in x
+    in
+
+    (* The matrix is valid so construct its smatrix *)
+    let rec construct_smatrix mtt = 
+      (* SMat([SMatValue(SMatLiteral 1); SMatValue(SMatLiteral 2)]) *)
+      let s_matrix = match mtt with
+                    | None -> None
+                    | MatValue(ee) -> SMatValue(generate_smat_expr ee)
+                    | Mat(mm) -> 
+                      SMat (List.map construct_smatrix m)
+      in s_matrix
+    in
+
+    (* Check if r,c match *)
     let check_matrix mat_type matrix =
       let t,r,c = 
         match mat_type with
@@ -120,8 +137,9 @@ let check (globals, functions) =
               in raise(Failure err)
             else
               (t,r,c) 
-      in (* TODO: smatrix *)
-      SMat([SMatValue(SMatLiteral 1); SMatValue(SMatLiteral 1)])
+      in (* TODO: smatrix construction *)
+      construct_smatrix matrix
+      (* SMat([SMatValue(SMatLiteral 1); SMatValue(SMatLiteral 1)]) *)
     in
 
     (* Return a variable from our local symbol table *)
@@ -147,8 +165,9 @@ let check (globals, functions) =
       | AssignMat(var, mat_ty, matrix) -> (* "(Matrix, SAssignMat(a,b,c), map)" *)
         let t,r,c = match mat_ty with Mtype(t,r,c)->(t,r,c) 
         in
-        (Matrix, SAssignMat(var, SMtype(t,r,c), check_matrix mat_ty matrix), map)
-        (* TODO: check # rows, #cols, value type *)
+          (* check # rows, #cols, value type *) 
+          (Matrix, SAssignMat(var, SMtype(t,r,c), check_matrix mat_ty matrix), map)
+        
         
 (**)
 

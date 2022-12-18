@@ -13,7 +13,6 @@ function main(int x) gives int{
 
 
 /* 
-
     mat2b = MAT int(3,1)[ [1], [1], [1] ];
 
     mat3 = int(1, 3)[ [1,2,3] ];

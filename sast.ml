@@ -22,6 +22,7 @@ and sx =
   | SPrintf of sexpr
   | SFPrintf of sexpr
   | SOneDArrayAssign of string * sexpr * sexpr
+  | SAnyArrayAccess of sexpr * sexpr
 
 type sstmt =
     SBlock of sstmt list
@@ -74,6 +75,7 @@ let rec string_of_sexpr (t, e) =
         | SOneDArrayAssign(v, e, e2) -> v ^ "[" ^ string_of_sexpr e ^ "]" ^ " = " ^ string_of_sexpr e2
         | SCall(f, el) ->
           f ^ "(" ^ String.concat ", " (List.map string_of_sexpr el) ^ ")"
+        | SAnyArrayAccess(e, e2) -> string_of_sexpr e ^ "[" ^ string_of_sexpr e2 ^ "]"
     ) ^ ")"
 
 

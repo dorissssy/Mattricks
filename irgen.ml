@@ -40,7 +40,12 @@ let translate (globals, functions) =
     | A.Bool  -> i1_t
     | A.Float -> f32_t
     | A.IntMat(row, col) -> matrix_t (matrix_t i32_t col) row
-    | A.IntMat1D(row) -> matrix_t i32_t row
+    | A.IntMat1D(tp, row) ->
+    match tp with
+    | A.Int -> matrix_t i32_t row
+    | A.Float -> matrix_t f32_t row
+    | A.Bool -> matrix_t i1_t row
+    | A.IntMat1D(tp, row2) -> matrix_t (matrix_t i32_t row2) row
   in
 
   (* Create a map of global variables after creating each *)
@@ -160,6 +165,12 @@ let translate (globals, functions) =
         let (new_table, e') = build_expr builder table e in
         let e'' = L.build_load (L.build_gep (lookup table id) [| (L.const_int i32_t 0);  e' |] "tmp" builder) "tmp" builder in
         (new_table, e'')
+       | SAnyArrayAccess(e1, e2) ->
+        let (new_table, e1') = build_expr builder table e1 in
+        let (new_table2, e2') = build_expr builder table e2 in
+        let e' = L.build_load (L.build_gep e1' [| (L.const_int i32_t 0);  e2' |] "tmp" builder) "tmp" builder in
+        (new_table, e')
+
     in
 
     (* LLVM insists each basic block end with exactly one "terminator"
@@ -227,7 +238,18 @@ let translate (globals, functions) =
         let e'' = L.build_gep (lookup table id) [| r'; c' |] "tmp" builder in
         ignore(L.build_store e' e'' builder); (builder, new_table)
       | SDeclareOneDArray(v, t) ->
+        match t with
+        IntMat1D(Int, _)->
         let added_var_list = L.build_array_alloca (ltype_of_typ t) (L.const_int i32_t 0) "tmp" builder in
+        (builder, StringMap.add v added_var_list table)
+        | IntMat1D(Float, _) ->
+        let added_var_list = L.build_array_alloca (ltype_of_typ t) (L.const_int i32_t 1766) "tmp" builder in
+        (builder, StringMap.add v added_var_list table)
+        | IntMat1D(Bool, _) ->
+        let added_var_list = L.build_array_alloca (ltype_of_typ t) (L.const_int i32_t 3343) "tmp" builder in
+        (builder, StringMap.add v added_var_list table)
+        | IntMat1D(IntMat1D(_, _), _) ->
+        let added_var_list = L.build_array_alloca (ltype_of_typ t) (L.const_int i32_t 5454) "tmp" builder in
         (builder, StringMap.add v added_var_list table)
 (*        let added_var_list = L.build_alloca (ltype_of_typ t) v builder in*)
 (*        (builder, StringMap.add v added_var_list table)*)

@@ -8,7 +8,7 @@ type typ =
   | Vtype of typ * int
   | Ttype of typ * int * int * int
   | IntMat of int * int
-  | IntMat1D of int
+  | IntMat1D of typ * int
 
 type mat_typ = Mtype of typ * int * int
 
@@ -44,6 +44,7 @@ type expr =
   | Printf of expr
   | FPrintf of expr
   | OneDArrayAssign of string * expr * expr
+  | AnyArrayAccess of expr * expr
 
 type stmt =
   | Block of stmt list
@@ -102,7 +103,7 @@ let rec string_of_typ = function
   | Vtype(t, x) -> string_of_typ t ^ "(" ^ string_of_int x ^ ")"
   | Ttype(t, x, y, z) -> string_of_typ t ^ "(" ^ string_of_int x ^ "," ^ string_of_int y ^ "," ^ string_of_int z ^ ")"
   | IntMat(x, y) -> "int" ^ "[" ^ string_of_int x ^ "," ^ string_of_int y ^ "]"
-  | IntMat1D(x) -> "int" ^ "[" ^ string_of_int x ^ "]"
+  | IntMat1D(tp, x) -> "matrix " ^ string_of_typ tp ^ "[" ^ string_of_int x ^ "]"
 
 let string_of_mat_typ = function
   Mtype(t, x, y) -> string_of_typ t ^ "(" ^ string_of_int x ^ "," ^ string_of_int y ^ ")"
@@ -139,6 +140,7 @@ let rec string_of_expr = function
   | Printf(e) -> "printf(" ^ string_of_expr e ^ ")"
   | FPrintf(e) -> "fprintf(" ^ string_of_expr e ^ ")"
   | OneDArrayAssign(s, e1, e2) -> s ^ "[" ^ string_of_expr e1 ^ "]" ^ " = " ^ string_of_expr e2
+  | AnyArrayAccess(e1, e2) -> string_of_expr e1 ^ "[" ^ string_of_expr e2 ^ "]"
 let rec string_of_stmt = function
     Block(stmts) ->
     "{\n" ^ String.concat "" (List.map string_of_stmt stmts) ^ "}\n"

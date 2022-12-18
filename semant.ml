@@ -162,6 +162,14 @@ let bool_fd =
                   string_of_typ rt ^ " in " ^ string_of_expr expr
         in
         (check_assign Int rt err, SArrayAccess(id, (rt, e')), map')
+      | AnyArrayAccess(e1, e2) ->
+        let (t1, e1', map1) = check_expr map e1 in
+        let (t2, e2', map2) = check_expr map1 e2 in
+        let err = "illegal array access " ^ string_of_typ t1 ^ " = " ^
+                  string_of_typ t2 ^ " in " ^ string_of_expr expr
+        in
+
+        (t1, SAnyArrayAccess((t1, e1'), (t2, e2')), map2)
       | OneDArrayAssign(id, idx, e1) ->
         let lt = type_of_identifier id map in
         let (rt, e1', map') = check_expr map e1 in
@@ -169,8 +177,14 @@ let bool_fd =
         let err = "illegal array assignment " ^ string_of_typ lt ^ " = " ^
                   string_of_typ rt ^ " in " ^ string_of_expr expr
         in
-        if it != Int then raise (Failure err)
-        else (check_assign Int rt err, SOneDArrayAssign(id, (it, idx'), (rt, e1')), map'')
+        (
+            match lt with
+            IntMat1D(tp, size) ->
+                let err = "illegal array assignment " ^ string_of_typ lt ^ " = " ^
+                          string_of_typ rt ^ " in " ^ string_of_expr expr
+                in
+                (check_assign tp rt err, SOneDArrayAssign(id, (it, idx'), (rt, e1')), map'')
+        )
     in
 
     let check_bool_expr map e =
@@ -240,11 +254,6 @@ let bool_fd =
           (STwoDArrayAssign(id, r, c, (t, e')), map1)
         else raise (Failure err)
       | DeclareOneDArray(v, t) ->
-        if StringMap.mem v map then
-          let err = "Duplicated declaration " ^ v
-                     in
-                    raise (Failure err)
-        else
             (SDeclareOneDArray(v, t), StringMap.add v t map)
 
     in (* body of check_func *)

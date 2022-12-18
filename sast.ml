@@ -30,6 +30,9 @@ type sstmt =
   (* return *)
   | SReturn of sexpr
   | SBindAssign of typ * string * sexpr
+  | SDeclareMat of string * int * int
+  | STwoDArrayAssign of string * int * int * sexpr
+
 
 
 (* func_def: ret_typ fname formals locals body *)
@@ -62,7 +65,7 @@ let rec string_of_sexpr (t, e) =
         | SAssign3(v, t, t2, e) -> v ^ " = " ^ string_of_const t ^ " " ^ string_of_typ t2 ^ " " ^ string_of_sexpr e
         | SDAssign(v, e) -> v ^ " := " ^ string_of_sexpr e
         | SArrayAccess(v, e) -> v ^ "[" ^ string_of_sexpr e ^ "]"
-        | STwoDArrayAccess(v, e, e2) -> v ^ "[" ^ string_of_sexpr e ^ "]" ^ "[" ^ string_of_sexpr e2 ^ "]"
+        | STwoDArrayAccess(v, e, e2) -> v ^ "[" ^ string_of_sexpr e ^ " , " ^ string_of_sexpr e2 ^ "]"
         | SThreeDArrayAccess(v, e, e2, e3) -> v ^ "[" ^ string_of_sexpr e ^ "]" ^ "[" ^ string_of_sexpr e2 ^ "]" ^ "[" ^ string_of_sexpr e3 ^ "]"
         | SPrintf(e) -> "console << (" ^ string_of_sexpr e ^ ")" ^ ";"
         | SFPrintf(e) -> "console << (" ^ string_of_sexpr e ^ ")" ^ ";"
@@ -80,7 +83,8 @@ let rec string_of_sstmt = function
   | SWhile(e, s) -> "while (" ^ string_of_sexpr e ^ ") " ^ string_of_sstmt s
   | SReturn(e) -> "return " ^ string_of_sexpr e ^ ";\n"
   | SBindAssign(t, v, e) -> string_of_typ t ^ " " ^ v ^ " = " ^ string_of_sexpr e ^ ";\n"
-
+  | SDeclareMat(v, i, j) ->  v^ " = int mat" ^ "[" ^ string_of_int i ^ "]" ^ "[" ^ string_of_int j ^ "]" ^ ";\n"
+  | STwoDArrayAssign(v, r, c, e) -> v ^ "[" ^ string_of_int r ^ "]" ^ "[" ^ string_of_int c ^ "]" ^ " = " ^ string_of_sexpr e ^ ";\n"
 let string_of_sfdecl fdecl = "function " ^
   fdecl.sfname ^ "(" ^ String.concat ", " (List.map snd fdecl.sformals) ^
   ") gives "^ string_of_typ fdecl.srtyp ^"\n{\n" ^

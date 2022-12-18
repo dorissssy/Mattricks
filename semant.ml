@@ -104,6 +104,14 @@ let bool_fd =
                   string_of_typ rt ^ " in " ^ string_of_expr ex
         in
         (check_assign lt rt err, SAssign(var, (rt, e')), map')
+      | TwoDArrayAccess(id, r, c) ->
+        let lt = type_of_identifier id map in
+        let (rt, r', map') = check_expr map r in
+        let (ct, c', map'') = check_expr map' c in
+        let err = "illegal array access " ^ string_of_typ lt ^ " = " ^
+                  string_of_typ rt ^ " in " ^ string_of_expr expr
+        in
+        (check_assign Int rt err, STwoDArrayAccess(id, (rt, r'), (ct, c')), map'')
       | Binop(e1, op, e2) as e ->
         let (t1, e1', map1) = check_expr map e1
         in
@@ -192,6 +200,30 @@ let bool_fd =
                     raise (Failure err)
         else
             (SBindAssign(tp, id, (t, e')), StringMap.add id tp map)
+     | DeclareMat(id, row, col) ->
+        let matrix_type = IntMat(row, col)
+        in
+        if StringMap.mem id map then
+          let err = "Duplicated declaration " ^ id
+                     in
+                    raise (Failure err)
+        else
+            if row < 0 || col < 0  then
+              let err = "Invalid matrix size " ^ id
+                     in
+                    raise (Failure err)
+            else
+                (SDeclareMat(id, row, col), StringMap.add id  matrix_type map)
+      | TwoDArrayAssign(id, r, c, e) ->
+        let (t, e', map1) = check_expr map e in
+        let lt = type_of_identifier id map in
+        let err = "illegal array assignment " ^ string_of_typ lt ^ " = " ^
+                  string_of_typ t ^ " in " ^ string_of_expr e
+        in
+        if t = Int then
+          (STwoDArrayAssign(id, r, c, (t, e')), map1)
+        else raise (Failure err)
+
     in (* body of check_func *)
     { srtyp = func.rtyp;
       sfname = func.fname;

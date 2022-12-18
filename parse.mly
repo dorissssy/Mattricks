@@ -11,6 +11,7 @@ open Ast
 %token RETURN COMMA FUNCTION GIVES
 %token <int> LITERAL
 %token <float> FLIT
+%token INTMAT
 %token <bool> BLIT
 %token <string> ID
 %token EOF
@@ -77,6 +78,7 @@ stmt_list_rule:
     /* nothing */             { []     }
   | stmt_rule stmt_list_rule  { $1::$2 }
 
+
 stmt_rule:
   expr_rule SEMI                                          { Expr $1         }
   | LBRACE stmt_list_rule RBRACE                          { Block $2        }
@@ -84,6 +86,8 @@ stmt_rule:
   | WHILE LPAREN expr_rule RPAREN stmt_rule               { While ($3,$5)   }
   | RETURN expr_rule SEMI                        { Return $2      }
   | ID ASSIGN typ_rule expr_rule SEMI          { BindAssign ($3, $1, $4) }
+  | ID ASSIGN INTMAT LPAREN LITERAL COMMA LITERAL RPAREN SEMI { DeclareMat($1, $5, $7) }
+  | ID LBRAC LITERAL RBRAC LBRAC LITERAL RBRAC ASSIGN expr_rule SEMI { TwoDArrayAssign ($1, $3, $6, $9) }
 
 const_rule:
   CONST     { Const }
@@ -102,6 +106,8 @@ mat_array_rule:
 mat_2d_rule:
   | LBRAC mat_array_rule RBRAC { [Mat $2] }
   | LBRAC mat_array_rule RBRAC COMMA mat_2d_rule { (Mat $2):: $5 }
+
+
 
 mat_rule:
   // | LBRAC RBRAC {Mat []} 
@@ -146,7 +152,6 @@ expr_rule:
   | ID ASSIGN const_rule typ_rule expr_rule  { Assign3 ($1, $3, $4, $5)    }
   | LPAREN expr_rule RPAREN       { $2                    }
   | ID LBRAC expr_rule RBRAC { ArrayAccess($1, $3) }
-  | ID LBRAC expr_rule RBRAC LBRAC expr_rule RBRAC  { TwoDArrayAccess($1, $3, $6) }
   | ID LBRAC expr_rule RBRAC LBRAC expr_rule RBRAC LBRAC expr_rule RBRAC { ThreeDArrayAccess($1, $3, $6, $9) }
   | ID LBRAC expr_rule COMMA expr_rule RBRAC { TwoDArrayAccess($1, $3, $5) }
   | ID LBRAC expr_rule COMMA expr_rule COMMA expr_rule RBRAC { ThreeDArrayAccess($1, $3, $5, $7) }

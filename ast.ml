@@ -7,7 +7,10 @@ type typ =
   | Mtype of typ * int * int
   | Vtype of typ * int
   | Ttype of typ * int * int * int
+  | IntMat of int * int
 type mat_typ = Mtype of typ * int * int
+
+
 
 type mat_expr =
   | MatLiteral of int
@@ -46,6 +49,8 @@ type stmt =
   | While of expr * stmt
   | Return of expr
   | BindAssign of typ * string * expr
+  | DeclareMat of string * int * int
+  | TwoDArrayAssign of string * int * int * expr
 
 type bind = typ * string
 type declaration = typ * string * expr
@@ -92,6 +97,7 @@ let rec string_of_typ = function
   | Mtype(t, x, y) -> string_of_typ t ^ "(" ^ string_of_int x ^ "," ^ string_of_int y ^ ")"
   | Vtype(t, x) -> string_of_typ t ^ "(" ^ string_of_int x ^ ")"
   | Ttype(t, x, y, z) -> string_of_typ t ^ "(" ^ string_of_int x ^ "," ^ string_of_int y ^ "," ^ string_of_int z ^ ")"
+  | IntMat(x, y) -> "int" ^ "(" ^ string_of_int x ^ "," ^ string_of_int y ^ ")"
 
 let string_of_mat_typ = function
   Mtype(t, x, y) -> string_of_typ t ^ "(" ^ string_of_int x ^ "," ^ string_of_int y ^ ")"
@@ -121,7 +127,7 @@ let rec string_of_expr = function
   | Assign3(v, c, t, e) -> v ^ " = " ^ string_of_const c ^ " " ^ string_of_typ t ^ " " ^ string_of_expr e
   | DAssign(v, e) -> v ^ " := " ^ string_of_expr e
   | ArrayAccess(s, e) -> s ^ "[" ^ string_of_expr e ^ "]"
-  | TwoDArrayAccess(s, e1, e2) -> s ^ "[" ^ string_of_expr e1 ^ "]" ^ "[" ^ string_of_expr e2 ^ "]"
+  | TwoDArrayAccess(s, x, y) -> s ^ "[" ^ string_of_expr x ^ "," ^ string_of_expr y ^ "]"
   | ThreeDArrayAccess(s, e1, e2, e3) -> s ^ "[" ^ string_of_expr e1 ^ "]" ^ "[" ^ string_of_expr e2 ^ "]" ^ "[" ^ string_of_expr e3 ^ "]"
   | Call(f, el) ->
       f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
@@ -136,7 +142,8 @@ let rec string_of_stmt = function
   | While(e, s) -> "while (" ^ string_of_expr e ^ ") " ^ string_of_stmt s
   | Return(ret) -> "return " ^ string_of_expr ret ^ ";\n"
   | BindAssign(v, t, e) ->   t ^ " = " ^ string_of_typ v ^ " " ^ string_of_expr e ^ ";\n"
-
+  | DeclareMat(v, x, y) ->   v ^ " = int[" ^ string_of_int x ^ "][" ^ string_of_int y ^ "];\n"
+  | TwoDArrayAssign(s, e1, e2, e3) -> s ^ "[" ^ string_of_int e1 ^ "]" ^ "[" ^ string_of_int e2 ^ "] = " ^ string_of_expr e3
 
 
 let string_of_vdecl (t, id) = string_of_typ t ^ " " ^ id ^ ";\n"

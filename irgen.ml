@@ -31,6 +31,7 @@ let translate (globals, functions) =
   and i8_t       = L.i8_type     context
   and i1_t       = L.i1_type     context
   and f32_t      = L.double_type context
+  and matrix_t    =  L.array_type
   in
 
   (* Return the LLVM type for a MicroC type *)
@@ -38,6 +39,7 @@ let translate (globals, functions) =
       A.Int   -> i32_t
     | A.Bool  -> i1_t
     | A.Float -> f32_t
+    | A.IntMat(row, col) -> matrix_t (matrix_t i32_t col) row
   in
 
   (* Create a map of global variables after creating each *)
@@ -99,6 +101,10 @@ let translate (globals, functions) =
       with Not_found -> try StringMap.find n local_vars
         with Not_found -> StringMap.find n global_vars
     in
+(*    let build_2D_array = function*)
+(*        A.IntMat(row, col) -> L.build_array_alloca (L.array_type i32_t col) (L.const_int i32_t row) "matrix" builder*)
+(*      | _ -> raise (Failure "Invalid type for 2D array")*)
+(*    in*)
 
     (* Construct code for an expression; return its value *)
     let rec build_expr builder (table : 'a StringMap.t) ((_, e) : sexpr) = match e with
@@ -131,6 +137,11 @@ let translate (globals, functions) =
         let e'' = L.build_call printf_func [| float_format_str ; e' |]
           "printf" builder in
         (new_table, e'')
+      | STwoDArrayAccess(id, e1, e2)->
+        let (new_table, e1') = build_expr builder table e1
+        and (new_table2, e2') = build_expr builder table e2 in
+        let e' = L.build_gep (lookup table id) [| e1'; e2' |] "tmp" builder in
+        (new_table, L.build_load e' "tmp" builder)
       | SCall(f, args) ->
         let (fdef, fdecl) = StringMap.find f function_decls in
         let actuals = List.rev (List.map (build_expr builder table) (List.rev args)) in
@@ -193,6 +204,19 @@ let translate (globals, functions) =
       | SBindAssign (tp, s, e) -> let (new_table, e') = build_expr builder table e in
         let added_var_list = L.build_alloca (ltype_of_typ tp) s builder in
         ignore(L.build_store e' added_var_list builder); (builder, StringMap.add s added_var_list new_table)
+      | SDeclareMat(id, row, col) ->
+        let row' = L.const_int i32_t row
+        and col' = L.const_int i32_t col in
+        let matrix = L.build_array_malloc (L.pointer_type i32_t) row' "matrix" builder in
+        let matrix' = L.build_pointercast matrix (L.pointer_type (L.pointer_type i32_t)) "matrix" builder in
+        let matrix'' = L.build_alloca (L.pointer_type (L.pointer_type i32_t)) id builder in
+        ignore(L.build_store matrix' matrix'' builder); (builder, StringMap.add id matrix'' table)
+      | STwoDArrayAssign(id, r, c, e) ->
+        let (new_table, e') = build_expr builder table e in
+        let r' = L.build_gep (lookup table id) [| L.const_int i32_t r |] "tmp" builder in
+        let c' = L.build_gep (L.build_load r' "tmp" builder) [| L.const_int i32_t c |] "tmp" builder in
+        let e'' = L.build_gep (lookup table id) [| r'; c' |] "tmp" builder in
+        ignore(L.build_store e' e'' builder); (builder, new_table)
 
     in
     (* Build the code for each statement in the function *)

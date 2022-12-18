@@ -21,6 +21,7 @@ and sx =
   | SCall of string * sexpr list
   | SPrintf of sexpr
   | SFPrintf of sexpr
+  | SOneDArrayAssign of string * sexpr * sexpr
 
 type sstmt =
     SBlock of sstmt list
@@ -32,6 +33,7 @@ type sstmt =
   | SBindAssign of typ * string * sexpr
   | SDeclareMat of string * int * int
   | STwoDArrayAssign of string * int * int * sexpr
+  | SDeclareOneDArray of string * typ
 
 
 
@@ -69,9 +71,11 @@ let rec string_of_sexpr (t, e) =
         | SThreeDArrayAccess(v, e, e2, e3) -> v ^ "[" ^ string_of_sexpr e ^ "]" ^ "[" ^ string_of_sexpr e2 ^ "]" ^ "[" ^ string_of_sexpr e3 ^ "]"
         | SPrintf(e) -> "console << (" ^ string_of_sexpr e ^ ")" ^ ";"
         | SFPrintf(e) -> "console << (" ^ string_of_sexpr e ^ ")" ^ ";"
+        | SOneDArrayAssign(v, e, e2) -> v ^ "[" ^ string_of_sexpr e ^ "]" ^ " = " ^ string_of_sexpr e2
         | SCall(f, el) ->
           f ^ "(" ^ String.concat ", " (List.map string_of_sexpr el) ^ ")"
     ) ^ ")"
+
 
 
 let rec string_of_sstmt = function
@@ -85,6 +89,7 @@ let rec string_of_sstmt = function
   | SBindAssign(t, v, e) -> string_of_typ t ^ " " ^ v ^ " = " ^ string_of_sexpr e ^ ";\n"
   | SDeclareMat(v, i, j) ->  v^ " = int mat" ^ "[" ^ string_of_int i ^ "]" ^ "[" ^ string_of_int j ^ "]" ^ ";\n"
   | STwoDArrayAssign(v, r, c, e) -> v ^ "[" ^ string_of_int r ^ "]" ^ "[" ^ string_of_int c ^ "]" ^ " = " ^ string_of_sexpr e ^ ";\n"
+  | SDeclareOneDArray(v, t) -> v ^ " = " ^ string_of_typ t ^ ";\n"
 let string_of_sfdecl fdecl = "function " ^
   fdecl.sfname ^ "(" ^ String.concat ", " (List.map snd fdecl.sformals) ^
   ") gives "^ string_of_typ fdecl.srtyp ^"\n{\n" ^

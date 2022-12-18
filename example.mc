@@ -3,9 +3,14 @@
 function main(int x) gives int{
     a = int 3;
     f = float 3.33333;
-    ff = intmat(3,2);
+    ff = intmat[4];
+    ff[1] = 3;
+    console<<ff[1];
+    ff[2] = 4;
+    a = ff[2] + ff[2];
+    a = a + a;
+    console<<a;
     f = 4.4444444;
-    ff[1][1] = 1;
     console<<a;
     consolef<<f;
     console<<3;

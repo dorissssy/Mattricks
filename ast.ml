@@ -8,6 +8,8 @@ type typ =
   | Vtype of typ * int
   | Ttype of typ * int * int * int
   | IntMat of int * int
+  | IntMat1D of int
+
 type mat_typ = Mtype of typ * int * int
 
 
@@ -41,6 +43,7 @@ type expr =
   | Call of string * expr list
   | Printf of expr
   | FPrintf of expr
+  | OneDArrayAssign of string * expr * expr
 
 type stmt =
   | Block of stmt list
@@ -51,6 +54,7 @@ type stmt =
   | BindAssign of typ * string * expr
   | DeclareMat of string * int * int
   | TwoDArrayAssign of string * int * int * expr
+  | DeclareOneDArray of string * typ
 
 type bind = typ * string
 type declaration = typ * string * expr
@@ -97,7 +101,8 @@ let rec string_of_typ = function
   | Mtype(t, x, y) -> string_of_typ t ^ "(" ^ string_of_int x ^ "," ^ string_of_int y ^ ")"
   | Vtype(t, x) -> string_of_typ t ^ "(" ^ string_of_int x ^ ")"
   | Ttype(t, x, y, z) -> string_of_typ t ^ "(" ^ string_of_int x ^ "," ^ string_of_int y ^ "," ^ string_of_int z ^ ")"
-  | IntMat(x, y) -> "int" ^ "(" ^ string_of_int x ^ "," ^ string_of_int y ^ ")"
+  | IntMat(x, y) -> "int" ^ "[" ^ string_of_int x ^ "," ^ string_of_int y ^ "]"
+  | IntMat1D(x) -> "int" ^ "[" ^ string_of_int x ^ "]"
 
 let string_of_mat_typ = function
   Mtype(t, x, y) -> string_of_typ t ^ "(" ^ string_of_int x ^ "," ^ string_of_int y ^ ")"
@@ -133,6 +138,7 @@ let rec string_of_expr = function
       f ^ "(" ^ String.concat ", " (List.map string_of_expr el) ^ ")"
   | Printf(e) -> "printf(" ^ string_of_expr e ^ ")"
   | FPrintf(e) -> "fprintf(" ^ string_of_expr e ^ ")"
+  | OneDArrayAssign(s, e1, e2) -> s ^ "[" ^ string_of_expr e1 ^ "]" ^ " = " ^ string_of_expr e2
 let rec string_of_stmt = function
     Block(stmts) ->
     "{\n" ^ String.concat "" (List.map string_of_stmt stmts) ^ "}\n"
@@ -144,8 +150,7 @@ let rec string_of_stmt = function
   | BindAssign(v, t, e) ->   t ^ " = " ^ string_of_typ v ^ " " ^ string_of_expr e ^ ";\n"
   | DeclareMat(v, x, y) ->   v ^ " = int[" ^ string_of_int x ^ "][" ^ string_of_int y ^ "];\n"
   | TwoDArrayAssign(s, e1, e2, e3) -> s ^ "[" ^ string_of_int e1 ^ "]" ^ "[" ^ string_of_int e2 ^ "] = " ^ string_of_expr e3
-
-
+  | DeclareOneDArray(v, t) -> v ^ " = " ^ string_of_typ t ^ ";\n"
 let string_of_vdecl (t, id) = string_of_typ t ^ " " ^ id ^ ";\n"
 (* let string_of_adecl (t, id, e) = string_of_typ t ^ " " ^ id ^ " = " ^ string_of_expr e ^ ";\n"
 let string_of_dadecl (id, e) = id ^ " := " ^ string_of_expr e ^ ";\n" *)

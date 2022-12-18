@@ -73,6 +73,10 @@ typ_rule:
     INT     { Int  }
   | BOOL    { Bool }
   | FLOAT   { Float }
+  | one_d_array_rule { $1 }
+
+one_d_array_rule:
+  | INTMAT LBRAC LITERAL RBRAC { IntMat1D $3 }
 
 stmt_list_rule:
     /* nothing */             { []     }
@@ -87,7 +91,8 @@ stmt_rule:
   | RETURN expr_rule SEMI                        { Return $2      }
   | ID ASSIGN typ_rule expr_rule SEMI          { BindAssign ($3, $1, $4) }
   | ID ASSIGN INTMAT LPAREN LITERAL COMMA LITERAL RPAREN SEMI { DeclareMat($1, $5, $7) }
-  | ID LBRAC LITERAL RBRAC LBRAC LITERAL RBRAC ASSIGN expr_rule SEMI { TwoDArrayAssign ($1, $3, $6, $9) }
+  /*| ID LBRAC LITERAL RBRAC LBRAC LITERAL RBRAC ASSIGN expr_rule SEMI { TwoDArrayAssign ($1, $3, $6, $9) }*/
+  | ID ASSIGN one_d_array_rule SEMI { DeclareOneDArray ($1, $3) }
 
 const_rule:
   CONST     { Const }
@@ -125,7 +130,6 @@ mat_rule:
   
   // | mat_rule COMMA  mat_rule { (Mat $1) :: (Mat $3) }
   
-  
 
 
 expr_rule:
@@ -151,6 +155,7 @@ expr_rule:
   | ID ASSIGN expr_rule           { Assign ($1, $3)       }
   | ID ASSIGN const_rule typ_rule expr_rule  { Assign3 ($1, $3, $4, $5)    }
   | LPAREN expr_rule RPAREN       { $2                    }
+  | ID LBRAC expr_rule RBRAC ASSIGN expr_rule { OneDArrayAssign ($1, $3, $6) }
   | ID LBRAC expr_rule RBRAC { ArrayAccess($1, $3) }
   | ID LBRAC expr_rule RBRAC LBRAC expr_rule RBRAC LBRAC expr_rule RBRAC { ThreeDArrayAccess($1, $3, $6, $9) }
   | ID LBRAC expr_rule COMMA expr_rule RBRAC { TwoDArrayAccess($1, $3, $5) }

@@ -40,6 +40,7 @@ let translate (globals, functions) =
     | A.Bool  -> i1_t
     | A.Float -> f32_t
     | A.IntMat(row, col) -> matrix_t (matrix_t i32_t col) row
+    | A.IntMat1D(row) -> matrix_t i32_t row
   in
 
   (* Create a map of global variables after creating each *)
@@ -101,10 +102,10 @@ let translate (globals, functions) =
       with Not_found -> try StringMap.find n local_vars
         with Not_found -> StringMap.find n global_vars
     in
-(*    let build_2D_array = function*)
-(*        A.IntMat(row, col) -> L.build_array_alloca (L.array_type i32_t col) (L.const_int i32_t row) "matrix" builder*)
-(*      | _ -> raise (Failure "Invalid type for 2D array")*)
-(*    in*)
+    let build_2D_array = function
+        A.IntMat(row, col) -> L.build_array_alloca (L.array_type i32_t col) (L.const_int i32_t row) "matrix" builder
+      | _ -> raise (Failure "Invalid type for 2D array")
+    in
 
     (* Construct code for an expression; return its value *)
     let rec build_expr builder (table : 'a StringMap.t) ((_, e) : sexpr) = match e with
@@ -138,10 +139,10 @@ let translate (globals, functions) =
           "printf" builder in
         (new_table, e'')
       | STwoDArrayAccess(id, e1, e2)->
-        let (new_table, e1') = build_expr builder table e1
-        and (new_table2, e2') = build_expr builder table e2 in
+        let (new_table, e1') = build_expr builder table e1 in
+        let (new_table2, e2') = build_expr builder table e2 in
         let e' = L.build_gep (lookup table id) [| e1'; e2' |] "tmp" builder in
-        (new_table, L.build_load e' "tmp" builder)
+        (new_table, e')
       | SCall(f, args) ->
         let (fdef, fdecl) = StringMap.find f function_decls in
         let actuals = List.rev (List.map (build_expr builder table) (List.rev args)) in
@@ -150,7 +151,15 @@ let translate (globals, functions) =
         let new_table = List.fold_left (fun m (m', _) -> StringMap.union (fun _ _ _ -> None) m m') table actuals in
         let actuals = List.map snd actuals in
         (new_table, L.build_call fdef (Array.of_list actuals) result builder)
-
+       | SOneDArrayAssign(id, idx, e1) ->
+        let (new_table, e1') = build_expr builder table e1 in
+        let (new_table2, idx') = build_expr builder table idx in
+        let e' =  (L.build_gep (lookup table id) [| (L.const_int i32_t 0);  idx' |] "tmp" builder)  in
+        ignore(L.build_store e1' e' builder); (new_table, e')
+       | SArrayAccess(id, e) ->
+        let (new_table, e') = build_expr builder table e in
+        let e'' = L.build_load (L.build_gep (lookup table id) [| (L.const_int i32_t 0);  e' |] "tmp" builder) "tmp" builder in
+        (new_table, e'')
     in
 
     (* LLVM insists each basic block end with exactly one "terminator"
@@ -217,6 +226,11 @@ let translate (globals, functions) =
         let c' = L.build_gep (L.build_load r' "tmp" builder) [| L.const_int i32_t c |] "tmp" builder in
         let e'' = L.build_gep (lookup table id) [| r'; c' |] "tmp" builder in
         ignore(L.build_store e' e'' builder); (builder, new_table)
+      | SDeclareOneDArray(v, t) ->
+        let added_var_list = L.build_array_alloca (ltype_of_typ t) (L.const_int i32_t 0) "tmp" builder in
+        (builder, StringMap.add v added_var_list table)
+(*        let added_var_list = L.build_alloca (ltype_of_typ t) v builder in*)
+(*        (builder, StringMap.add v added_var_list table)*)
 
     in
     (* Build the code for each statement in the function *)

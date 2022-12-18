@@ -155,6 +155,22 @@ let bool_fd =
           in
           let args' = List.map2 check_call fd.formals args
           in (fd.rtyp, SCall(fname, args'), map)
+      | ArrayAccess(id, e) ->
+        let lt = type_of_identifier id map in
+        let (rt, e', map') = check_expr map e in
+        let err = "illegal array access " ^ string_of_typ lt ^ " = " ^
+                  string_of_typ rt ^ " in " ^ string_of_expr expr
+        in
+        (check_assign Int rt err, SArrayAccess(id, (rt, e')), map')
+      | OneDArrayAssign(id, idx, e1) ->
+        let lt = type_of_identifier id map in
+        let (rt, e1', map') = check_expr map e1 in
+        let (it, idx', map'') = check_expr map' idx in
+        let err = "illegal array assignment " ^ string_of_typ lt ^ " = " ^
+                  string_of_typ rt ^ " in " ^ string_of_expr expr
+        in
+        if it != Int then raise (Failure err)
+        else (check_assign Int rt err, SOneDArrayAssign(id, (it, idx'), (rt, e1')), map'')
     in
 
     let check_bool_expr map e =
@@ -223,6 +239,13 @@ let bool_fd =
         if t = Int then
           (STwoDArrayAssign(id, r, c, (t, e')), map1)
         else raise (Failure err)
+      | DeclareOneDArray(v, t) ->
+        if StringMap.mem v map then
+          let err = "Duplicated declaration " ^ v
+                     in
+                    raise (Failure err)
+        else
+            (SDeclareOneDArray(v, t), StringMap.add v t map)
 
     in (* body of check_func *)
     { srtyp = func.rtyp;

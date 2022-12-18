@@ -86,8 +86,19 @@ let check (globals, functions) =
         StringMap.empty (globals @ func.formals @ func.locals )
     in
 
-    (* TODO: count number of values in the Matrix*)
-    let check_count_matrix_values matrix = 3
+    (* Count number of values in the Matrix*)
+    let rec check_count_matrix_values (mt:mat) = 
+      let cnt = match mt with 
+                | None -> 0
+                | MatValue(e) -> 1
+                (* | MatValue(e) -> 1 *)
+                | Mat(m) -> 
+                  (* let h::t = m in *)
+                    List.fold_left (+) 0 (List.map check_count_matrix_values m)
+                (* | Mat(m) -> 
+                  List.fold_left check_count_matrix_values 0 m *)
+
+      in cnt
     in
 
     (* Check if if r,c match *)
@@ -102,8 +113,11 @@ let check (globals, functions) =
             raise(Failure "Matrix Illegal Assignment: ROW MISMATCH!")
           else
             let cnt = check_count_matrix_values matrix in
-            if cnt != c then
-              raise(Failure "Matrix Illegal Assignment: COL MISMATCH!")
+            if cnt != r*c then
+              let err = "Matrix Illegal Assignment: COL MISMATCH!\n " ^ 
+                        "Expected: " ^ string_of_int (r*c) ^ " elements, " ^
+                        "but got: " ^ string_of_int cnt ^ "."
+              in raise(Failure err)
             else
               (t,r,c) 
       in (* TODO: smatrix *)

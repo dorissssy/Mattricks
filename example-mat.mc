@@ -5,7 +5,7 @@
 function main(int x) gives int{
 
 
-    mat3 = int(1, 3)[ [1,2,3]];
+    mat3 = int(1, 3)[ [1,2,3] ];
 
 
     return x;

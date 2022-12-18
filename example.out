@@ -8,7 +8,13 @@ function main(x) gives int
 int a = (int : 3);
 float f = (float : 3.333330);
 ff = matrix matrix float[5][4];
-(matrix matrix float[5][4] : (matrix matrix float[5][4] : ff[?(int : 0)])[(int : 0)]);
+(float : (float : ff[?(int : 0)])[(int : 0)]);
+ffb = matrix matrix bool[5][4];
+(bool : (bool : ffb[?(int : 0)])[(int : 0)]);
+ffi = matrix matrix int[5][4];
+(int : (int : ffi[?(int : 0)])[(int : 0)]);
+fb = matrix bool[4];
+(bool : fb[?(int : 0)]);
 return (int : 0);
 }
 

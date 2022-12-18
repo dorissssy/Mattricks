@@ -6,6 +6,15 @@ function main(int x) gives int{
     ff = mat mat float [5] [4];
     ff[0][0];
 
+    ffb = mat mat bool [5] [4];
+    ffb[0][0];
+
+    ffi = mat mat int [5] [4];
+    ffi[0][0];
+
+    fb = mat bool [4];
+    fb[0];
+
 
 /*   
     fff = mat float [4];

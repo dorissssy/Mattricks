@@ -85,7 +85,19 @@ let bool_fd =
     let symbols = List.fold_left (fun m (ty, name) -> StringMap.add name ty m)
         StringMap.empty (globals @ func.formals @ func.locals )
     in
+    (* Get the array's value type *)
+    let rec get_array_value_type lt = 
+      match lt with 
+      | Int -> Int
+      | Float -> Float
+      | Bool -> Bool
+      | IntMat1D(t,e) -> match t with 
+                        | Int -> Int
+                        | Float -> Float
+                        | Bool -> Bool
+                        | IntMat1D(t2,e2) -> get_array_value_type(IntMat1D(t2,e2))
 
+    in
     (* Return a variable from our local symbol table *)
     let type_of_identifier s map =
       try StringMap.find s map
@@ -162,7 +174,7 @@ let bool_fd =
         let err = "illegal array access " ^ string_of_typ lt ^ " = " ^
                   string_of_typ rt ^ " in " ^ string_of_expr expr
         in
-        (lt, SArrayAccess(id, (rt, e')), map')
+        (get_array_value_type lt, SArrayAccess(id, (rt, e')), map')
         (* (check_assign Int rt err, SArrayAccess(id, (rt, e')), map') *)
       | AnyArrayAccess(e1, e2) ->
         let (t1, e1', map1) = check_expr map e1 in

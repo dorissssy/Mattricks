@@ -7,7 +7,7 @@ type typ =
   | Mtype of typ * int * int
   | Vtype of typ * int
   | Ttype of typ * int * int * int
-  | IntMat of int * int
+  (* | IntMat of int * int *)
   | IntMat1D of typ * int
 
 type mat_typ = Mtype of typ * int * int
@@ -102,7 +102,7 @@ let rec string_of_typ = function
   | Mtype(t, x, y) -> string_of_typ t ^ "(" ^ string_of_int x ^ "," ^ string_of_int y ^ ")"
   | Vtype(t, x) -> string_of_typ t ^ "(" ^ string_of_int x ^ ")"
   | Ttype(t, x, y, z) -> string_of_typ t ^ "(" ^ string_of_int x ^ "," ^ string_of_int y ^ "," ^ string_of_int z ^ ")"
-  | IntMat(x, y) -> "int" ^ "[" ^ string_of_int x ^ "," ^ string_of_int y ^ "]"
+  (* | IntMat(x, y) -> "int" ^ "[" ^ string_of_int x ^ "," ^ string_of_int y ^ "]" *)
   | IntMat1D(tp, x) -> "matrix " ^ string_of_typ tp ^ "[" ^ string_of_int x ^ "]"
 
 let string_of_mat_typ = function

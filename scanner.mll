@@ -56,7 +56,7 @@ rule token = parse
 | "const"     { CONST }
 | "function"  { FUNCTION }
 | "gives"     { GIVES }
-| "intmat"     { INTMAT }
+| "mat"     { INTMAT }
 | '-'?return_value as lem { FLIT(float_of_string lem) }
 | '-'?digit+ as lem  { LITERAL(int_of_string lem) }
 | ('_' | letter) (digit | letter | '_')* as lem { ID(lem) }

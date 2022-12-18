@@ -1,0 +1,14 @@
+
+
+Sementically checked program: 
+
+
+function main(x) gives int
+{
+int a = (int : 3);
+float f = (float : 3.333330);
+ff = matrix matrix float[5][4];
+(matrix matrix float[5][4] : (matrix matrix float[5][4] : ff[?(int : 0)])[(int : 0)]);
+return (int : 0);
+}
+

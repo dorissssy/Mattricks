@@ -155,21 +155,22 @@ let bool_fd =
           in
           let args' = List.map2 check_call fd.formals args
           in (fd.rtyp, SCall(fname, args'), map)
+
       | ArrayAccess(id, e) ->
         let lt = type_of_identifier id map in
         let (rt, e', map') = check_expr map e in
         let err = "illegal array access " ^ string_of_typ lt ^ " = " ^
                   string_of_typ rt ^ " in " ^ string_of_expr expr
         in
-        (check_assign Int rt err, SArrayAccess(id, (rt, e')), map')
+        (lt, SArrayAccess(id, (rt, e')), map')
+        (* (check_assign Int rt err, SArrayAccess(id, (rt, e')), map') *)
       | AnyArrayAccess(e1, e2) ->
         let (t1, e1', map1) = check_expr map e1 in
         let (t2, e2', map2) = check_expr map1 e2 in
         let err = "illegal array access " ^ string_of_typ t1 ^ " = " ^
                   string_of_typ t2 ^ " in " ^ string_of_expr expr
         in
-
-        (t1, SAnyArrayAccess((t1, e1'), (t2, e2')), map2)
+          (t1, SAnyArrayAccess((t1, e1'), (t2, e2')), map2)
       | OneDArrayAssign(id, idx, e1) ->
         let lt = type_of_identifier id map in
         let (rt, e1', map') = check_expr map e1 in
@@ -230,7 +231,7 @@ let bool_fd =
                     raise (Failure err)
         else
             (SBindAssign(tp, id, (t, e')), StringMap.add id tp map)
-     | DeclareMat(id, row, col) ->
+     (* | DeclareMat(id, row, col) ->
         let matrix_type = IntMat(row, col)
         in
         if StringMap.mem id map then
@@ -243,7 +244,7 @@ let bool_fd =
                      in
                     raise (Failure err)
             else
-                (SDeclareMat(id, row, col), StringMap.add id  matrix_type map)
+                (SDeclareMat(id, row, col), StringMap.add id  matrix_type map) *)
       | TwoDArrayAssign(id, r, c, e) ->
         let (t, e', map1) = check_expr map e in
         let lt = type_of_identifier id map in

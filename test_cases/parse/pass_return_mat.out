@@ -1,0 +1,11 @@
+
+
+Parsed program: 
+
+
+matrix int[4] f()
+{
+mat1 = matrix int[4];
+return mat1;
+}
+

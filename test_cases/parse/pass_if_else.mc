@@ -1,5 +1,10 @@
 function f () gives int {
     a = int 0;
+
+    if (1 == 1) {
+        b = bool true;
+    }
+
     if (a < 5) {
         return a;
     } else {

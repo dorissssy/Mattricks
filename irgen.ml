@@ -31,7 +31,7 @@ let translate (globals, functions) =
   and i8_t       = L.i8_type     context
   and i1_t       = L.i1_type     context
   and f32_t      = L.double_type context
-  and matrix_t    =  L.array_type
+  and matrix_t   = L.array_type
   in
 
   (* Return the LLVM type for a MicroC type *)
@@ -41,18 +41,22 @@ let translate (globals, functions) =
     | A.Float -> f32_t
     (* | A.IntMat(row, col) -> matrix_t (matrix_t i32_t col) row *)
     | A.IntMat1D(tp, row) ->
-    match tp with
-    | A.Int -> matrix_t i32_t row
-    | A.Float -> matrix_t f32_t row
-    | A.Bool -> matrix_t i1_t row
-    | A.IntMat1D(tp, row2) -> matrix_t (matrix_t i32_t row2) row
+      match tp with
+      | A.Int -> matrix_t i32_t row
+      | A.Float -> matrix_t f32_t row
+      | A.Bool -> matrix_t i1_t row
+      | A.IntMat1D(tp, row2) -> matrix_t (matrix_t i32_t row2) row
   in
 
   (* Create a map of global variables after creating each *)
   let global_vars : L.llvalue StringMap.t =
     let global_var m (t, n) =
-      let init = L.const_int (ltype_of_typ t) 0
-      in StringMap.add n (L.define_global n init the_module) m in
+      let init = match t with 
+        | A.Int -> L.const_int i32_t 0
+        | A.Bool  -> L.const_int i1_t 0
+        | A.Float -> L.const_float f32_t 0.0
+      in 
+        StringMap.add n (L.define_global n init the_module) m in
     List.fold_left global_var StringMap.empty globals in
 
   let printf_t : L.lltype =
@@ -123,20 +127,34 @@ let translate (globals, functions) =
       | SBinop (e1, op, e2) ->
         let (_, e1') = build_expr builder table e1
         and (_, e2') = build_expr builder table e2 in
-        let e' = (match op with
-            A.Add     -> L.build_add
-          | A.Sub     -> L.build_sub
-          | A.Times   -> L.build_mul
-          | A.Divide  -> L.build_udiv
-          | A.And     -> L.build_and
-          | A.Or      -> L.build_or
-          | A.Equal   -> L.build_icmp L.Icmp.Eq
-          | A.Neq     -> L.build_icmp L.Icmp.Ne
-          | A.Less    -> L.build_icmp L.Icmp.Slt
-          | A.More    -> L.build_icmp L.Icmp.Sgt
-          | A.LessEqual -> L.build_icmp L.Icmp.Sle
-          | A.MoreEqual -> L.build_icmp L.Icmp.Uge
-          ) e1' e2' "tmp" builder in
+        let op_command = 
+          match e1 with
+          | (A.Float, _) -> (match op with
+              A.Add     -> L.build_fadd
+            | A.Sub     -> L.build_fsub
+            | A.Times   -> L.build_fmul
+            | A.Divide  -> L.build_fdiv
+            | A.Equal   -> L.build_fcmp L.Fcmp.Ueq
+            | A.Neq     -> L.build_fcmp L.Fcmp.Une
+            | A.Less    -> L.build_fcmp L.Fcmp.Ult
+            | A.More    -> L.build_fcmp L.Fcmp.Ugt
+            | A.LessEqual -> L.build_fcmp L.Fcmp.Ule
+            | A.MoreEqual -> L.build_fcmp L.Fcmp.Uge) 
+          | _ -> (match op with
+              A.Add     -> L.build_add
+            | A.Sub     -> L.build_sub
+            | A.Times   -> L.build_mul
+            | A.Divide  -> L.build_sdiv
+            | A.And     -> L.build_and
+            | A.Or      -> L.build_or
+            | A.Equal   -> L.build_icmp L.Icmp.Eq
+            | A.Neq     -> L.build_icmp L.Icmp.Ne
+            | A.Less    -> L.build_icmp L.Icmp.Slt
+            | A.More    -> L.build_icmp L.Icmp.Sgt
+            | A.LessEqual -> L.build_icmp L.Icmp.Sle
+            | A.MoreEqual -> L.build_icmp L.Icmp.Sge) 
+        in 
+        let e' = op_command e1' e2' "tmp" builder in
         (table, e')
       | SPrintf (e) ->
         let (new_table, e') = build_expr builder table e in

@@ -3,11 +3,17 @@
 # Mattricks
 #
 # Compilation: 
-# Option 1: Simply type "make <phase>"(phase can be 'parse' or 'scanner') to compile the Mattricks. Will auto run example.mc test
+# Option 1: Simply type "make <phase>"(phase can be 'parse' or 'scanner' or 'compiler') to compile the Mattricks. Will auto run example.mc test
 # Option 2: "ocamlbuild <phase>.native" will also build the Mattricks
-
+#
 # For testing, you can run the binary executable and test it with example.mc, it will generate example.out
-# Or use ./test [optioanl: flags -cpsaf:] to test with test suite
+# Or simply call "make test_all" to test with test suites
+# Or use ./test_case/test_script [optioanl: flags -cpsaf:] to test with test suite
+##############################
+
+test_all :
+	./test_script
+
 ##############################
 
 test_parse : parse.mly ast.ml scanner.mll ./test_cases/test_parse.ml

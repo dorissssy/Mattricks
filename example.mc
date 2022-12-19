@@ -9,7 +9,7 @@ int i;
 function init_val_1d_int_10(mat int [10] m, int val) gives mat int [10] {
     i = 0;
     while (i < 10) {
-        m[i] = val;
+        m[i] = val + i;
         i = i + 1;
     }
     return m;
@@ -73,28 +73,20 @@ function init_val_2d_int_6_7(mat mat int [6][7] m, int val) gives mat mat int [6
 
 
 function main(int x) gives int{
-    
     mat_1d_int_10 = mat int [10];
     mat2_1d_int_10 = mat int [10];
-
     mat_1d_int_10 = init_val_1d_int_10(mat_1d_int_10, 0);
     print_1d_int_10(mat_1d_int_10);
-
     mat_1d_int_10 = init_val_1d_int_10(mat_1d_int_10, 123);
     mat_1d_int_10 = addval_1d_int_10(mat_1d_int_10, -123);
     mat2_1d_int_10 = init_val_1d_int_10(mat2_1d_int_10, 12);
-
     mat_1d_int_10 = addmat_1d_int_10(mat_1d_int_10, mat2_1d_int_10);
     print_1d_int_10(mat_1d_int_10);
-
-
-
-/*
     mat_2d_int_6_7 = mat mat int [6][7];
     mat_2d_int_6_7[1][2] = 4;
     console << mat_2d_int_6_7[1][2] ;
 
-
+/*
     mat_2d_int_6_7 = init_val_2d_int_6_7(mat_2d_int_6_7, 456);
 
         mat_1d_int_10[1] = 1;

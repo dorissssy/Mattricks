@@ -41,6 +41,11 @@ compiler :
 	./microc.native < example.mc > example.out
 	lli example.out
 
+compiler2 :
+	ocamlbuild -pkgs llvm microc.native
+	./microc.native < example2.mc > example.out
+	lli example.out
+
 ##############################
 
 clean:

@@ -11,6 +11,9 @@ float f = (float : 0.20);
 (float : console << ((float : f)););
 bool b = (bool : true);
 (bool : console << ((bool : b)););
+m = matrix int[4];
+(int : m[(int : 0)] = (int : 123));
+(int : console << ((int : m[?(int : 0)])););
 (int : console << ((int : 1)););
 return (int : i);
 }

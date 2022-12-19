@@ -12,14 +12,17 @@ NC='\033[0m'
 let flag_clean=0
 let flag_parse=0
 let flag_semant=0
+let flag_runnable=0
 let flag_file=0
-while getopts 'cpsaf:' flag; do
+while getopts 'cpsraf:' flag; do
   case "${flag}" in
     c) let flag_clean=1;;
     p) let flag_parse=1;;
     s) let flag_semant=1;;
+    r) let flag_runnable=1;;
     a) let flag_parse=1;
-       let flag_semant=1;;
+       let flag_semant=1;
+       let flag_runnable=1;;
     f) let flag_file=1;
        test_file=${OPTARG};
        test_file=${test_file##*test_cases/};
@@ -32,9 +35,10 @@ done
 if [ ${flag_clean} -ne 0 ]; then
   echo "Clean flag enabled: clean temp folder after testing"
 fi
-if [ ${flag_file} -eq 0 ] && [ ${flag_parse} -eq 0 ] && [ ${flag_semant} -eq 0 ]; then
+if [ ${flag_file} -eq 0 ] && [ ${flag_parse} -eq 0 ] && [ ${flag_semant} -eq 0 ] && [ ${flag_runnable} -eq 0 ]; then
   let flag_parse=1
   let flag_semant=1
+  let flag_runnable=1
   echo "DEFAULT All flag enabled: test all cases"
 else
   if [ ${flag_parse} -ne 0 ]; then
@@ -43,6 +47,9 @@ else
   if [ ${flag_semant} -ne 0 ]; then
     echo "Semant flag enabled: test cases for semantics phase"
   fi
+  if [ ${flag_runnable} -ne 0 ]; then
+    echo "Runnable flag enabled: test cases for runnable code"
+  fi
 fi
 
 # initialize report numbers
@@ -50,6 +57,8 @@ let parse_passed_number=0
 let parse_failed_number=0
 let semant_passed_number=0
 let semant_failed_number=0
+let runnable_passed_number=0
+let runnable_failed_number=0
 ################################
 
 ############### TEST PARSE #################
@@ -58,7 +67,9 @@ if [ ${flag_parse} -eq 1 ]; then
 
   # build test_parse.native executable
   echo '-- Build .native executable --'
+  cp ./test_cases/test_parse.ml ./
   ocamlbuild test_parse.native
+  rm ./test_parse.ml
 
   # check if the executable exists
   if [ -f './test_parse.native' ]; then
@@ -115,7 +126,9 @@ if [ ${flag_semant} -eq 1 ]; then
 
   # build test_semant.native executable
   echo '-- Build .native executable --'
+  cp ./test_cases/test_semant.ml ./
   ocamlbuild test_semant.native
+  rm ./test_semant.ml
 
   # check if the executable exists
   if [ -f './test_semant.native' ]; then
@@ -166,6 +179,65 @@ if [ ${flag_semant} -eq 1 ]; then
 fi
 ############### DONE TEST SEMANT #################
 
+############### TEST RUNNABLE #################
+if [ ${flag_runnable} -eq 1 ]; then
+  echo -e ${BLUE}'######### RUNNABLE TEST #########'${NC}
+
+  # build microc.native executable
+  echo '-- Build .native executable --'
+  ocamlbuild -pkgs llvm microc.native
+
+  # check if the executable exists
+  if [ -f './microc.native' ]; then
+    echo -e ${GREEN}'ocamlbuild microc.native successfully'${NC}
+  else
+    echo -e ${RED}'ocamlbuild failed, please check error messages\n'${NC}
+    exit 1
+  fi
+
+  # test each test file in test folder
+  for file in ./test_cases/runnable/*.mc
+  do
+    ./microc.native < $file > ${file%.mc}.compiled 2>&1
+    lli ${file%.mc}.compiled > ${file%.mc}.ans 2>&1
+  done
+
+  # move all test answer files and expected out files into a temporary folder
+  rm -r ./test_cases/runnable/temp*
+  mkdir ./test_cases/runnable/temp
+  cp ./test_cases/runnable/*.ans ./test_cases/runnable/temp
+  cp ./test_cases/runnable/*.out ./test_cases/runnable/temp
+  mv ./test_cases/runnable/*.compiled ./test_cases/runnable/temp
+  rm ./test_cases/runnable/*.ans
+  echo 'Completed running all /test_cases/runnable'
+  echo '-----------------------------'
+
+  # compare result and out file one by one
+  for file in ./test_cases/runnable/temp/*.out
+  do
+    # check stdout
+    diff $file ${file%.out}.ans
+    if [ $? -eq 0 ]
+    then
+      echo -e ${GREEN}${file##*/}' passed'${NC}
+      let runnable_passed_number++
+    else
+      echo -e ${RED}${file##*/}' failed'${NC}
+      let runnable_failed_number++
+    fi
+  done
+
+  # remove microc.native executable file
+  rm microc.native
+  # clean temp folder
+  if [ ${flag_clean} -ne 0 ]; then
+    rm -r ./test_cases/runnable/temp
+  fi
+
+  echo -e ${BLUE}'######### DONE RUNNABLE TEST #########\n'${NC}
+fi
+############### DONE TEST RUNNABLE #################
+
 ############### TEST SINGLE CASE #################
 if [ ${flag_file} -eq 1 ]; then
   # build test_*.native executable
@@ -178,6 +250,10 @@ if [ ${flag_file} -eq 1 ]; then
     ocamlbuild test_semant.native
     base_path='./test_cases/semant'
     executable_file='./test_semant.native'
+  elif [[ $test_file == *"runnable"* ]]; then
+    ocamlbuild -pkgs llvm microc.native
+    base_path='./test_cases/runnable'
+    executable_file='./microc.native'
   fi
 
   # check if the executable exists
@@ -189,7 +265,12 @@ if [ ${flag_file} -eq 1 ]; then
   fi
 
   # execute test file
-  $executable_file < ${base_path%/*}/$test_file.mc > ${base_path%/*}/$test_file.ans 2>&1
+  if [[ $test_file == *"runnable"* ]]; then
+    $executable_file < ${base_path%/*}/$test_file.mc > ${base_path%/*}/$test_file.compiled
+    lli ${base_path%/*}/$test_file.compiled > ${base_path%/*}/$test_file.ans 2>&1
+  else
+    $executable_file < ${base_path%/*}/$test_file.mc > ${base_path%/*}/$test_file.ans 2>&1
+  fi
 
   # move test answer file and expected out file into the temp folder
   rm -r $base_path/temp
@@ -197,6 +278,9 @@ if [ ${flag_file} -eq 1 ]; then
   cp ${base_path%/*}/$test_file.ans $base_path/temp
   cp ${base_path%/*}/$test_file.out $base_path/temp
   rm ${base_path%/*}/$test_file.ans
+  if [[ $test_file == *"runnable"* ]]; then
+    mv ${base_path%/*}/$test_file.compiled $base_path/temp/
+  fi
   echo '-----------------------------'
 
   # compare result and out file
@@ -223,8 +307,8 @@ fi
 ############### DONE TEST SINGLE CASE #################
 
 # print final result
-let passed_number=$((parse_passed_number + semant_passed_number))
-let failed_number=$((parse_failed_number + semant_failed_number))
+let passed_number=$((parse_passed_number + semant_passed_number + runnable_passed_number))
+let failed_number=$((parse_failed_number + semant_failed_number + runnable_failed_number))
 echo -e "\n${BOLD}TEST REPORT${NC}\n"
 echo -e "passed : ${GREEN}"${passed_number}"${NC} test(s)"
 echo -e "failed : ${RED}"${failed_number}"${NC} test(s)"
@@ -237,4 +321,9 @@ if [ ${flag_semant} -eq 1 ]; then
   echo '-----------------------------'
   echo -e "> semant passed: ${GREEN}"${semant_passed_number}"${NC} test(s)"
   echo -e "> semant failed: ${RED}"${semant_failed_number}"${NC} test(s)"
+fi
+if [ ${flag_runnable} -eq 1 ]; then
+  echo '-----------------------------'
+  echo -e "> runnable passed: ${GREEN}"${runnable_passed_number}"${NC} test(s)"
+  echo -e "> runnable failed: ${RED}"${runnable_failed_number}"${NC} test(s)"
 fi

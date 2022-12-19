@@ -21,6 +21,7 @@ let rec eval = function
             raise (Failure "Variable not found")
     | Assign(x, e) -> 
         let v = eval e in Hashtbl.replace tb x v; v
+    | IIF(e1, e2) -> if eval e1 <> 0 then eval e2
     | If(e1, e2, e3) -> if eval e1 <> 0 then eval e2 else eval e3
     | While(e1, e2) -> let rec loop () = if eval e1 <> 0 then (eval e2; loop ()) in loop (); 0
     | Block(e1, e2) -> eval e1; eval e2

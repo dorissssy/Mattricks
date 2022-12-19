@@ -1,6 +1,7 @@
-function f (int k) gives int {
-    mat1 = int(1, 3)[];
-    mat2 = int(1, 3)[[1,3]];
-    mat3 = int(2, 3)[[1,3], [2,4]];
-    return k;
+function f () gives int {
+    mat_int   = mat int [4];
+    mat_float = mat float [10];
+    mat_bool  = mat bool [2];
+
+    return 0;
 }

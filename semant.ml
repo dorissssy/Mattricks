@@ -220,6 +220,9 @@ let bool_fd =
          Block sl -> (SBlock(fst (check_stmt_list map sl)), map)
        | Expr e -> let (typ, sexpr, new_map) = check_expr map e in
        						(SExpr (typ, sexpr), new_map)
+      | IIf(e, st1) ->
+      		let sthen, map1 = check_stmt map st1 in
+      		(SIIf(check_bool_expr map1 e, sthen), map1)
       | If(e, st1, st2) ->
       		let sthen, map1 = check_stmt map st1 in
       		let selse, map2 = check_stmt map1 st2 in

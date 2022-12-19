@@ -31,7 +31,7 @@ let translate (globals, functions) =
   and i8_t       = L.i8_type     context
   and i1_t       = L.i1_type     context
   and f32_t      = L.double_type context
-  and matrix_t    =  L.array_type
+  and matrix_t   = L.array_type
   in
 
   (* Return the LLVM type for a MicroC type *)
@@ -39,20 +39,24 @@ let translate (globals, functions) =
       A.Int   -> i32_t
     | A.Bool  -> i1_t
     | A.Float -> f32_t
-    | A.IntMat(row, col) -> matrix_t (matrix_t i32_t col) row
+    (* | A.IntMat(row, col) -> matrix_t (matrix_t i32_t col) row *)
     | A.IntMat1D(tp, row) ->
-    match tp with
-    | A.Int -> matrix_t i32_t row
-    | A.Float -> matrix_t f32_t row
-    | A.Bool -> matrix_t i1_t row
-    | A.IntMat1D(tp, row2) -> matrix_t (matrix_t i32_t row2) row
+      match tp with
+      | A.Int -> matrix_t i32_t row
+      | A.Float -> matrix_t f32_t row
+      | A.Bool -> matrix_t i1_t row
+      | A.IntMat1D(tp, row2) -> matrix_t (matrix_t i32_t row2) row
   in
 
   (* Create a map of global variables after creating each *)
   let global_vars : L.llvalue StringMap.t =
     let global_var m (t, n) =
-      let init = L.const_int (ltype_of_typ t) 0
-      in StringMap.add n (L.define_global n init the_module) m in
+      let init = match t with 
+        | A.Int -> L.const_int i32_t 0
+        | A.Bool  -> L.const_int i1_t 0
+        | A.Float -> L.const_float f32_t 0.0
+      in 
+        StringMap.add n (L.define_global n init the_module) m in
     List.fold_left global_var StringMap.empty globals in
 
   let printf_t : L.lltype =
@@ -107,10 +111,10 @@ let translate (globals, functions) =
       with Not_found -> try StringMap.find n local_vars
         with Not_found -> StringMap.find n global_vars
     in
-    let build_2D_array = function
+    (* let build_2D_array = function
         A.IntMat(row, col) -> L.build_array_alloca (L.array_type i32_t col) (L.const_int i32_t row) "matrix" builder
       | _ -> raise (Failure "Invalid type for 2D array")
-    in
+    in *)
 
     (* Construct code for an expression; return its value *)
     let rec build_expr builder (table : 'a StringMap.t) ((_, e) : sexpr) = match e with
@@ -123,15 +127,34 @@ let translate (globals, functions) =
       | SBinop (e1, op, e2) ->
         let (_, e1') = build_expr builder table e1
         and (_, e2') = build_expr builder table e2 in
-        let e' = (match op with
-            A.Add     -> L.build_add
-          | A.Sub     -> L.build_sub
-          | A.And     -> L.build_and
-          | A.Or      -> L.build_or
-          | A.Equal   -> L.build_icmp L.Icmp.Eq
-          | A.Neq     -> L.build_icmp L.Icmp.Ne
-          | A.Less    -> L.build_icmp L.Icmp.Slt
-          ) e1' e2' "tmp" builder in
+        let op_command = 
+          match e1 with
+          | (A.Float, _) -> (match op with
+              A.Add     -> L.build_fadd
+            | A.Sub     -> L.build_fsub
+            | A.Times   -> L.build_fmul
+            | A.Divide  -> L.build_fdiv
+            | A.Equal   -> L.build_fcmp L.Fcmp.Ueq
+            | A.Neq     -> L.build_fcmp L.Fcmp.Une
+            | A.Less    -> L.build_fcmp L.Fcmp.Ult
+            | A.More    -> L.build_fcmp L.Fcmp.Ugt
+            | A.LessEqual -> L.build_fcmp L.Fcmp.Ule
+            | A.MoreEqual -> L.build_fcmp L.Fcmp.Uge) 
+          | _ -> (match op with
+              A.Add     -> L.build_add
+            | A.Sub     -> L.build_sub
+            | A.Times   -> L.build_mul
+            | A.Divide  -> L.build_sdiv
+            | A.And     -> L.build_and
+            | A.Or      -> L.build_or
+            | A.Equal   -> L.build_icmp L.Icmp.Eq
+            | A.Neq     -> L.build_icmp L.Icmp.Ne
+            | A.Less    -> L.build_icmp L.Icmp.Slt
+            | A.More    -> L.build_icmp L.Icmp.Sgt
+            | A.LessEqual -> L.build_icmp L.Icmp.Sle
+            | A.MoreEqual -> L.build_icmp L.Icmp.Sge) 
+        in 
+        let e' = op_command e1' e2' "tmp" builder in
         (table, e')
       | SPrintf (e) ->
         let (new_table, e') = build_expr builder table e in
@@ -190,6 +213,18 @@ let translate (globals, functions) =
           | SExpr e -> ignore(build_expr builder table e); builder, table
           | SReturn e -> let (new_table, e') = build_expr builder table e in
               ignore (L.build_ret e' builder); (builder, new_table)
+      | SIIf (predicate, then_stmt) ->
+        let (_, bool_val) = build_expr builder table predicate in
+
+        let then_bb = L.append_block context "then" the_function in
+        ignore (build_stmt table (L.builder_at_end context then_bb) then_stmt);
+
+        let end_bb = L.append_block context "if_end" the_function in
+        let build_br_end = L.build_br end_bb in (* partial function *)
+        add_terminal (L.builder_at_end context then_bb) build_br_end;
+
+        ignore(L.build_cond_br bool_val then_bb end_bb builder);
+        (L.builder_at_end context end_bb, table)
       | SIf (predicate, then_stmt, else_stmt) ->
         let (_, bool_val) = build_expr builder table predicate in
 

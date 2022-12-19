@@ -5,8 +5,9 @@ function main() gives int {
   console << f;
   b = bool true;
   console << b;
-  m = int(1, 2);
-  console << m;
+  m = mat int [4];
+  m[0] = 123;
+  console << m[0];
   console << 1;
   return i;
 }

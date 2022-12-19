@@ -104,7 +104,7 @@ function main13() gives bool
 {
 int a = (int : 1);
 int b = (int : 2);
-(bool : c = (bool : (int : a) >= (int : b)));
+(bool : c = (bool : (int : a) <= (int : b)));
 return (bool : c);
 }
 
@@ -112,7 +112,7 @@ function main14() gives bool
 {
 float a = (float : 0.10);
 float b = (float : 2.0);
-(bool : c = (bool : (float : a) >= (float : b)));
+(bool : c = (bool : (float : a) <= (float : b)));
 return (bool : c);
 }
 

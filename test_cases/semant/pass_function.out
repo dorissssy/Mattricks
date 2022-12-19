@@ -1,0 +1,35 @@
+
+
+Sementically checked program: 
+
+
+function main() gives int
+{
+return (int : 0);
+}
+
+function main2() gives int
+{
+return (int : main());
+}
+
+function main3(arg) gives int
+{
+return (int : arg);
+}
+
+function main4() gives int
+{
+return (int : main3((int : main2())));
+}
+
+function main5(arg1, arg2) gives int
+{
+return (int : (int : arg1) + (int : arg2));
+}
+
+function main6() gives int
+{
+return (int : main5((int : main()), (int : main())));
+}
+

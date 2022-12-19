@@ -3,10 +3,11 @@
 Sementically checked program: 
 
 
-function main() gives mat
+function main() gives matrix int[4]
 {
-mat mat1 = (int(1,3));
-mat mat2 = (float(3,3));
-return (mat : mat1);
+mat_int = matrix int[4];
+mat_float = matrix float[5];
+mat_bool = matrix bool[2];
+return (matrix int[4] : mat_int);
 }
 

@@ -1,0 +1,35 @@
+
+
+Parsed program: 
+
+
+int main()
+{
+return 0;
+}
+
+int main2()
+{
+return main();
+}
+
+int main3(arg)
+{
+return arg;
+}
+
+int main4()
+{
+return main3(main2());
+}
+
+int main5(arg1, arg2)
+{
+return arg1 + arg2;
+}
+
+int main6()
+{
+return main5(main(), main());
+}
+

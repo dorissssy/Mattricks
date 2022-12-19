@@ -12,8 +12,6 @@ type typ =
 
 type mat_typ = Mtype of typ * int * int
 
-
-
 type mat_expr =
   | MatLiteral of int
 
@@ -49,6 +47,7 @@ type expr =
 type stmt =
   | Block of stmt list
   | Expr of expr
+  | IIf of expr * stmt
   | If of expr * stmt * stmt
   | While of expr * stmt
   | Return of expr
@@ -141,10 +140,12 @@ let rec string_of_expr = function
   | FPrintf(e) -> "fprintf(" ^ string_of_expr e ^ ")"
   | OneDArrayAssign(s, e1, e2) -> s ^ "[" ^ string_of_expr e1 ^ "]" ^ " = " ^ string_of_expr e2
   | AnyArrayAccess(e1, e2) -> string_of_expr e1 ^ "[" ^ string_of_expr e2 ^ "]"
+
 let rec string_of_stmt = function
     Block(stmts) ->
     "{\n" ^ String.concat "" (List.map string_of_stmt stmts) ^ "}\n"
   | Expr(expr) -> string_of_expr expr ^ ";\n";
+  | IIf(e, s1) -> "if (" ^ string_of_expr e ^ ")\n" ^ string_of_stmt s1
   | If(e, s1, s2) ->  "if (" ^ string_of_expr e ^ ")\n" ^
                       string_of_stmt s1 ^ "else\n" ^ string_of_stmt s2
   | While(e, s) -> "while (" ^ string_of_expr e ^ ") " ^ string_of_stmt s
@@ -153,6 +154,7 @@ let rec string_of_stmt = function
   | DeclareMat(v, x, y) ->   v ^ " = int[" ^ string_of_int x ^ "][" ^ string_of_int y ^ "];\n"
   | TwoDArrayAssign(s, e1, e2, e3) -> s ^ "[" ^ string_of_int e1 ^ "]" ^ "[" ^ string_of_int e2 ^ "] = " ^ string_of_expr e3
   | DeclareOneDArray(v, t) -> v ^ " = " ^ string_of_typ t ^ ";\n"
+
 let string_of_vdecl (t, id) = string_of_typ t ^ " " ^ id ^ ";\n"
 (* let string_of_adecl (t, id, e) = string_of_typ t ^ " " ^ id ^ " = " ^ string_of_expr e ^ ";\n"
 let string_of_dadecl (id, e) = id ^ " := " ^ string_of_expr e ^ ";\n" *)

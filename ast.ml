@@ -42,7 +42,7 @@ type expr =
   | Printf of expr
   | FPrintf of expr
   | OneDArrayAssign of string * expr * expr
-  | AnyArrayAccess of expr * expr
+  | AnyArrayAccess of string * expr * expr
 
 type stmt =
   | Block of stmt list
@@ -131,7 +131,7 @@ let rec string_of_expr = function
   | Assign2(v, t, e) -> v ^ " = " ^ string_of_typ t ^ " " ^ string_of_expr e
   | Assign3(v, c, t, e) -> v ^ " = " ^ string_of_const c ^ " " ^ string_of_typ t ^ " " ^ string_of_expr e
   | DAssign(v, e) -> v ^ " := " ^ string_of_expr e
-  | ArrayAccess(s, e) -> s ^ "[" ^ string_of_expr e ^ "]"
+  | ArrayAccess(s, e) -> s ^ "[?" ^ string_of_expr e ^ "]"
   | TwoDArrayAccess(s, x, y) -> s ^ "[" ^ string_of_expr x ^ "," ^ string_of_expr y ^ "]"
   | ThreeDArrayAccess(s, e1, e2, e3) -> s ^ "[" ^ string_of_expr e1 ^ "]" ^ "[" ^ string_of_expr e2 ^ "]" ^ "[" ^ string_of_expr e3 ^ "]"
   | Call(f, el) ->
@@ -139,7 +139,7 @@ let rec string_of_expr = function
   | Printf(e) -> "printf(" ^ string_of_expr e ^ ")"
   | FPrintf(e) -> "fprintf(" ^ string_of_expr e ^ ")"
   | OneDArrayAssign(s, e1, e2) -> s ^ "[" ^ string_of_expr e1 ^ "]" ^ " = " ^ string_of_expr e2
-  | AnyArrayAccess(e1, e2) -> string_of_expr e1 ^ "[" ^ string_of_expr e2 ^ "]"
+  | AnyArrayAccess(id, e1, e2) -> id ^ "[" ^ string_of_expr e1 ^ "]" ^ "[" ^ string_of_expr e2 ^ "]"
 
 let rec string_of_stmt = function
     Block(stmts) ->

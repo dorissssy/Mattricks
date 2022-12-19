@@ -188,10 +188,12 @@ let translate (globals, functions) =
         let (new_table, e') = build_expr builder table e in
         let e'' = L.build_load (L.build_gep (lookup table id) [| (L.const_int i32_t 0);  e' |] "tmp" builder) "tmp" builder in
         (new_table, e'')
-       | SAnyArrayAccess(e1, e2) ->
+       | SAnyArrayAccess(id, e1, e2) ->
         let (new_table, e1') = build_expr builder table e1 in
         let (new_table2, e2') = build_expr builder table e2 in
-        let e' = L.build_load (L.build_gep e1' [| (L.const_int i32_t 0);  e2' |] "tmp" builder) "tmp" builder in
+        let e'' = e1' * e2' in
+        let e' = L.build_load (L.build_gep (lookup table id) [| (L.const_int i32_t 0);  e'' |] "tmp" builder) "tmp" builder in
+        (* let e' = L.build_load (L.build_gep e1' [| (L.const_int i32_t 0);  e2' |] "tmp" builder) "tmp" builder in *)
         (new_table, e')
 
     in
@@ -272,8 +274,13 @@ let translate (globals, functions) =
         | IntMat1D(Bool, _) ->
           let added_var_list = L.build_array_alloca (ltype_of_typ t) (L.const_int i32_t 3343) "tmp" builder in
           (builder, StringMap.add v added_var_list table)
-        | IntMat1D(IntMat1D(_, _), _) ->
-          let added_var_list = L.build_array_alloca (ltype_of_typ t) (L.const_int i32_t 5454) "tmp" builder in
+        | IntMat1D(IntMat1D(_tp, _), _) ->
+          let added_var_list = 
+            match _tp with 
+            | Int -> L.build_array_alloca (ltype_of_typ t) (L.const_int i32_t 5454) "tmp" builder 
+            | Float -> L.build_array_alloca (ltype_of_typ t) (L.const_int i32_t 6454) "tmp" builder 
+            | Bool -> L.build_array_alloca (ltype_of_typ t) (L.const_int i32_t 7454) "tmp" builder 
+          in
           (builder, StringMap.add v added_var_list table)
 (*        let added_var_list = L.build_alloca (ltype_of_typ t) v builder in*)
 (*        (builder, StringMap.add v added_var_list table)*)

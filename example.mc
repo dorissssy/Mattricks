@@ -10,14 +10,24 @@ function main(int x) gives int{
     f = f+0.1;
     consolef<<f;
 
-    ff = mat mat float [5] [4];
+    ff = mat mat float [3] [4];
    
+
+    
+    ff[1][2];
+
+    
+
+
+/*
     f_float = mat float [4];
     f_float[0] = 0.0;
     console<<f_float[0];
-    
+    fb = mat int [4];
+    fb[0] = 0;
+    fb = m(fb);
+    console<<fb[0];
 
-/*
      ff[0][0];
 
     ffb = mat mat bool [5] [4];
@@ -29,11 +39,6 @@ function main(int x) gives int{
 
 */
 
-    
-    fb = mat int [4];
-    fb[0] = 0;
-    fb = m(fb);
-    console<<fb[0];
 
 /*   
     fff = mat float [4];

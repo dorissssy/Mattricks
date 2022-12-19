@@ -22,7 +22,7 @@ and sx =
   | SPrintf of sexpr
   | SFPrintf of sexpr
   | SOneDArrayAssign of string * sexpr * sexpr
-  | SAnyArrayAccess of sexpr * sexpr
+  | SAnyArrayAccess of string * sexpr * sexpr
 
 type sstmt =
     SBlock of sstmt list
@@ -33,8 +33,8 @@ type sstmt =
   (* return *)
   | SReturn of sexpr
   | SBindAssign of typ * string * sexpr
-  | SDeclareMat of string * int * int
-  | STwoDArrayAssign of string * int * int * sexpr
+  (* | SDeclareMat of string * int * int *)
+  (* | STwoDArrayAssign of string * int * int * sexpr *)
   | SDeclareOneDArray of string * typ
 
 
@@ -79,7 +79,7 @@ let rec string_of_sexpr (t, e) =
       (* | SThreeDArrayAccess(v, e, e2, e3) -> v ^ "[" ^ string_of_sexpr e ^ "]" ^ "[" ^ string_of_sexpr e2 ^ "]" ^ "[" ^ string_of_sexpr e3 ^ "]" *)
       | SOneDArrayAssign(v, e, e2) -> v ^ "[" ^ string_of_sexpr e ^ "]" ^ " = " ^ string_of_sexpr e2
 
-      | SAnyArrayAccess(e, e2) -> string_of_sexpr e ^ "[" ^ string_of_sexpr e2 ^ "]"
+      | SAnyArrayAccess(v, e, e2) -> v ^ "[" ^ string_of_sexpr e ^ "]" ^ "[" ^ string_of_sexpr e2 ^ "]"
     ) ^ ")"
 
 
@@ -94,9 +94,9 @@ let rec string_of_sstmt = function
   | SWhile(e, s) -> "while (" ^ string_of_sexpr e ^ ") " ^ string_of_sstmt s
   | SReturn(e) -> "return " ^ string_of_sexpr e ^ ";\n"
   | SBindAssign(t, v, e) -> string_of_typ t ^ " " ^ v ^ " = " ^ string_of_sexpr e ^ ";\n"
-  | SDeclareMat(v, i, j) ->  v ^ " = Intmat" ^ "[" ^ string_of_int i ^ "]" ^ "[" ^ string_of_int j ^ "]" ^ ";\n"
-  | STwoDArrayAssign(v, r, c, e) -> v ^ "[" ^ string_of_int r ^ "]" ^ "[" ^ string_of_int c ^ "]" ^ " = " ^ string_of_sexpr e ^ ";\n"
-  | SDeclareOneDArray(v, t) -> v ^ " = " ^ string_of_typ t ^ ";\n"
+  (* | SDeclareMat(v, i, j) ->  v ^ " = Intmat" ^ "[" ^ string_of_int i ^ "]" ^ "[" ^ string_of_int j ^ "]" ^ ";\n" *)
+  (* | STwoDArrayAssign(v, r, c, e) -> v ^ "[" ^ string_of_int r ^ "]" ^ "[" ^ string_of_int c ^ "]" ^ " = " ^ string_of_sexpr e ^ ";\n" *)
+  | SDeclareOneDArray(v, t) -> v ^ " => " ^ string_of_typ t ^ ";\n"
 
 let string_of_sfdecl fdecl = "function " ^
   fdecl.sfname ^ "(" ^ String.concat ", " (List.map snd fdecl.sformals) ^

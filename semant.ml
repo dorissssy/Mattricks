@@ -172,17 +172,29 @@ let bool_fd =
         let lt = type_of_identifier id map in
         let (rt, e', map') = check_expr map e in
         let err = "illegal array access " ^ string_of_typ lt ^ " = " ^
-                  string_of_typ rt ^ " in " ^ string_of_expr expr
+                  string_of_typ rt ^ " in " ^  id
+                  ^ " => " ^ string_of_expr e 
         in
+        (* raise(Failure err) *)
         (get_array_value_type lt, SArrayAccess(id, (rt, e')), map')
         (* (check_assign Int rt err, SArrayAccess(id, (rt, e')), map') *)
-      | AnyArrayAccess(e1, e2) ->
+      | AnyArrayAccess(id, e1, e2) ->
         let (t1, e1', map1) = check_expr map e1 in
         let (t2, e2', map2) = check_expr map1 e2 in
+        
+        (* let _e1 =
+          match e1' with
+          | SArrayAccess(_v, _e) -> _e
+        in *)
         let err = "illegal array access " ^ string_of_typ t1 ^ " = " ^
                   string_of_typ t2 ^ " in " ^ string_of_expr expr
+                  ^ "\n => " ^ string_of_expr e1 ^ "==>" ^ string_of_expr e2
+                  ^ "\n => " ^ string_of_sexpr (t1,e1') ^ "==>" ^ string_of_sexpr (t2,e2')
+                  (* ^ "\n => " ^ string_of_sexpr _e1 *)
         in
-          (t1, SAnyArrayAccess((t1, e1'), (t2, e2')), map2)
+          (* raise(Failure err) *)
+          (t1, SAnyArrayAccess(id, (t1, e1'), (t2, e2')), map2)
+
       | OneDArrayAssign(id, idx, e1) ->
         let lt = type_of_identifier id map in
         let (rt, e1', map') = check_expr map e1 in
@@ -260,7 +272,7 @@ let bool_fd =
                     raise (Failure err)
             else
                 (SDeclareMat(id, row, col), StringMap.add id  matrix_type map) *)
-      | TwoDArrayAssign(id, r, c, e) ->
+      (* | TwoDArrayAssign(id, r, c, e) ->
         let (t, e', map1) = check_expr map e in
         let lt = type_of_identifier id map in
         let err = "illegal array assignment " ^ string_of_typ lt ^ " = " ^
@@ -268,7 +280,7 @@ let bool_fd =
         in
         if t = Int then
           (STwoDArrayAssign(id, r, c, (t, e')), map1)
-        else raise (Failure err)
+        else raise (Failure err) *)
       | DeclareOneDArray(v, t) ->
             (SDeclareOneDArray(v, t), StringMap.add v t map)
 

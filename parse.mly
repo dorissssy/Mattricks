@@ -111,7 +111,7 @@ expr_rule:
   | expr_rule NEQ expr_rule       { Binop ($1, Neq, $3)   }
   | expr_rule LT expr_rule        { Binop ($1, Less, $3)  }
   | expr_rule MT expr_rule        { Binop ($1, More, $3)  }
-  | expr_rule LTE expr_rule       { Binop ($1, MoreEqual, $3)  }
+  | expr_rule LTE expr_rule       { Binop ($1, LessEqual, $3)  }
   | expr_rule MTE expr_rule       { Binop ($1, MoreEqual, $3)  }
   | expr_rule AND expr_rule       { Binop ($1, And, $3)   }
   | expr_rule OR expr_rule        { Binop ($1, Or, $3)    }

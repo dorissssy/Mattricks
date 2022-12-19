@@ -126,11 +126,16 @@ let translate (globals, functions) =
         let e' = (match op with
             A.Add     -> L.build_add
           | A.Sub     -> L.build_sub
+          | A.Times   -> L.build_mul
+          | A.Divide  -> L.build_udiv
           | A.And     -> L.build_and
           | A.Or      -> L.build_or
           | A.Equal   -> L.build_icmp L.Icmp.Eq
           | A.Neq     -> L.build_icmp L.Icmp.Ne
           | A.Less    -> L.build_icmp L.Icmp.Slt
+          | A.More    -> L.build_icmp L.Icmp.Sgt
+          | A.LessEqual -> L.build_icmp L.Icmp.Sle
+          | A.MoreEqual -> L.build_icmp L.Icmp.Uge
           ) e1' e2' "tmp" builder in
         (table, e')
       | SPrintf (e) ->

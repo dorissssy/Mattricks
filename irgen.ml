@@ -35,7 +35,7 @@ let translate (globals, functions) =
   in
 
   (* Return the LLVM type for a MicroC type *)
-  let ltype_of_typ = function
+  let rec ltype_of_typ = function
       A.Int   -> i32_t
     | A.Bool  -> i1_t
     | A.Float -> f32_t
@@ -45,7 +45,7 @@ let translate (globals, functions) =
       | A.Int -> matrix_t i32_t row
       | A.Float -> matrix_t f32_t row
       | A.Bool -> matrix_t i1_t row
-      | A.IntMat1D(tp, row2) -> matrix_t (matrix_t i32_t row2) row
+      | A.IntMat1D(tp2, row2) -> matrix_t (ltype_of_typ tp2) (row2 * row)
   in
 
   (* Create a map of global variables after creating each *)
@@ -191,10 +191,14 @@ let translate (globals, functions) =
        | SAnyArrayAccess(id, e1, e2) ->
         let (new_table, e1') = build_expr builder table e1 in
         let (new_table2, e2') = build_expr builder table e2 in
-        let e'' = e1' * e2' in
-        let e' = L.build_load (L.build_gep (lookup table id) [| (L.const_int i32_t 0);  e'' |] "tmp" builder) "tmp" builder in
-        (* let e' = L.build_load (L.build_gep e1' [| (L.const_int i32_t 0);  e2' |] "tmp" builder) "tmp" builder in *)
+        let e' = L.build_load (L.build_gep (lookup table id) [| e1'; e2' |] "tmp" builder) "tmp" builder in
         (new_table, e')
+       | STwoDArrayAssign(id, idx1, idx2, value)->
+        let (new_table, value') = build_expr builder table value in
+        let (new_table2, idx1') = build_expr builder table idx1 in
+        let (new_table3, idx2') = build_expr builder table idx2 in
+        let e' =  (L.build_gep (lookup table id) [| idx1'; idx2' |] "tmp" builder)  in
+        ignore(L.build_store value' e' builder); (new_table, value')
 
     in
 
@@ -274,7 +278,7 @@ let translate (globals, functions) =
         | IntMat1D(Bool, _) ->
           let added_var_list = L.build_array_alloca (ltype_of_typ t) (L.const_int i32_t 3343) "tmp" builder in
           (builder, StringMap.add v added_var_list table)
-        | IntMat1D(IntMat1D(_tp, _), _) ->
+        | IntMat1D(IntMat1D(_tp, dimension), _) ->
           let added_var_list = 
             match _tp with 
             | Int -> L.build_array_alloca (ltype_of_typ t) (L.const_int i32_t 5454) "tmp" builder 

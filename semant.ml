@@ -194,7 +194,21 @@ let bool_fd =
         in
           (* raise(Failure err) *)
           (t1, SAnyArrayAccess(id, (t1, e1'), (t2, e2')), map2)
-
+      | TwoDArrayAssign(v, id1,id2,ex) ->
+        let lt = type_of_identifier v map in
+        let (rt, id1', map') = check_expr map id1 in
+        let (ct, id2', map'') = check_expr map' id2 in
+        let (rt', ex', map') = check_expr map ex in
+        let err = "illegal assignment " ^ string_of_typ lt ^ " = " ^
+                  string_of_typ rt ^ " in " ^ string_of_expr expr
+        in
+        (match lt with
+            | IntMat1D(IntMat1D (typp, _), _) ->
+                 if typp = rt' then
+                   (typp, STwoDArrayAssign(v, (rt, id1'), (ct, id2'), (rt', ex')), map'')
+                 else
+                   raise (Failure err)
+            | _ -> raise (Failure err))
       | OneDArrayAssign(id, idx, e1) ->
         let lt = type_of_identifier id map in
         let (rt, e1', map') = check_expr map e1 in

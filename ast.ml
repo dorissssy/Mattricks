@@ -10,6 +10,7 @@ type typ =
   (* | IntMat of int * int *)
   | IntMat1D of typ * int
 
+
 type mat_typ = Mtype of typ * int * int
 
 type mat_expr =
@@ -43,6 +44,7 @@ type expr =
   | FPrintf of expr
   | OneDArrayAssign of string * expr * expr
   | AnyArrayAccess of string * expr * expr
+  | TwoDArrayAssign of string * expr * expr * expr
 
 type stmt =
   | Block of stmt list
@@ -140,6 +142,7 @@ let rec string_of_expr = function
   | FPrintf(e) -> "fprintf(" ^ string_of_expr e ^ ")"
   | OneDArrayAssign(s, e1, e2) -> s ^ "[" ^ string_of_expr e1 ^ "]" ^ " = " ^ string_of_expr e2
   | AnyArrayAccess(id, e1, e2) -> id ^ "[" ^ string_of_expr e1 ^ "]" ^ "[" ^ string_of_expr e2 ^ "]"
+    | TwoDArrayAssign(s, x, y, e) -> s ^ "[" ^ string_of_expr x ^ "," ^ string_of_expr y ^ "]" ^ " = " ^ string_of_expr e
 
 let rec string_of_stmt = function
     Block(stmts) ->

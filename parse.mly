@@ -121,6 +121,7 @@ expr_rule:
   | ID LBRAC expr_rule RBRAC ASSIGN expr_rule { OneDArrayAssign ($1, $3, $6) }
   | ID LBRAC expr_rule RBRAC { ArrayAccess($1, $3) }
   | ID LBRAC expr_rule RBRAC LBRAC expr_rule RBRAC { AnyArrayAccess($1, $3, $6) }
+  | ID LBRAC expr_rule RBRAC LBRAC expr_rule RBRAC ASSIGN expr_rule { TwoDArrayAssign ($1, $3, $6, $9) }
   | CONSOLE PRINTF expr_rule       { Printf $3 }
   | CONSOLEF PRINTF expr_rule       { FPrintf $3 }
   | CONSOLE PRINTF expr_rule      { Printf $3             }

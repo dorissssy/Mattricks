@@ -23,6 +23,7 @@ and sx =
   | SFPrintf of sexpr
   | SOneDArrayAssign of string * sexpr * sexpr
   | SAnyArrayAccess of string * sexpr * sexpr
+  | STwoDArrayAssign of string * sexpr * sexpr * sexpr
 
 type sstmt =
     SBlock of sstmt list
@@ -78,7 +79,7 @@ let rec string_of_sexpr (t, e) =
       (* | STwoDArrayAccess(v, e, e2) -> v ^ "[" ^ string_of_sexpr e ^ " , " ^ string_of_sexpr e2 ^ "]" *)
       (* | SThreeDArrayAccess(v, e, e2, e3) -> v ^ "[" ^ string_of_sexpr e ^ "]" ^ "[" ^ string_of_sexpr e2 ^ "]" ^ "[" ^ string_of_sexpr e3 ^ "]" *)
       | SOneDArrayAssign(v, e, e2) -> v ^ "[" ^ string_of_sexpr e ^ "]" ^ " = " ^ string_of_sexpr e2
-
+      | STwoDArrayAssign(v, e, e2, e3) -> v ^ "[" ^ string_of_sexpr e ^ "]" ^ "[" ^ string_of_sexpr e2 ^ "]" ^ " = " ^ string_of_sexpr e3
       | SAnyArrayAccess(v, e, e2) -> v ^ "[" ^ string_of_sexpr e ^ "]" ^ "[" ^ string_of_sexpr e2 ^ "]"
     ) ^ ")"
 

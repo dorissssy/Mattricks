@@ -11,10 +11,20 @@ function main(int x) gives int{
     consolef<<f;
 
     ff = mat mat float [3] [4];
-   
+    ff2  = mat mat float [3] [4];
 
-    
-    ff[1][2];
+    ff[1][1] = 1.0;
+    ff[1][2] = 2.0;
+    ff[1][3] = 3.0;
+    ff[2][3] = 4.0;
+    ff2[2][3] = 5.0;
+    consolef<<ff[1][1];
+    consolef<<ff[1][2];
+    consolef<<ff[1][3];
+    consolef<<ff[2][3];
+    consolef<<ff2[2][3];
+    consolef<<ff[1][1];
+
 
     
 

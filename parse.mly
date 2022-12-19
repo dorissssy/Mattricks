@@ -20,12 +20,12 @@ open Ast
 %type <Ast.program> program_rule
 
 %right ASSIGN DASSIGN 
+%right ELSE
 %left OR
 %left AND 
 %left EQ NEQ
 %left LT MT LTE MTE
 %left PLUS MINUS COMMA
-%nonassoc UMINUS
 
 %%
 
@@ -82,10 +82,10 @@ stmt_list_rule:
     /* nothing */             { []     }
   | stmt_rule stmt_list_rule  { $1::$2 }
 
-
 stmt_rule:
   expr_rule SEMI                                          { Expr $1         }
   | LBRACE stmt_list_rule RBRACE                          { Block $2        }
+  | IF LPAREN expr_rule RPAREN stmt_rule                  { IIf ($3, $5)    }
   | IF LPAREN expr_rule RPAREN stmt_rule ELSE stmt_rule   { If ($3, $5, $7) }
   | WHILE LPAREN expr_rule RPAREN stmt_rule               { While ($3,$5)   }
   | RETURN expr_rule SEMI                        { Return $2      }
@@ -96,14 +96,6 @@ stmt_rule:
 
 const_rule:
   CONST     { Const }
-
-
-
-
-
-
-  
-
 
 expr_rule:
   | BLIT                          { BoolLit $1            }
@@ -123,7 +115,6 @@ expr_rule:
   | expr_rule MTE expr_rule       { Binop ($1, MoreEqual, $3)  }
   | expr_rule AND expr_rule       { Binop ($1, And, $3)   }
   | expr_rule OR expr_rule        { Binop ($1, Or, $3)    }
-  | MINUS expr_rule %prec UMINUS  { $2 }
   | ID ASSIGN expr_rule           { Assign ($1, $3)       }
   | ID ASSIGN const_rule typ_rule expr_rule  { Assign3 ($1, $3, $4, $5)    }
   | LPAREN expr_rule RPAREN       { $2                    }
@@ -132,3 +123,15 @@ expr_rule:
   | expr_rule LBRAC expr_rule RBRAC { AnyArrayAccess($1, $3) }
   | CONSOLE PRINTF expr_rule       { Printf $3 }
   | CONSOLEF PRINTF expr_rule       { FPrintf $3 }
+  | CONSOLE PRINTF expr_rule      { Printf $3             }
+  | CONSOLEF PRINTF expr_rule     { FPrintf $3            }
+  | ID LPAREN args_opt RPAREN     { Call ($1, $3)         }
+
+  /* args_opt*/
+args_opt:
+  /*nothing*/ { [] }
+  | args { $1 }
+
+args:
+  expr_rule  { [$1] }
+  | expr_rule COMMA args { $1::$3 }

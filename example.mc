@@ -1,8 +1,14 @@
-
+function m(mat int [4] m) gives mat int [4] {
+    m[0] = m[0] + 1;
+    console<<m[0];
+    return m;
+}
 
 function main(int x) gives int{
     a = int 3;
     f = float 3.33333;
+
+/*
     ff = mat mat float [5] [4];
     ff[0][0];
 
@@ -11,9 +17,12 @@ function main(int x) gives int{
 
     ffi = mat mat int [5] [4];
     ffi[0][0];
+*/
 
-    fb = mat bool [4];
-    fb[0];
+    fb = mat int [4];
+    fb[0] = 0;
+    fb = m(fb);
+    console<<fb[0];
 
 
 /*   

@@ -39,7 +39,7 @@ let translate (globals, functions) =
       A.Int   -> i32_t
     | A.Bool  -> i1_t
     | A.Float -> f32_t
-    | A.IntMat(row, col) -> matrix_t (matrix_t i32_t col) row
+    (* | A.IntMat(row, col) -> matrix_t (matrix_t i32_t col) row *)
     | A.IntMat1D(tp, row) ->
     match tp with
     | A.Int -> matrix_t i32_t row
@@ -107,10 +107,10 @@ let translate (globals, functions) =
       with Not_found -> try StringMap.find n local_vars
         with Not_found -> StringMap.find n global_vars
     in
-    let build_2D_array = function
+    (* let build_2D_array = function
         A.IntMat(row, col) -> L.build_array_alloca (L.array_type i32_t col) (L.const_int i32_t row) "matrix" builder
       | _ -> raise (Failure "Invalid type for 2D array")
-    in
+    in *)
 
     (* Construct code for an expression; return its value *)
     let rec build_expr builder (table : 'a StringMap.t) ((_, e) : sexpr) = match e with
@@ -190,6 +190,18 @@ let translate (globals, functions) =
           | SExpr e -> ignore(build_expr builder table e); builder, table
           | SReturn e -> let (new_table, e') = build_expr builder table e in
               ignore (L.build_ret e' builder); (builder, new_table)
+      | SIIf (predicate, then_stmt) ->
+        let (_, bool_val) = build_expr builder table predicate in
+
+        let then_bb = L.append_block context "then" the_function in
+        ignore (build_stmt table (L.builder_at_end context then_bb) then_stmt);
+
+        let end_bb = L.append_block context "if_end" the_function in
+        let build_br_end = L.build_br end_bb in (* partial function *)
+        add_terminal (L.builder_at_end context then_bb) build_br_end;
+
+        ignore(L.build_cond_br bool_val then_bb end_bb builder);
+        (L.builder_at_end context end_bb, table)
       | SIf (predicate, then_stmt, else_stmt) ->
         let (_, bool_val) = build_expr builder table predicate in
 

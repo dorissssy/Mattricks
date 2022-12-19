@@ -10,28 +10,31 @@
 # Or use ./test [optioanl: flags -cpsaf:] to test with test suite
 ##############################
 
-parse : test_parse.out
-
-test_parse : parse.mly ast.ml scanner.mll test_parse.ml
+test_parse : parse.mly ast.ml scanner.mll ./test_cases/test_parse.ml
+	cp ./test_cases/test_parse.ml ./
 	ocamlbuild test_parse.native
+	rm ./test_parse.ml
 
-test_parse.out : test_parse example.mc
+parse : test_parse example.mc
 	./test_parse.native < example.mc > example.out
 
 ##############################
 
-semant : test_semant.out
-
-test_semant : parse.mly ast.ml scanner.mll sast.ml semant.ml test_semant.ml
+test_semant : parse.mly ast.ml scanner.mll sast.ml semant.ml ./test_cases/test_semant.ml
+	cp ./test_cases/test_semant.ml ./
 	ocamlbuild test_semant.native
+	rm ./test_semant.ml
 
-test_semant.out : test_semant example.mc
+semant : test_semant example.mc
 	./test_semant.native < example.mc > example.out
+
+##############################
 
 compiler :
 	ocamlbuild -pkgs llvm microc.native
 	./microc.native < example.mc > example.out
 	lli example.out
+
 ##############################
 
 clean:

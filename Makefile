@@ -8,7 +8,7 @@
 #
 # For testing, you can run the binary executable and test it with example.mc, it will generate example.out
 # Or simply call "make test_all" to test with test suites
-# Or use ./test_case/test_script [optioanl: flags -cpsaf:] to test with test suite
+# Or use ./test_script [optioanl: flags -cpsaf:] to test with test suite
 ##############################
 
 test_all :

@@ -1,20 +1,57 @@
+; ModuleID = 'MicroC'
+source_filename = "MicroC"
 
+@fmt = private unnamed_addr constant [4 x i8] c"%d\0A\00", align 1
+@fmt.1 = private unnamed_addr constant [4 x i8] c"%f\0A\00", align 1
+@fmt.2 = private unnamed_addr constant [4 x i8] c"%d\0A\00", align 1
+@fmt.3 = private unnamed_addr constant [4 x i8] c"%f\0A\00", align 1
 
-Sementically checked program: 
+declare i32 @printf(i8*, ...)
 
-
-function main(x) gives int
-{
-int a = (int : 3);
-float f = (float : 3.333330);
-ff = matrix matrix float[5][4];
-(float : (float : ff[?(int : 0)])[(int : 0)]);
-ffb = matrix matrix bool[5][4];
-(bool : (bool : ffb[?(int : 0)])[(int : 0)]);
-ffi = matrix matrix int[5][4];
-(int : (int : ffi[?(int : 0)])[(int : 0)]);
-fb = matrix bool[4];
-(bool : fb[?(int : 0)]);
-return (int : 0);
+define [4 x i32] @m([4 x i32] %m) {
+entry:
+  %m1 = alloca [4 x i32], align 4
+  store [4 x i32] %m, [4 x i32]* %m1, align 4
+  %tmp = getelementptr [4 x i32], [4 x i32]* %m1, i32 0, i32 0
+  %tmp2 = load i32, i32* %tmp, align 4
+  %tmp3 = add i32 %tmp2, 1
+  %tmp4 = getelementptr [4 x i32], [4 x i32]* %m1, i32 0, i32 0
+  store i32 %tmp3, i32* %tmp4, align 4
+  %tmp5 = getelementptr [4 x i32], [4 x i32]* %m1, i32 0, i32 0
+  %tmp6 = load i32, i32* %tmp5, align 4
+  %printf = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt, i32 0, i32 0), i32 %tmp6)
+  %m7 = load [4 x i32], [4 x i32]* %m1, align 4
+  ret [4 x i32] %m7
 }
 
+define i32 @main(i32 %x) {
+entry:
+  %x1 = alloca i32, align 4
+  store i32 %x, i32* %x1, align 4
+  %a = alloca i32, align 4
+  store i32 3, i32* %a, align 4
+  %f = alloca double, align 8
+  store double 3.333330e+00, double* %f, align 8
+  %f2 = load double, double* %f, align 8
+  %tmp = fadd double %f2, 1.000000e-01
+  store double %tmp, double* %f, align 8
+  %f3 = load double, double* %f, align 8
+  %printf = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt.3, i32 0, i32 0), double %f3)
+  %tmp4 = alloca [4 x [5 x i32]], i32 5454, align 4
+  %tmp5 = alloca [4 x double], i32 1766, align 8
+  %tmp6 = getelementptr [4 x double], [4 x double]* %tmp5, i32 0, i32 0
+  store double 0.000000e+00, double* %tmp6, align 8
+  %tmp7 = getelementptr [4 x double], [4 x double]* %tmp5, i32 0, i32 0
+  %tmp8 = load double, double* %tmp7, align 8
+  %printf9 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt.2, i32 0, i32 0), double %tmp8)
+  %tmp10 = alloca [4 x i32], i32 0, align 4
+  %tmp11 = getelementptr [4 x i32], [4 x i32]* %tmp10, i32 0, i32 0
+  store i32 0, i32* %tmp11, align 4
+  %fb = load [4 x i32], [4 x i32]* %tmp10, align 4
+  %m_result = call [4 x i32] @m([4 x i32] %fb)
+  store [4 x i32] %m_result, [4 x i32]* %tmp10, align 4
+  %tmp12 = getelementptr [4 x i32], [4 x i32]* %tmp10, i32 0, i32 0
+  %tmp13 = load i32, i32* %tmp12, align 4
+  %printf14 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt.2, i32 0, i32 0), i32 %tmp13)
+  ret i32 0
+}

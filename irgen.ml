@@ -256,36 +256,25 @@ let translate (globals, functions) =
 
         ignore(L.build_cond_br bool_val body_bb end_bb while_builder);
         (L.builder_at_end context end_bb, table)
+
       | SBindAssign (tp, s, e) -> let (new_table, e') = build_expr builder table e in
         let added_var_list = L.build_alloca (ltype_of_typ tp) s builder in
         ignore(L.build_store e' added_var_list builder); (builder, StringMap.add s added_var_list new_table)
-      | SDeclareMat(id, row, col) ->
-        let row' = L.const_int i32_t row
-        and col' = L.const_int i32_t col in
-        let matrix = L.build_array_malloc (L.pointer_type i32_t) row' "matrix" builder in
-        let matrix' = L.build_pointercast matrix (L.pointer_type (L.pointer_type i32_t)) "matrix" builder in
-        let matrix'' = L.build_alloca (L.pointer_type (L.pointer_type i32_t)) id builder in
-        ignore(L.build_store matrix' matrix'' builder); (builder, StringMap.add id matrix'' table)
-      | STwoDArrayAssign(id, r, c, e) ->
-        let (new_table, e') = build_expr builder table e in
-        let r' = L.build_gep (lookup table id) [| L.const_int i32_t r |] "tmp" builder in
-        let c' = L.build_gep (L.build_load r' "tmp" builder) [| L.const_int i32_t c |] "tmp" builder in
-        let e'' = L.build_gep (lookup table id) [| r'; c' |] "tmp" builder in
-        ignore(L.build_store e' e'' builder); (builder, new_table)
+
       | SDeclareOneDArray(v, t) ->
         match t with
-        IntMat1D(Int, _)->
-        let added_var_list = L.build_array_alloca (ltype_of_typ t) (L.const_int i32_t 0) "tmp" builder in
-        (builder, StringMap.add v added_var_list table)
+        | IntMat1D(Int, _) ->
+          let added_var_list = L.build_array_alloca (ltype_of_typ t) (L.const_int i32_t 0) "tmp" builder in
+          (builder, StringMap.add v added_var_list table)
         | IntMat1D(Float, _) ->
-        let added_var_list = L.build_array_alloca (ltype_of_typ t) (L.const_int i32_t 1766) "tmp" builder in
-        (builder, StringMap.add v added_var_list table)
+          let added_var_list = L.build_array_alloca (ltype_of_typ t) (L.const_int i32_t 1766) "tmp" builder in
+          (builder, StringMap.add v added_var_list table)
         | IntMat1D(Bool, _) ->
-        let added_var_list = L.build_array_alloca (ltype_of_typ t) (L.const_int i32_t 3343) "tmp" builder in
-        (builder, StringMap.add v added_var_list table)
+          let added_var_list = L.build_array_alloca (ltype_of_typ t) (L.const_int i32_t 3343) "tmp" builder in
+          (builder, StringMap.add v added_var_list table)
         | IntMat1D(IntMat1D(_, _), _) ->
-        let added_var_list = L.build_array_alloca (ltype_of_typ t) (L.const_int i32_t 5454) "tmp" builder in
-        (builder, StringMap.add v added_var_list table)
+          let added_var_list = L.build_array_alloca (ltype_of_typ t) (L.const_int i32_t 5454) "tmp" builder in
+          (builder, StringMap.add v added_var_list table)
 (*        let added_var_list = L.build_alloca (ltype_of_typ t) v builder in*)
 (*        (builder, StringMap.add v added_var_list table)*)
 

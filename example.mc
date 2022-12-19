@@ -7,23 +7,33 @@ function m(mat int [4] m) gives mat int [4] {
 function main(int x) gives int{
     a = int 3;
     f = float 3.33333;
+    f = f+0.1;
+    consolef<<f;
+
+    ff = mat mat float [5] [4];
+   
+    f_float = mat float [4];
+    f_float[0] = 0.0;
+    console<<f_float[0];
+    
 
 /*
-    ff = mat mat float [5] [4];
-    ff[0][0];
+     ff[0][0];
 
     ffb = mat mat bool [5] [4];
     ffb[0][0];
 
     ffi = mat mat int [5] [4];
     ffi[0][0];
+
+
 */
 
+    
     fb = mat int [4];
     fb[0] = 0;
     fb = m(fb);
     console<<fb[0];
-
 
 /*   
     fff = mat float [4];

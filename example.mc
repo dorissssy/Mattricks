@@ -77,27 +77,19 @@ function main(int x) gives int{
     mat_1d_int_10 = mat int [10];
     mat2_1d_int_10 = mat int [10];
 
-    mat_1d_int_10 = init_val_1d_int_10(mat_1d_int_10, 0); /* init */
+    mat_1d_int_10 = init_val_1d_int_10(mat_1d_int_10, 0);
     print_1d_int_10(mat_1d_int_10);
 
-    mat_1d_int_10 = init_val_1d_int_10(mat_1d_int_10, 123); /* init */
-    mat_1d_int_10 = addval_1d_int_10(mat_1d_int_10, -123); /* add all with val */
-
-
-
-
-
-
-
-
-/*
-
-    mat2_1d_int_10 = init_val_1d_int_10(mat2_1d_int_10, 12);/* init */
+    mat_1d_int_10 = init_val_1d_int_10(mat_1d_int_10, 123);
+    mat_1d_int_10 = addval_1d_int_10(mat_1d_int_10, -123);
+    mat2_1d_int_10 = init_val_1d_int_10(mat2_1d_int_10, 12);
 
     mat_1d_int_10 = addmat_1d_int_10(mat_1d_int_10, mat2_1d_int_10);
     print_1d_int_10(mat_1d_int_10);
 
-    
+
+
+/*
     mat_2d_int_6_7 = mat mat int [6][7];
     mat_2d_int_6_7[1][2] = 4;
     console << mat_2d_int_6_7[1][2] ;

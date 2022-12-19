@@ -5,12 +5,12 @@ Sementically checked program:
 
 function main() gives matrix int[2]
 {
-mat1 = matrix int[2];
+mat1 => matrix int[2];
 (int : mat1[(int : 0)] = (int : 123));
-mat2 = matrix int[2];
+mat2 => matrix int[2];
 (int : mat2[(int : 0)] = (int : 321));
-mat3 = matrix int[2];
-(int : mat3[(int : 0)] = (int : (int : mat1[?(int : 0)]) + (int : mat2[?(int : 0)])));
+mat3 => matrix int[2];
+(int : mat3[(int : 0)] = (int : (int : mat1[(int : 0)]) + (int : mat2[(int : 0)])));
 return (matrix int[2] : mat3);
 }
 

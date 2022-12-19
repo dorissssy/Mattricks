@@ -5,9 +5,9 @@ Sementically checked program:
 
 function main() gives matrix int[4]
 {
-mat_int = matrix int[4];
-mat_float = matrix float[5];
-mat_bool = matrix bool[2];
+mat_int => matrix int[4];
+mat_float => matrix float[5];
+mat_bool => matrix bool[2];
 return (matrix int[4] : mat_int);
 }
 

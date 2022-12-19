@@ -75,7 +75,7 @@ let rec string_of_sexpr (t, e) =
       | SCall(f, el) ->
         f ^ "(" ^ String.concat ", " (List.map string_of_sexpr el) ^ ")"
 
-      | SArrayAccess(v, e) -> v ^ "[?" ^ string_of_sexpr e ^ "]"
+      | SArrayAccess(v, e) -> v ^ "[" ^ string_of_sexpr e ^ "]"
       (* | STwoDArrayAccess(v, e, e2) -> v ^ "[" ^ string_of_sexpr e ^ " , " ^ string_of_sexpr e2 ^ "]" *)
       (* | SThreeDArrayAccess(v, e, e2, e3) -> v ^ "[" ^ string_of_sexpr e ^ "]" ^ "[" ^ string_of_sexpr e2 ^ "]" ^ "[" ^ string_of_sexpr e3 ^ "]" *)
       | SOneDArrayAssign(v, e, e2) -> v ^ "[" ^ string_of_sexpr e ^ "]" ^ " = " ^ string_of_sexpr e2

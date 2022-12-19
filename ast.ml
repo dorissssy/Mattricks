@@ -21,7 +21,7 @@ type mat =
   | MatValue of mat_expr
   | Mat of mat list
 
-(* name const_ty ty? *)
+(* name const_ty ty *)
 type const_ty = Const
 
 type expr =
@@ -133,7 +133,7 @@ let rec string_of_expr = function
   | Assign2(v, t, e) -> v ^ " = " ^ string_of_typ t ^ " " ^ string_of_expr e
   | Assign3(v, c, t, e) -> v ^ " = " ^ string_of_const c ^ " " ^ string_of_typ t ^ " " ^ string_of_expr e
   | DAssign(v, e) -> v ^ " := " ^ string_of_expr e
-  | ArrayAccess(s, e) -> s ^ "[?" ^ string_of_expr e ^ "]"
+  | ArrayAccess(s, e) -> s ^ "[" ^ string_of_expr e ^ "]"
   | TwoDArrayAccess(s, x, y) -> s ^ "[" ^ string_of_expr x ^ "," ^ string_of_expr y ^ "]"
   | ThreeDArrayAccess(s, e1, e2, e3) -> s ^ "[" ^ string_of_expr e1 ^ "]" ^ "[" ^ string_of_expr e2 ^ "]" ^ "[" ^ string_of_expr e3 ^ "]"
   | Call(f, el) ->

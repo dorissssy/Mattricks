@@ -1,9 +1,3 @@
-function m(mat int [4] m) gives mat int [4] {
-    m[0] = m[0] + 1;
-    console<<m[0];
-    return m;
-}
-
 int i;
 
 function init_val_1d_int_10(mat int [10] m, int val) gives mat int [10] {
@@ -33,54 +27,32 @@ function addval_1d_int_10(mat int [10] m, int val) gives mat int [10] {
     return m;
 }
 
-int v1;
-int v2;
-int j;
-
-function add_int_int(int x, int y) gives int {
-    j = x + y;
-    return j;
-}
-
-function addmat_1d_int_10(mat int [10] m1, mat int [10] m2) gives mat int [10] {
-    i = 0;
-    ii = int 0;
-    while (ii < 10) {
-        v1 = m1[ii];
-        v2 = m2[ii];
-        m1[ii] = add_int_int(v1, v2);
-        console << 12345;
-        ii = ii + 1;
-    }
-    return m1;
-}
-
-function init_val_2d_int_6_7(mat mat int [6][7] m, int val) gives mat mat int [6][7] {
-    i = 0;
-    j = 0;
-    while (i < 5) {
-        console<<i;
-        console<<j;
-        m[i][j] = val;
-        j = j + 1;
-        if (j > 6) {
-            j = 0;
-            i = i + 1;
-        }
-    }
-    return m;
-}
-
-
 function main(int x) gives int{
+
     mat_1d_int_10 = mat int [10];
-    mat2_1d_int_10 = mat int [10];
+
+    /* init the 1dmatrix with 0. */
     mat_1d_int_10 = init_val_1d_int_10(mat_1d_int_10, 0);
     print_1d_int_10(mat_1d_int_10);
+
+    /* init the 1dmatrix with 123. */
     mat_1d_int_10 = init_val_1d_int_10(mat_1d_int_10, 123);
     print_1d_int_10(mat_1d_int_10);
+
+    /* minus 123 to all the values in the 1dmatrix. */
     mat_1d_int_10 = addval_1d_int_10(mat_1d_int_10, -123);
     print_1d_int_10(mat_1d_int_10);
+
+
+
+
+
+
+
+
+
+
+
 
 
 

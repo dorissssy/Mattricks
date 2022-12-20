@@ -1,0 +1,44 @@
+; ModuleID = 'MicroC'
+source_filename = "MicroC"
+
+@f = global double 0.000000e+00
+@fmt = private unnamed_addr constant [4 x i8] c"%d\0A\00", align 1
+@fmt.1 = private unnamed_addr constant [4 x i8] c"%f\0A\00", align 1
+
+declare i32 @printf(i8*, ...)
+
+define i32 @main() {
+entry:
+  store double 1.000000e+00, double* @f
+  %f = load double, double* @f
+  %printf = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt.1, i32 0, i32 0), double %f)
+  %f1 = alloca double
+  store double -1.000000e-01, double* %f1
+  %f11 = load double, double* %f1
+  %printf2 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt.1, i32 0, i32 0), double %f11)
+  %f2 = alloca double
+  store double 1.000000e+05, double* %f2
+  %f23 = load double, double* %f2
+  %printf4 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt.1, i32 0, i32 0), double %f23)
+  %f3 = alloca double
+  store double -1.000000e+05, double* %f3
+  %f35 = load double, double* %f3
+  %printf6 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt.1, i32 0, i32 0), double %f35)
+  %f4 = alloca double
+  store double 1.500000e+03, double* %f4
+  %f47 = load double, double* %f4
+  %printf8 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt.1, i32 0, i32 0), double %f47)
+  %f5 = alloca double
+  store double 2.000000e-02, double* %f5
+  %f59 = load double, double* %f5
+  %printf10 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt.1, i32 0, i32 0), double %f59)
+  %f6 = alloca double
+  store double 2.000000e-01, double* %f6
+  %f611 = load double, double* %f6
+  %printf12 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt.1, i32 0, i32 0), double %f611)
+  %f7 = alloca double
+  store double 1.000000e+00, double* %f7
+  %f713 = load double, double* %f7
+  %printf14 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt.1, i32 0, i32 0), double %f713)
+  ret i32 0
+}

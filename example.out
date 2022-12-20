@@ -1,125 +1,63 @@
 ; ModuleID = 'Mattricks'
 source_filename = "Mattricks"
 
-@i = global i32 0
 @fmt = private unnamed_addr constant [4 x i8] c"%d\0A\00", align 1
 @fmt.1 = private unnamed_addr constant [4 x i8] c"%f\0A\00", align 1
-@fmt.2 = private unnamed_addr constant [4 x i8] c"%d\0A\00", align 1
-@fmt.3 = private unnamed_addr constant [4 x i8] c"%f\0A\00", align 1
-@fmt.4 = private unnamed_addr constant [4 x i8] c"%d\0A\00", align 1
-@fmt.5 = private unnamed_addr constant [4 x i8] c"%f\0A\00", align 1
-@fmt.6 = private unnamed_addr constant [4 x i8] c"%d\0A\00", align 1
-@fmt.7 = private unnamed_addr constant [4 x i8] c"%f\0A\00", align 1
 
 declare i32 @printf(i8*, ...)
 
-define [10 x i32] @init_val_1d_int_10([10 x i32] %m, i32 %val) {
-entry:
-  %m1 = alloca [10 x i32], align 4
-  store [10 x i32] %m, [10 x i32]* %m1, align 4
-  %val2 = alloca i32, align 4
-  store i32 %val, i32* %val2, align 4
-  store i32 0, i32* @i, align 4
-  br label %while
-
-while:                                            ; preds = %while_body, %entry
-  %i = load i32, i32* @i, align 4
-  %tmp = icmp slt i32 %i, 10
-  br i1 %tmp, label %while_body, label %while_end
-
-while_body:                                       ; preds = %while
-  %val3 = load i32, i32* %val2, align 4
-  %i4 = load i32, i32* @i, align 4
-  %tmp5 = getelementptr [10 x i32], [10 x i32]* %m1, i32 0, i32 %i4
-  store i32 %val3, i32* %tmp5, align 4
-  %i6 = load i32, i32* @i, align 4
-  %tmp7 = add i32 %i6, 1
-  store i32 %tmp7, i32* @i, align 4
-  br label %while
-
-while_end:                                        ; preds = %while
-  %m8 = load [10 x i32], [10 x i32]* %m1, align 4
-  ret [10 x i32] %m8
-}
-
-define i32 @print_1d_int_10([10 x i32] %m) {
-entry:
-  %m1 = alloca [10 x i32], align 4
-  store [10 x i32] %m, [10 x i32]* %m1, align 4
-  store i32 0, i32* @i, align 4
-  br label %while
-
-while:                                            ; preds = %while_body, %entry
-  %i = load i32, i32* @i, align 4
-  %tmp = icmp slt i32 %i, 10
-  br i1 %tmp, label %while_body, label %while_end
-
-while_body:                                       ; preds = %while
-  %i2 = load i32, i32* @i, align 4
-  %tmp3 = getelementptr [10 x i32], [10 x i32]* %m1, i32 0, i32 %i2
-  %tmp4 = load i32, i32* %tmp3, align 4
-  %printf = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt.2, i32 0, i32 0), i32 %tmp4)
-  %i5 = load i32, i32* @i, align 4
-  %tmp6 = add i32 %i5, 1
-  store i32 %tmp6, i32* @i, align 4
-  br label %while
-
-while_end:                                        ; preds = %while
-  ret i32 0
-}
-
-define [10 x i32] @addval_1d_int_10([10 x i32] %m, i32 %val) {
-entry:
-  %m1 = alloca [10 x i32], align 4
-  store [10 x i32] %m, [10 x i32]* %m1, align 4
-  %val2 = alloca i32, align 4
-  store i32 %val, i32* %val2, align 4
-  store i32 0, i32* @i, align 4
-  br label %while
-
-while:                                            ; preds = %while_body, %entry
-  %i = load i32, i32* @i, align 4
-  %tmp = icmp slt i32 %i, 10
-  br i1 %tmp, label %while_body, label %while_end
-
-while_body:                                       ; preds = %while
-  %i3 = load i32, i32* @i, align 4
-  %tmp4 = getelementptr [10 x i32], [10 x i32]* %m1, i32 0, i32 %i3
-  %tmp5 = load i32, i32* %tmp4, align 4
-  %val6 = load i32, i32* %val2, align 4
-  %tmp7 = add i32 %tmp5, %val6
-  %i8 = load i32, i32* @i, align 4
-  %tmp9 = getelementptr [10 x i32], [10 x i32]* %m1, i32 0, i32 %i8
-  store i32 %tmp7, i32* %tmp9, align 4
-  %i10 = load i32, i32* @i, align 4
-  %tmp11 = add i32 %i10, 1
-  store i32 %tmp11, i32* @i, align 4
-  br label %while
-
-while_end:                                        ; preds = %while
-  %m12 = load [10 x i32], [10 x i32]* %m1, align 4
-  ret [10 x i32] %m12
-}
-
 define i32 @main(i32 %x) {
 entry:
-  %x1 = alloca i32, align 4
-  store i32 %x, i32* %x1, align 4
-  %tmp = alloca [10 x i32], i32 0, align 4
-  %mat_1d_int_10 = load [10 x i32], [10 x i32]* %tmp, align 4
-  %init_val_1d_int_10_result = call [10 x i32] @init_val_1d_int_10([10 x i32] %mat_1d_int_10, i32 0)
-  store [10 x i32] %init_val_1d_int_10_result, [10 x i32]* %tmp, align 4
-  %mat_1d_int_102 = load [10 x i32], [10 x i32]* %tmp, align 4
-  %print_1d_int_10_result = call i32 @print_1d_int_10([10 x i32] %mat_1d_int_102)
-  %mat_1d_int_103 = load [10 x i32], [10 x i32]* %tmp, align 4
-  %init_val_1d_int_10_result4 = call [10 x i32] @init_val_1d_int_10([10 x i32] %mat_1d_int_103, i32 123)
-  store [10 x i32] %init_val_1d_int_10_result4, [10 x i32]* %tmp, align 4
-  %mat_1d_int_105 = load [10 x i32], [10 x i32]* %tmp, align 4
-  %print_1d_int_10_result6 = call i32 @print_1d_int_10([10 x i32] %mat_1d_int_105)
-  %mat_1d_int_107 = load [10 x i32], [10 x i32]* %tmp, align 4
-  %addval_1d_int_10_result = call [10 x i32] @addval_1d_int_10([10 x i32] %mat_1d_int_107, i32 -123)
-  store [10 x i32] %addval_1d_int_10_result, [10 x i32]* %tmp, align 4
-  %mat_1d_int_108 = load [10 x i32], [10 x i32]* %tmp, align 4
-  %print_1d_int_10_result9 = call i32 @print_1d_int_10([10 x i32] %mat_1d_int_108)
+  %x1 = alloca i32
+  store i32 %x, i32* %x1
+  %int_var = alloca i32
+  store i32 3, i32* %int_var
+  %f_var = alloca double
+  store double 4.000000e+00, double* %f_var
+  %bool_var = alloca i1
+  store i1 true, i1* %bool_var
+  %bool_var2 = alloca i1
+  store i1 false, i1* %bool_var2
+  %int_var2 = load i32, i32* %int_var
+  %printf = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt, i32 0, i32 0), i32 %int_var2)
+  %f_var3 = load double, double* %f_var
+  %printf4 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt.1, i32 0, i32 0), double %f_var3)
+  %bool_var5 = load i1, i1* %bool_var
+  %printf6 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt, i32 0, i32 0), i1 %bool_var5)
+  %bool_var27 = load i1, i1* %bool_var2
+  %printf8 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt, i32 0, i32 0), i1 %bool_var27)
+  %tmp = alloca [3 x i32], i32 0
+  %tmp9 = alloca [12 x double], i32 6454
+  %tmp10 = getelementptr [3 x i32], [3 x i32]* %tmp, i32 0, i32 1
+  store i32 1, i32* %tmp10
+  %tmp11 = getelementptr [3 x i32], [3 x i32]* %tmp, i32 0, i32 2
+  store i32 2, i32* %tmp11
+  %tmp12 = getelementptr [3 x i32], [3 x i32]* %tmp, i32 0, i32 1
+  %tmp13 = load i32, i32* %tmp12
+  %tmp14 = getelementptr [3 x i32], [3 x i32]* %tmp, i32 0, i32 2
+  %tmp15 = load i32, i32* %tmp14
+  %tmp16 = add i32 %tmp13, %tmp15
+  %printf17 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt, i32 0, i32 0), i32 %tmp16)
+  %tmp18 = getelementptr [3 x i32], [3 x i32]* %tmp, i32 0, i32 1
+  %tmp19 = load i32, i32* %tmp18
+  %printf20 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt, i32 0, i32 0), i32 %tmp19)
+  %tmp21 = getelementptr [3 x i32], [3 x i32]* %tmp, i32 0, i32 2
+  %tmp22 = load i32, i32* %tmp21
+  %printf23 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt, i32 0, i32 0), i32 %tmp22)
+  %tmp24 = getelementptr [12 x double], [12 x double]* %tmp9, i32 0, i32 1
+  store double 1.000000e+00, double* %tmp24
+  %tmp25 = getelementptr [12 x double], [12 x double]* %tmp9, i32 1, i32 2
+  store double 2.000000e+00, double* %tmp25
+  %tmp26 = getelementptr [12 x double], [12 x double]* %tmp9, i32 2, i32 3
+  store double 3.000000e+00, double* %tmp26
+  %tmp27 = getelementptr [12 x double], [12 x double]* %tmp9, i32 0, i32 1
+  %tmp28 = load double, double* %tmp27
+  %printf29 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt.1, i32 0, i32 0), double %tmp28)
+  %tmp30 = getelementptr [12 x double], [12 x double]* %tmp9, i32 1, i32 2
+  %tmp31 = load double, double* %tmp30
+  %printf32 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt.1, i32 0, i32 0), double %tmp31)
+  %tmp33 = getelementptr [12 x double], [12 x double]* %tmp9, i32 2, i32 3
+  %tmp34 = load double, double* %tmp33
+  %printf35 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt.1, i32 0, i32 0), double %tmp34)
   ret i32 0
 }

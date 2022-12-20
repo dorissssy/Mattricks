@@ -276,29 +276,6 @@ let bool_fd =
                     raise (Failure err)
         else
             (SBindAssign(tp, id, (t, e')), StringMap.add id tp map)
-     (* | DeclareMat(id, row, col) ->
-        let matrix_type = IntMat(row, col)
-        in
-        if StringMap.mem id map then
-          let err = "Duplicated declaration " ^ id
-                     in
-                    raise (Failure err)
-        else
-            if row < 0 || col < 0  then
-              let err = "Invalid matrix size " ^ id
-                     in
-                    raise (Failure err)
-            else
-                (SDeclareMat(id, row, col), StringMap.add id  matrix_type map) *)
-      (* | TwoDArrayAssign(id, r, c, e) ->
-        let (t, e', map1) = check_expr map e in
-        let lt = type_of_identifier id map in
-        let err = "illegal array assignment " ^ string_of_typ lt ^ " = " ^
-                  string_of_typ t ^ " in " ^ string_of_expr e
-        in
-        if t = Int then
-          (STwoDArrayAssign(id, r, c, (t, e')), map1)
-        else raise (Failure err) *)
       | DeclareOneDArray(v, t) ->
             (SDeclareOneDArray(v, t), StringMap.add v t map)
       | _ -> raise (Failure ("Invalid statment in check_stmt"))

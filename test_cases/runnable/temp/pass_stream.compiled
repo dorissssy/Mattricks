@@ -1,0 +1,33 @@
+; ModuleID = 'MicroC'
+source_filename = "MicroC"
+
+@fmt = private unnamed_addr constant [4 x i8] c"%d\0A\00", align 1
+@fmt.1 = private unnamed_addr constant [4 x i8] c"%f\0A\00", align 1
+
+declare i32 @printf(i8*, ...)
+
+define i32 @main() {
+entry:
+  %i = alloca i32
+  store i32 1, i32* %i
+  %i1 = load i32, i32* %i
+  %printf = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt, i32 0, i32 0), i32 %i1)
+  %f = alloca double
+  store double 1.112000e+02, double* %f
+  %f2 = load double, double* %f
+  %printf3 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt.1, i32 0, i32 0), double %f2)
+  %b = alloca i1
+  store i1 true, i1* %b
+  %b4 = load i1, i1* %b
+  %printf5 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt, i32 0, i32 0), i1 %b4)
+  %tmp = alloca [4 x i32], i32 0
+  %i6 = load i32, i32* %i
+  %tmp7 = getelementptr [4 x i32], [4 x i32]* %tmp, i32 0, i32 0
+  store i32 %i6, i32* %tmp7
+  %tmp8 = getelementptr [4 x i32], [4 x i32]* %tmp, i32 0, i32 0
+  %tmp9 = load i32, i32* %tmp8
+  %printf10 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt, i32 0, i32 0), i32 %tmp9)
+  %printf11 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt, i32 0, i32 0), i32 1)
+  %i12 = load i32, i32* %i
+  ret i32 %i12
+}

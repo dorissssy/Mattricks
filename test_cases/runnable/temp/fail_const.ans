@@ -1,0 +1,3 @@
+lli: ./test_cases/runnable/fail_const.compiled:1:1: error: expected top-level entity
+Fatal error: exception Match_failure("semant.ml", 107, 34)
+^

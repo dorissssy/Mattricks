@@ -30,6 +30,7 @@ Mattricks
 │   sast.ml
 │   semant.ml
 |   irgen.ml
+|   mattricks.ml
 │   test_script
 │   example.mc
 │   Mattricks - Language Reference Manual

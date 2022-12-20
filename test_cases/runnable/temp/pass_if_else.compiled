@@ -1,0 +1,43 @@
+; ModuleID = 'MicroC'
+source_filename = "MicroC"
+
+@c = global i1 false
+@fmt = private unnamed_addr constant [4 x i8] c"%d\0A\00", align 1
+@fmt.1 = private unnamed_addr constant [4 x i8] c"%f\0A\00", align 1
+@fmt.2 = private unnamed_addr constant [4 x i8] c"%d\0A\00", align 1
+@fmt.3 = private unnamed_addr constant [4 x i8] c"%f\0A\00", align 1
+
+declare i32 @printf(i8*, ...)
+
+define i32 @main() {
+entry:
+  %main1_result = call i1 @main1(i1 true, i1 false)
+  %printf = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt, i32 0, i32 0), i1 %main1_result)
+  %main1_result1 = call i1 @main1(i1 false, i1 false)
+  %printf2 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt, i32 0, i32 0), i1 %main1_result1)
+  ret i32 0
+}
+
+define i1 @main1(i1 %a, i1 %b) {
+entry:
+  %a1 = alloca i1
+  store i1 %a, i1* %a1
+  %b2 = alloca i1
+  store i1 %b, i1* %b2
+  %a3 = load i1, i1* %a1
+  %b4 = load i1, i1* %b2
+  %tmp = icmp eq i1 %a3, %b4
+  br i1 %tmp, label %then, label %else
+
+then:                                             ; preds = %entry
+  store i1 true, i1* @c
+  br label %if_end
+
+else:                                             ; preds = %entry
+  store i1 false, i1* @c
+  br label %if_end
+
+if_end:                                           ; preds = %else, %then
+  %c = load i1, i1* @c
+  ret i1 %c
+}

@@ -1,0 +1,82 @@
+; ModuleID = 'MicroC'
+source_filename = "MicroC"
+
+@fmt = private unnamed_addr constant [4 x i8] c"%d\0A\00", align 1
+@fmt.1 = private unnamed_addr constant [4 x i8] c"%f\0A\00", align 1
+@fmt.2 = private unnamed_addr constant [4 x i8] c"%d\0A\00", align 1
+@fmt.3 = private unnamed_addr constant [4 x i8] c"%f\0A\00", align 1
+@fmt.4 = private unnamed_addr constant [4 x i8] c"%d\0A\00", align 1
+@fmt.5 = private unnamed_addr constant [4 x i8] c"%f\0A\00", align 1
+@fmt.6 = private unnamed_addr constant [4 x i8] c"%d\0A\00", align 1
+@fmt.7 = private unnamed_addr constant [4 x i8] c"%f\0A\00", align 1
+@fmt.8 = private unnamed_addr constant [4 x i8] c"%d\0A\00", align 1
+@fmt.9 = private unnamed_addr constant [4 x i8] c"%f\0A\00", align 1
+@fmt.10 = private unnamed_addr constant [4 x i8] c"%d\0A\00", align 1
+@fmt.11 = private unnamed_addr constant [4 x i8] c"%f\0A\00", align 1
+@fmt.12 = private unnamed_addr constant [4 x i8] c"%d\0A\00", align 1
+@fmt.13 = private unnamed_addr constant [4 x i8] c"%f\0A\00", align 1
+
+declare i32 @printf(i8*, ...)
+
+define i32 @main() {
+entry:
+  %main1_result = call i32 @main1()
+  %printf = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt, i32 0, i32 0), i32 %main1_result)
+  %main2_result = call i32 @main2()
+  %printf1 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt, i32 0, i32 0), i32 %main2_result)
+  %main3_result = call i32 @main3(i32 123)
+  %printf2 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt, i32 0, i32 0), i32 %main3_result)
+  %main4_result = call i32 @main4()
+  %printf3 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt, i32 0, i32 0), i32 %main4_result)
+  %main5_result = call i32 @main5(i32 123, i32 321)
+  %printf4 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt, i32 0, i32 0), i32 %main5_result)
+  %main6_result = call i32 @main6()
+  %printf5 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt, i32 0, i32 0), i32 %main6_result)
+  ret i32 0
+}
+
+define i32 @main1() {
+entry:
+  ret i32 1
+}
+
+define i32 @main2() {
+entry:
+  %main1_result = call i32 @main1()
+  ret i32 %main1_result
+}
+
+define i32 @main3(i32 %arg) {
+entry:
+  %arg1 = alloca i32
+  store i32 %arg, i32* %arg1
+  %arg2 = load i32, i32* %arg1
+  ret i32 %arg2
+}
+
+define i32 @main4() {
+entry:
+  %main2_result = call i32 @main2()
+  %main3_result = call i32 @main3(i32 %main2_result)
+  ret i32 %main3_result
+}
+
+define i32 @main5(i32 %arg1, i32 %arg2) {
+entry:
+  %arg11 = alloca i32
+  store i32 %arg1, i32* %arg11
+  %arg22 = alloca i32
+  store i32 %arg2, i32* %arg22
+  %arg13 = load i32, i32* %arg11
+  %arg24 = load i32, i32* %arg22
+  %tmp = add i32 %arg13, %arg24
+  ret i32 %tmp
+}
+
+define i32 @main6() {
+entry:
+  %main1_result = call i32 @main1()
+  %main1_result1 = call i32 @main1()
+  %main5_result = call i32 @main5(i32 %main1_result1, i32 %main1_result)
+  ret i32 %main5_result
+}

@@ -1,0 +1,221 @@
+; ModuleID = 'MicroC'
+source_filename = "MicroC"
+
+@c = global i32 0
+@fmt = private unnamed_addr constant [4 x i8] c"%d\0A\00", align 1
+@fmt.1 = private unnamed_addr constant [4 x i8] c"%f\0A\00", align 1
+@fmt.2 = private unnamed_addr constant [4 x i8] c"%d\0A\00", align 1
+@fmt.3 = private unnamed_addr constant [4 x i8] c"%f\0A\00", align 1
+@fmt.4 = private unnamed_addr constant [4 x i8] c"%d\0A\00", align 1
+@fmt.5 = private unnamed_addr constant [4 x i8] c"%f\0A\00", align 1
+@fmt.6 = private unnamed_addr constant [4 x i8] c"%d\0A\00", align 1
+@fmt.7 = private unnamed_addr constant [4 x i8] c"%f\0A\00", align 1
+@fmt.8 = private unnamed_addr constant [4 x i8] c"%d\0A\00", align 1
+@fmt.9 = private unnamed_addr constant [4 x i8] c"%f\0A\00", align 1
+@fmt.10 = private unnamed_addr constant [4 x i8] c"%d\0A\00", align 1
+@fmt.11 = private unnamed_addr constant [4 x i8] c"%f\0A\00", align 1
+@fmt.12 = private unnamed_addr constant [4 x i8] c"%d\0A\00", align 1
+@fmt.13 = private unnamed_addr constant [4 x i8] c"%f\0A\00", align 1
+@fmt.14 = private unnamed_addr constant [4 x i8] c"%d\0A\00", align 1
+@fmt.15 = private unnamed_addr constant [4 x i8] c"%f\0A\00", align 1
+@fmt.16 = private unnamed_addr constant [4 x i8] c"%d\0A\00", align 1
+@fmt.17 = private unnamed_addr constant [4 x i8] c"%f\0A\00", align 1
+@fmt.18 = private unnamed_addr constant [4 x i8] c"%d\0A\00", align 1
+@fmt.19 = private unnamed_addr constant [4 x i8] c"%f\0A\00", align 1
+@fmt.20 = private unnamed_addr constant [4 x i8] c"%d\0A\00", align 1
+@fmt.21 = private unnamed_addr constant [4 x i8] c"%f\0A\00", align 1
+@fmt.22 = private unnamed_addr constant [4 x i8] c"%d\0A\00", align 1
+@fmt.23 = private unnamed_addr constant [4 x i8] c"%f\0A\00", align 1
+@fmt.24 = private unnamed_addr constant [4 x i8] c"%d\0A\00", align 1
+@fmt.25 = private unnamed_addr constant [4 x i8] c"%f\0A\00", align 1
+
+declare i32 @printf(i8*, ...)
+
+define i32 @main() {
+entry:
+  %main1_result = call i32 @main1()
+  %printf = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt, i32 0, i32 0), i32 %main1_result)
+  %main1_2_result = call i32 @main1_2()
+  %printf1 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt, i32 0, i32 0), i32 %main1_2_result)
+  %main2_result = call i32 @main2()
+  %printf2 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt, i32 0, i32 0), i32 %main2_result)
+  %main2_2_result = call i32 @main2_2()
+  %printf3 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt, i32 0, i32 0), i32 %main2_2_result)
+  %main2_3_result = call i32 @main2_3()
+  %printf4 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt, i32 0, i32 0), i32 %main2_3_result)
+  %main3_result = call i32 @main3()
+  %printf5 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt, i32 0, i32 0), i32 %main3_result)
+  %main3_2_result = call i32 @main3_2()
+  %printf6 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt, i32 0, i32 0), i32 %main3_2_result)
+  %main3_3_result = call i32 @main3_3()
+  %printf7 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt, i32 0, i32 0), i32 %main3_3_result)
+  %main4_result = call i32 @main4()
+  %printf8 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt, i32 0, i32 0), i32 %main4_result)
+  %main4_2_result = call i32 @main4_2()
+  %printf9 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt, i32 0, i32 0), i32 %main4_2_result)
+  %main4_3_result = call i32 @main4_3()
+  %printf10 = call i32 (i8*, ...) @printf(i8* getelementptr inbounds ([4 x i8], [4 x i8]* @fmt, i32 0, i32 0), i32 %main4_3_result)
+  ret i32 0
+}
+
+define i32 @main1() {
+entry:
+  %a = alloca i32
+  store i32 123, i32* %a
+  %b = alloca i32
+  store i32 456, i32* %b
+  %a1 = load i32, i32* %a
+  %b2 = load i32, i32* %b
+  %tmp = add i32 %a1, %b2
+  store i32 %tmp, i32* @c
+  %c = load i32, i32* @c
+  ret i32 %c
+}
+
+define i32 @main1_2() {
+entry:
+  %a = alloca i32
+  store i32 -123, i32* %a
+  %b = alloca i32
+  store i32 -456, i32* %b
+  %a1 = load i32, i32* %a
+  %b2 = load i32, i32* %b
+  %tmp = add i32 %a1, %b2
+  store i32 %tmp, i32* @c
+  %c = load i32, i32* @c
+  ret i32 %c
+}
+
+define i32 @main2() {
+entry:
+  %a = alloca i32
+  store i32 123, i32* %a
+  %b = alloca i32
+  store i32 456, i32* %b
+  %b1 = load i32, i32* %b
+  %a2 = load i32, i32* %a
+  %tmp = sub i32 %b1, %a2
+  ret i32 %tmp
+}
+
+define i32 @main2_2() {
+entry:
+  %a = alloca i32
+  store i32 123, i32* %a
+  %b = alloca i32
+  store i32 -456, i32* %b
+  %b1 = load i32, i32* %b
+  %a2 = load i32, i32* %a
+  %tmp = sub i32 %b1, %a2
+  ret i32 %tmp
+}
+
+define i32 @main2_3() {
+entry:
+  %a = alloca i32
+  store i32 -123, i32* %a
+  %b = alloca i32
+  store i32 -456, i32* %b
+  %b1 = load i32, i32* %b
+  %a2 = load i32, i32* %a
+  %tmp = sub i32 %b1, %a2
+  ret i32 %tmp
+}
+
+define i32 @main3() {
+entry:
+  %a = alloca i32
+  store i32 123, i32* %a
+  %b = alloca i32
+  store i32 456, i32* %b
+  %a1 = load i32, i32* %a
+  %b2 = load i32, i32* %b
+  %tmp = mul i32 %a1, %b2
+  store i32 %tmp, i32* @c
+  %c = load i32, i32* @c
+  ret i32 %c
+}
+
+define i32 @main3_2() {
+entry:
+  %a = alloca i32
+  store i32 -123, i32* %a
+  %b = alloca i32
+  store i32 456, i32* %b
+  %a1 = load i32, i32* %a
+  %b2 = load i32, i32* %b
+  %tmp = mul i32 %a1, %b2
+  store i32 %tmp, i32* @c
+  %c = load i32, i32* @c
+  ret i32 %c
+}
+
+define i32 @main3_3() {
+entry:
+  %a = alloca i32
+  store i32 -123, i32* %a
+  %b = alloca i32
+  store i32 -456, i32* %b
+  %a1 = load i32, i32* %a
+  %b2 = load i32, i32* %b
+  %tmp = mul i32 %a1, %b2
+  store i32 %tmp, i32* @c
+  %c = load i32, i32* @c
+  ret i32 %c
+}
+
+define i32 @main4() {
+entry:
+  %a = alloca i32
+  store i32 123, i32* %a
+  %b = alloca i32
+  store i32 456, i32* %b
+  %b1 = load i32, i32* %b
+  %a2 = load i32, i32* %a
+  %tmp = sdiv i32 %b1, %a2
+  store i32 %tmp, i32* @c
+  %c = load i32, i32* @c
+  ret i32 %c
+}
+
+define i32 @main4_1() {
+entry:
+  %a = alloca i32
+  store i32 123, i32* %a
+  %b = alloca i32
+  store i32 456, i32* %b
+  %a1 = load i32, i32* %a
+  %b2 = load i32, i32* %b
+  %tmp = sdiv i32 %a1, %b2
+  store i32 %tmp, i32* @c
+  %c = load i32, i32* @c
+  ret i32 %c
+}
+
+define i32 @main4_2() {
+entry:
+  %a = alloca i32
+  store i32 123, i32* %a
+  %b = alloca i32
+  store i32 -456, i32* %b
+  %b1 = load i32, i32* %b
+  %a2 = load i32, i32* %a
+  %tmp = sdiv i32 %b1, %a2
+  store i32 %tmp, i32* @c
+  %c = load i32, i32* @c
+  ret i32 %c
+}
+
+define i32 @main4_3() {
+entry:
+  %a = alloca i32
+  store i32 -123, i32* %a
+  %b = alloca i32
+  store i32 -456, i32* %b
+  %b1 = load i32, i32* %b
+  %a2 = load i32, i32* %a
+  %tmp = sdiv i32 %b1, %a2
+  store i32 %tmp, i32* @c
+  %c = load i32, i32* @c
+  ret i32 %c
+}

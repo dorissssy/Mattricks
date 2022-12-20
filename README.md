@@ -2,7 +2,9 @@
 
 ## Brief Introduction
 
-Mattricks is an imperative programming language heavily focused on mathematical calculations similar to Matlab, with a particular focus on matrix calculations. Mattricks includes most mathematical symbols and syntax, so users do not need to include any math packages. Moreover, the mathematical syntaxes are designed to be easy to understand for users, so users without much prior knowledge of computer science will also be able to write their own calculations using our language. 
+Mattricks is an imperative programming language heavily focused on mathematical calculations similar to Matlab, with a particular focus on matrix calculations. Mattricks includes most mathematical symbols and syntax, so users do not need to include any math packages. Moreover, the mathematical syntaxes are designed to be easy to understand for users, so users without much prior knowledge of computer science will also be able to write their own calculations using our language.  
+  
+Presentation Link: [https://youtu.be/n9s1WP-SJFM](https://youtu.be/n9s1WP-SJFM)
 
 ## Development Team
 

@@ -1,4 +1,4 @@
-(* Ocamllex scanner for NanoC *)
+(* Ocamllex scanner for Mattricks *)
 
 { open Parse }
 

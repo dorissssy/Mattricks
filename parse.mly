@@ -1,4 +1,4 @@
-/* Ocamlyacc parser for NanoC */
+/* Ocamlyacc parser for Mattricks */
 
 %{
 open Ast

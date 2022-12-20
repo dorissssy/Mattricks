@@ -1,5 +1,5 @@
-; ModuleID = 'MicroC'
-source_filename = "MicroC"
+; ModuleID = 'Mattricks'
+source_filename = "Mattricks"
 
 @i = global i32 0
 @fmt = private unnamed_addr constant [4 x i8] c"%d\0A\00", align 1

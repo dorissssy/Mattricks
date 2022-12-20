@@ -183,13 +183,13 @@ fi
 if [ ${flag_runnable} -eq 1 ]; then
   echo -e ${BLUE}'######### RUNNABLE TEST #########'${NC}
 
-  # build microc.native executable
+  # build mattricks.native executable
   echo '-- Build .native executable --'
-  ocamlbuild -pkgs llvm microc.native
+  ocamlbuild -pkgs llvm mattricks.native
 
   # check if the executable exists
-  if [ -f './microc.native' ]; then
-    echo -e ${GREEN}'ocamlbuild microc.native successfully'${NC}
+  if [ -f './mattricks.native' ]; then
+    echo -e ${GREEN}'ocamlbuild mattricks.native successfully'${NC}
   else
     echo -e ${RED}'ocamlbuild failed, please check error messages\n'${NC}
     exit 1
@@ -198,7 +198,7 @@ if [ ${flag_runnable} -eq 1 ]; then
   # test each test file in test folder
   for file in ./test_cases/runnable/*.mc
   do
-    ./microc.native < $file > ${file%.mc}.compiled 2>&1
+    ./mattricks.native < $file > ${file%.mc}.compiled 2>&1
     lli ${file%.mc}.compiled > ${file%.mc}.ans 2>&1
   done
 
@@ -227,8 +227,8 @@ if [ ${flag_runnable} -eq 1 ]; then
     fi
   done
 
-  # remove microc.native executable file
-  rm microc.native
+  # remove mattricks.native executable file
+  rm mattricks.native
   # clean temp folder
   if [ ${flag_clean} -ne 0 ]; then
     rm -r ./test_cases/runnable/temp
@@ -251,9 +251,9 @@ if [ ${flag_file} -eq 1 ]; then
     base_path='./test_cases/semant'
     executable_file='./test_semant.native'
   elif [[ $test_file == *"runnable"* ]]; then
-    ocamlbuild -pkgs llvm microc.native
+    ocamlbuild -pkgs llvm mattricks.native
     base_path='./test_cases/runnable'
-    executable_file='./microc.native'
+    executable_file='./mattricks.native'
   fi
 
   # check if the executable exists

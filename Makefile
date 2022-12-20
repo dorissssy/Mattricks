@@ -39,13 +39,13 @@ semant : test_semant example.mc
 ##############################
 
 compiler :
-	ocamlbuild -pkgs llvm microc.native
-	./microc.native < example.mc > example.out
+	ocamlbuild -pkgs llvm mattricks.native
+	./mattricks.native < example.mc > example.out
 	lli example.out
 
 compiler2 :
-	ocamlbuild -pkgs llvm microc.native
-	./microc.native < example2.mc > example.out
+	ocamlbuild -pkgs llvm mattricks.native
+	./mattricks.native < example2.mc > example.out
 	lli example.out
 
 ##############################

@@ -7,12 +7,14 @@
 # Option 2: "ocamlbuild <phase>.native" will also build the Mattricks
 #
 # For testing, you can run the binary executable and test it with example.mc, it will generate example.out
-# Or simply call "make test_all" to test with test suites
-# Or use ./test_script [optioanl: flags -cpsaf:] to test with test suite
+# Or simply call "make test" to test with test suites
+# Or use ./test_script [optional: flags -cpsraf:] to test with test suite
 ##############################
 
-test_all :
-	./test_script
+test :
+	./test_script -c
+
+test_all : test
 
 ##############################
 

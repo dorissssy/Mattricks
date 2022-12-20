@@ -91,11 +91,13 @@ let bool_fd =
       | Int -> Int
       | Float -> Float
       | Bool -> Bool
-      | IntMat1D(t,e) -> match t with 
+      | IntMat1D(t,e) -> (match t with 
                         | Int -> Int
                         | Float -> Float
                         | Bool -> Bool
                         | IntMat1D(t2,e2) -> get_array_value_type(IntMat1D(t2,e2))
+                        | _ -> raise (Failure("Invalid element type in IntMat1D")))
+      | _ -> raise (Failure("Invalid array value type"))
 
     in
     (* Return a variable from our local symbol table *)
@@ -171,10 +173,10 @@ let bool_fd =
       | ArrayAccess(id, e) ->
         let lt = type_of_identifier id map in
         let (rt, e', map') = check_expr map e in
-        let err = "illegal array access " ^ string_of_typ lt ^ " = " ^
+        (* let err = "illegal array access " ^ string_of_typ lt ^ " = " ^
                   string_of_typ rt ^ " in " ^  id
                   ^ " => " ^ string_of_expr e 
-        in
+        in *)
         (* raise(Failure err) *)
         (get_array_value_type lt, SArrayAccess(id, (rt, e')), map')
         (* (check_assign Int rt err, SArrayAccess(id, (rt, e')), map') *)
@@ -186,12 +188,12 @@ let bool_fd =
           match e1' with
           | SArrayAccess(_v, _e) -> _e
         in *)
-        let err = "illegal array access " ^ string_of_typ t1 ^ " = " ^
+        (* let err = "illegal array access " ^ string_of_typ t1 ^ " = " ^
                   string_of_typ t2 ^ " in " ^ string_of_expr expr
                   ^ "\n => " ^ string_of_expr e1 ^ "==>" ^ string_of_expr e2
                   ^ "\n => " ^ string_of_sexpr (t1,e1') ^ "==>" ^ string_of_sexpr (t2,e2')
                   (* ^ "\n => " ^ string_of_sexpr _e1 *)
-        in
+        in *)
           (* raise(Failure err) *)
           (t1, SAnyArrayAccess(id, (t1, e1'), (t2, e2')), map2)
       | TwoDArrayAssign(v, id1,id2,ex) ->
@@ -223,7 +225,9 @@ let bool_fd =
                           string_of_typ rt ^ " in " ^ string_of_expr expr
                 in
                 (check_assign tp rt err, SOneDArrayAssign(id, (it, idx'), (rt, e1')), map'')
+            | _ -> raise (Failure (err))
         )
+      | _ -> raise (Failure ("Invalid expr in check_expr"))
     in
 
     let check_bool_expr map e =
@@ -297,6 +301,7 @@ let bool_fd =
         else raise (Failure err) *)
       | DeclareOneDArray(v, t) ->
             (SDeclareOneDArray(v, t), StringMap.add v t map)
+      | _ -> raise (Failure ("Invalid statment in check_stmt"))
 
     in (* body of check_func *)
     { srtyp = func.rtyp;

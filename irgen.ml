@@ -41,11 +41,13 @@ let translate (globals, functions) =
     | A.Float -> f32_t
     (* | A.IntMat(row, col) -> matrix_t (matrix_t i32_t col) row *)
     | A.IntMat1D(tp, row) ->
-      match tp with
+      (match tp with
       | A.Int -> matrix_t i32_t row
       | A.Float -> matrix_t f32_t row
       | A.Bool -> matrix_t i1_t row
       | A.IntMat1D(tp2, row2) -> matrix_t (ltype_of_typ tp2) (row2 * row)
+      | _ -> raise (Failure ("Invalid type for A.IntMat1D")))
+    | _ -> raise (Failure ("Invalid type for ltype_of_typ"))
   in
 
   (* Create a map of global variables after creating each *)
@@ -55,6 +57,7 @@ let translate (globals, functions) =
         | A.Int -> L.const_int i32_t 0
         | A.Bool  -> L.const_int i1_t 0
         | A.Float -> L.const_float f32_t 0.0
+        | _ -> raise (Failure ("Invalid global_var init"))
       in 
         StringMap.add n (L.define_global n init the_module) m in
     List.fold_left global_var StringMap.empty globals in
@@ -139,7 +142,8 @@ let translate (globals, functions) =
             | A.Less    -> L.build_fcmp L.Fcmp.Ult
             | A.More    -> L.build_fcmp L.Fcmp.Ugt
             | A.LessEqual -> L.build_fcmp L.Fcmp.Ule
-            | A.MoreEqual -> L.build_fcmp L.Fcmp.Uge) 
+            | A.MoreEqual -> L.build_fcmp L.Fcmp.Uge
+            | _ -> raise (Failure ("Invalid operator")))
           | _ -> (match op with
               A.Add     -> L.build_add
             | A.Sub     -> L.build_sub
@@ -152,7 +156,8 @@ let translate (globals, functions) =
             | A.Less    -> L.build_icmp L.Icmp.Slt
             | A.More    -> L.build_icmp L.Icmp.Sgt
             | A.LessEqual -> L.build_icmp L.Icmp.Sle
-            | A.MoreEqual -> L.build_icmp L.Icmp.Sge) 
+            | A.MoreEqual -> L.build_icmp L.Icmp.Sge
+            | _ -> raise (Failure("Invalid operator")))
         in 
         let e' = op_command e1' e2' "tmp" builder in
         (table, e')
@@ -199,6 +204,7 @@ let translate (globals, functions) =
         let (new_table3, idx2') = build_expr builder table idx2 in
         let e' =  (L.build_gep (lookup table id) [| idx1'; idx2' |] "tmp" builder)  in
         ignore(L.build_store value' e' builder); (new_table, value')
+        | _ -> raise (Failure ("Invalid expr"))
 
     in
 
@@ -283,11 +289,13 @@ let translate (globals, functions) =
             match _tp with 
             | Int -> L.build_array_alloca (ltype_of_typ t) (L.const_int i32_t 5454) "tmp" builder 
             | Float -> L.build_array_alloca (ltype_of_typ t) (L.const_int i32_t 6454) "tmp" builder 
-            | Bool -> L.build_array_alloca (ltype_of_typ t) (L.const_int i32_t 7454) "tmp" builder 
+            | Bool -> L.build_array_alloca (ltype_of_typ t) (L.const_int i32_t 7454) "tmp" builder
+            | _ -> raise (Failure ("SDeclareOneDArray type"))
           in
           (builder, StringMap.add v added_var_list table)
 (*        let added_var_list = L.build_alloca (ltype_of_typ t) v builder in*)
 (*        (builder, StringMap.add v added_var_list table)*)
+        | _ -> raise (Failure ("Invalid statement"))
 
     in
     (* Build the code for each statement in the function *)

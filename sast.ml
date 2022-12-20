@@ -81,6 +81,7 @@ let rec string_of_sexpr (t, e) =
       | SOneDArrayAssign(v, e, e2) -> v ^ "[" ^ string_of_sexpr e ^ "]" ^ " = " ^ string_of_sexpr e2
       | STwoDArrayAssign(v, e, e2, e3) -> v ^ "[" ^ string_of_sexpr e ^ "]" ^ "[" ^ string_of_sexpr e2 ^ "]" ^ " = " ^ string_of_sexpr e3
       | SAnyArrayAccess(v, e, e2) -> v ^ "[" ^ string_of_sexpr e ^ "]" ^ "[" ^ string_of_sexpr e2 ^ "]"
+      | _ -> ""
     ) ^ ")"
 
 
